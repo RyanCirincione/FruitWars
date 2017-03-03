@@ -13,6 +13,7 @@ public class Unit extends Entity {
 	public Unit(Image[][] sprite, Point2D location, double speed) 
 	{
 		super(sprite, location);
+		destination = location;
 		this.speed = speed;
 	}
 	

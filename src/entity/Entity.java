@@ -17,6 +17,11 @@ public class Entity
 		this.location = location;
 	}
 	
+	public Point2D getLocation()
+	{
+		return location;
+	}
+	
 	public void tick(long millis)
 	{
 		
