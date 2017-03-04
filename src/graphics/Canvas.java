@@ -40,7 +40,8 @@ public class Canvas extends JPanel implements MouseListener
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		//test*********************************
-		entities.add(new Grape(new Point2D.Double(200, 200)));
+		for(int i = 0; i < 15; i++)
+			entities.add(new Grape(new Point2D.Double(200 + i, 200 + i)));
 		//selectedUnits.add((Unit)entities.get(0));
 		entities.get(0);
 		//*************************************
@@ -75,7 +76,11 @@ public class Canvas extends JPanel implements MouseListener
 	{
 		millis = prevClock - System.currentTimeMillis(); //calculate delta time
 		for(Entity e : entities)
+		{
 			e.tick(millis);
+			for(Entity other : entities)
+				e.separate(other);
+		}
 		prevClock = System.currentTimeMillis();
 	}
 	

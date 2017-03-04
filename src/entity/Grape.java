@@ -9,10 +9,12 @@ import javax.imageio.ImageIO;
 
 public class Grape extends Unit
 {
-
+	private static final double RADIUS = 16;
+	
 	public Grape(Point2D location) 
 	{
-		super(loadSprite(), location, 1);
+		super(loadSprite(), location, RADIUS, 1);
+		mass = 0.1f;
 	}
 	
 	private static Image[][] loadSprite()

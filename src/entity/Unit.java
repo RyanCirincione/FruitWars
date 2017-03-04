@@ -10,9 +10,9 @@ public class Unit extends Entity {
 	private double speed;
 	private Point2D destination;
 	
-	public Unit(Image[][] sprite, Point2D location, double speed) 
+	public Unit(Image[][] sprite, Point2D location, double radius, double speed) 
 	{
-		super(sprite, location);
+		super(sprite, location, radius);
 		destination = location;
 		this.speed = speed;
 	}
