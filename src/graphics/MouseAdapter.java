@@ -3,6 +3,9 @@ package graphics;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
+/**
+ * Uses the 'default' feature of Java 8 interfaces to allow implementing classes to ignore unnecessary mouse methods
+ */
 public interface MouseAdapter extends MouseListener
 {
 
