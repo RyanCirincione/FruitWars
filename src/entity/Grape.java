@@ -25,7 +25,7 @@ public class Grape extends Unit
 		}
 		catch(IOException e) 
 		{
-			System.err.println("Could not find grape sprite asset");
+			System.err.println("Could not find grape sprite asset cause fuck you");
 			e.printStackTrace();
 		}
 		return sprite;

@@ -5,6 +5,7 @@ import java.awt.Dimension;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.MouseInfo;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -54,7 +55,7 @@ public class Canvas extends JPanel implements MouseListener
 		Graphics2D g2 = (Graphics2D)g;
 		for(Entity e : entities)
 			e.draw(g2, millis);
-		Point2D mousePos = MouseInfo.getPointerInfo().getLocation();
+		Point2D mousePos = getMousePosition();
 		if(selecting && !mousePos.equals(selectionCorner))
 		{
 			g2.setColor(Color.BLUE);
@@ -78,6 +79,12 @@ public class Canvas extends JPanel implements MouseListener
 		for(Entity e : entities)
 			e.tick(millis);
 		prevClock = System.currentTimeMillis();
+	}
+	
+	public Point getMousePosition()
+	{
+		return new Point(MouseInfo.getPointerInfo().getLocation().x - getLocationOnScreen().x, 
+				MouseInfo.getPointerInfo().getLocation().y - getLocationOnScreen().y);
 	}
 
 	@Override
@@ -104,13 +111,13 @@ public class Canvas extends JPanel implements MouseListener
 	public void mousePressed(MouseEvent e) 
 	{
 		selecting = true;
-		selectionCorner = MouseInfo.getPointerInfo().getLocation();
+		selectionCorner = getMousePosition();
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) 
 	{
-		Point2D mousePos = MouseInfo.getPointerInfo().getLocation();
+		Point2D mousePos = getMousePosition();
 		if(!selectionCorner.equals(mousePos))
 		{
 			Point2D topLeft = new Point2D.Double(((selectionCorner.getX() < mousePos.getX())? selectionCorner.getX() : mousePos.getX()),
