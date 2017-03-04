@@ -1,8 +1,6 @@
 package entity;
 
-import java.awt.AlphaComposite;
 import java.awt.Color;
-import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.Point2D;
@@ -51,14 +49,12 @@ public class Unit extends Entity
 			g2.setColor(Color.RED);
 			g2.drawOval((int) destination.getX(), (int) destination.getY(), 8, 8);
 		}
-		Composite previous = g2.getComposite();
-		if(selected)
-		{
-			g2.setComposite(AlphaComposite.Xor); //todo: find a better effect
-		}
 		super.draw(g2, millis);
-		g2.setComposite(previous);
-		
+		if (selected)
+		{
+			g2.setColor(Color.CYAN);
+			g2.drawOval((int)(location.getX() - radius), (int)(location.getY() - radius), 2 * (int)radius, 2 * (int)radius);
+		}
 	}
 
 	public void setDestination(Point2D destination)
