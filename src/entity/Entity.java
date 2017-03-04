@@ -30,7 +30,11 @@ public class Entity
 	{
 		//advance the current animation
 		frame = (int)(frame + 60 * millis / 1000.0) % sprite[animation].length;
-		g2.drawImage(sprite[animation][frame], (int)location.getX(), (int)location.getY(), null);
+		Image tex = sprite[animation][frame];
+		//Draw the object, centered
+		g2.drawImage(tex, 
+				(int)(location.getX() - tex.getWidth(null) / 2), 
+				(int)(location.getY() - tex.getHeight(null) / 2), null);
 	}
 	
 	private void shake(float otherMass)
