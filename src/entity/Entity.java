@@ -2,7 +2,6 @@ package entity;
 
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Point;
 import java.awt.geom.Point2D;
 
 public class Entity 

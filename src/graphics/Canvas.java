@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.awt.geom.Point2D.Double;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
@@ -22,6 +21,8 @@ import entity.Unit;
 
 public class Canvas extends JPanel implements MouseListener
 {
+	private static final long serialVersionUID = 1L;
+	
 	private ArrayList<Entity> entities;
 	private ArrayList<Unit> selectedUnits;
 	private Point2D selectionCorner;
@@ -40,7 +41,7 @@ public class Canvas extends JPanel implements MouseListener
 		//test*********************************
 		entities.add(new Grape(new Point2D.Double(200, 200)));
 		//selectedUnits.add((Unit)entities.get(0));
-		Grape g = (Grape)entities.get(0);
+		entities.get(0);
 		//*************************************
 		
 		setFocusable(true);
