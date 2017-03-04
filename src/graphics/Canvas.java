@@ -7,6 +7,7 @@ import java.awt.Graphics2D;
 import java.awt.MouseInfo;
 import java.awt.Point;
 import java.awt.Toolkit;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
@@ -102,6 +103,19 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		{
 			selecting = true;
 			selectionCorner = new Point(getMousePosition());
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e)
+	{
+		if (e.getKeyCode() == KeyEvent.VK_SPACE)
+		{
+			selectedUnits.clear(); // Unselect units
+		}
+		if (e.getKeyCode() == KeyEvent.VK_C)
+		{
+			selectedUnits.forEach(unit -> unit.setDestination(unit.location)); //Stop moving
 		}
 	}
 
