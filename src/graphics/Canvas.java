@@ -107,7 +107,7 @@ public class Canvas extends JPanel implements MouseListener
 	public void mousePressed(MouseEvent e) 
 	{
 		selecting = true;
-		selectionCorner = getMousePosition();
+		selectionCorner = new Point(getMousePosition());
 	}
 
 	@Override
