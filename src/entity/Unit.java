@@ -17,25 +17,24 @@ public class Unit extends Entity {
 		this.speed = speed;
 	}
 	
+	
 	public void moveToward(long millis)
 	{
 		if(!location.equals(destination))
 		{
-			double xDist = destination.getX() - location.getX();
-			double yDist = destination.getY() - location.getY();
-			double theta = Math.atan(Math.abs(yDist/xDist));
-			double xMove = speed * Math.cos(theta) * ((xDist < 0)? 1 : -1);
-			double yMove = speed * Math.sin(theta) * ((yDist < 0)? 1 : -1);
-			xMove *= (60.0 * (millis/1000.0));
-			yMove *= (60.0 * (millis/1000.0));
-			if(Math.abs(xDist) < Math.abs(xMove))
-				location.setLocation(destination.getX(), location.getY());
+			double distance = location.distance(destination);
+			if(distance < speed) 
+			{
+				location.setLocation(destination);
+			}
 			else
-				location.setLocation(location.getX() + xMove, location.getY());
-			if(Math.abs(yDist) < Math.abs(yMove))
-				location.setLocation(location.getX(), destination.getY());
-			else
-				location.setLocation(location.getX(), location.getY() + yMove);
+			{
+				double x = (destination.getX() - location.getX()) / distance * speed;
+				double y = (destination.getY() - location.getY()) / distance * speed;
+				x *= 60.0 * millis / 1000.0;
+				y *= 60.0 * millis / 1000.0;
+				location.setLocation(location.getX() + x, location.getY() + y);
+			}
 		}
 	}
 	
