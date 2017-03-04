@@ -19,12 +19,12 @@ public class Entity
 	{
 		this.sprite = sprite;
 		whitedOut = new Image[sprite.length][];
-		for(int i = 0; i < sprite.length; i++)
+		for (int i = 0; i < sprite.length; i++)
 		{
 			whitedOut[i] = new Image[sprite[i].length];
-			for(int j = 0; j < whitedOut[i].length; j++)
+			for (int j = 0; j < whitedOut[i].length; j++)
 			{
-				whitedOut[i][j] = whiteOut((BufferedImage)sprite[i][j]);
+				whitedOut[i][j] = whiteOut((BufferedImage) sprite[i][j]);
 			}
 		}
 		this.location = location;
@@ -46,12 +46,12 @@ public class Entity
 		g2.drawImage(tex, (int) (location.getX() - tex.getWidth(null) / 2),
 				(int) (location.getY() - tex.getHeight(null) / 2), null);
 	}
-	
+
 	public Image getWhiteImage()
 	{
 		return whitedOut[animation][frame];
 	}
-	
+
 	public Image getCurrentImage()
 	{
 		return sprite[animation][frame];
@@ -80,23 +80,23 @@ public class Entity
 			double distance = location.distance(other.location);
 			double dx = location.getX() - other.location.getX();
 			double dy = location.getY() - other.location.getY();
-			location.setLocation(location.getX() + (dx * radiusSum / distance) * (1 - mass) * other.mass,
-					location.getY() + (dy * radiusSum / distance) * (1 - mass) * other.mass);
+			location.setLocation(location.getX() + (dx * radiusSum / distance) - dx * (1 - mass) * other.mass,
+					location.getY() + (dy * radiusSum / distance) - dy * (1 - mass) * other.mass);
 			dx = location.getX() - other.location.getX();
 			dy = location.getY() - other.location.getY();
-			other.location.setLocation(other.location.getX() + (-dx * radiusSum / distance) * mass * (1 - other.mass),
-					other.location.getY() + (-dy * radiusSum / distance) * mass * (1 - other.mass));
+			other.location.setLocation(other.location.getX() + (-dx * radiusSum / distance) + dx * mass * (1 - other.mass),
+					other.location.getY() + (-dy * radiusSum / distance) + dx * mass * (1 - other.mass));
 		}
 	}
-	
+
 	protected static BufferedImage whiteOut(BufferedImage image)
 	{
 		BufferedImage result = new BufferedImage(image.getWidth(), image.getHeight(), BufferedImage.TYPE_INT_ARGB);
-		for(int i = 0; i < result.getWidth(); i++)
+		for (int i = 0; i < result.getWidth(); i++)
 		{
-			for(int j = 0; j < result.getHeight(); j++)
+			for (int j = 0; j < result.getHeight(); j++)
 			{
-				if(image.getRGB(i, j) != 0)
+				if (image.getRGB(i, j) != 0)
 				{
 					result.setRGB(i, j, 0xff_ff_ff_ff);
 				}
