@@ -128,17 +128,15 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 			if (!selectionCorner.equals(mousePos))
 			{
 				Rectangle2D selectionRect = getSelectionRect();
-				selectedUnits = new ArrayList<Unit>();
-				for (Entity en : entities)
-					if (en instanceof Unit)
-						if (selectionRect.contains(en.location))
-							selectedUnits.add((Unit) en);
+				selectedUnits.clear();
+				entities.stream().filter(ent -> ent instanceof Unit).map(ent -> (Unit) ent)
+						.filter(unit -> selectionRect.contains(unit.location)).forEach(selectedUnits::add);
 				selecting = false;
 			}
 		} else
 		{
-			for (Unit u : selectedUnits)
-				u.setDestination(new Point2D.Double(e.getX(), e.getY()));
+			Point2D destination = new Point2D.Double(e.getX(), e.getY());
+			selectedUnits.forEach(unit -> unit.setDestination(destination));
 			selecting = false;
 		}
 	}
