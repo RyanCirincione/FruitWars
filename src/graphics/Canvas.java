@@ -107,11 +107,12 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 	{
 		if (e.getKeyCode() == KeyEvent.VK_SPACE)
 		{
-			selectedUnits.clear(); // Unselect units
+			clearSelected(); // Unselect units
 		}
 		if (e.getKeyCode() == KeyEvent.VK_C)
 		{
-			selectedUnits.forEach(unit -> unit.setDestination(unit.location)); //Stop moving
+			selectedUnits.forEach(unit -> unit.setDestination(unit.location)); // Stop
+																			   // moving
 		}
 	}
 
@@ -124,9 +125,12 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 			if (!selectionCorner.equals(mousePos))
 			{
 				Rectangle2D selectionRect = getSelectionRect();
-				selectedUnits.clear();
+				clearSelected();
 				entities.stream().filter(ent -> ent instanceof Unit).map(ent -> (Unit) ent)
-						.filter(unit -> selectionRect.contains(unit.location)).forEach(selectedUnits::add);
+						.filter(unit -> selectionRect.contains(unit.location)).forEach(unit -> {
+							unit.setSelected(true);
+							selectedUnits.add(unit);
+						});
 				selecting = false;
 			}
 		} else
@@ -135,6 +139,12 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 			selectedUnits.forEach(unit -> unit.setDestination(destination));
 			selecting = false;
 		}
+	}
+
+	private void clearSelected()
+	{
+		selectedUnits.forEach(unit -> unit.setSelected(false));
+		selectedUnits.clear();
 	}
 
 	private Rectangle2D getSelectionRect()

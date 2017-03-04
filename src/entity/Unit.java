@@ -1,13 +1,15 @@
 package entity;
 
+import java.awt.AlphaComposite;
 import java.awt.Color;
+import java.awt.Composite;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.Point2D;
 
 public class Unit extends Entity
 {
-
+	private boolean selected;
 	private double speed;
 	private Point2D destination;
 
@@ -49,11 +51,23 @@ public class Unit extends Entity
 			g2.setColor(Color.RED);
 			g2.drawOval((int) destination.getX(), (int) destination.getY(), 8, 8);
 		}
+		Composite previous = g2.getComposite();
+		if(selected)
+		{
+			g2.setComposite(AlphaComposite.Xor); //todo: find a better effect
+		}
 		super.draw(g2, millis);
+		g2.setComposite(previous);
+		
 	}
 
 	public void setDestination(Point2D destination)
 	{
 		this.destination = destination;
+	}
+
+	public void setSelected(boolean select)
+	{
+		selected = select;
 	}
 }
