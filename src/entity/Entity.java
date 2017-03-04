@@ -58,13 +58,13 @@ public class Entity
 			double dx = location.getX() - other.location.getX();
 			double dy = location.getY() - other.location.getY();
 			location.setLocation(
-				location.getX() + (dx * radiusSum / (distance - dx)) * (1 - mass) * other.mass,
-				location.getY() + (dy * radiusSum / (distance - dy)) * (1 - mass) * other.mass);
+				location.getX() + (dx * radiusSum / distance - dx) * (1 - mass) * other.mass,
+				location.getY() + (dy * radiusSum / distance - dy) * (1 - mass) * other.mass);
 			dx = location.getX() - other.location.getX();
 			dy = location.getY() - other.location.getY();
 			other.location.setLocation(
-				other.location.getX() + (-dx * radiusSum / (distance + dx)) * mass * (1 - other.mass),
-				other.location.getY() + (-dy * radiusSum / (distance + dy)) * mass * (1 - other.mass));
+				other.location.getX() + (-dx * radiusSum / distance + dx) * mass * (1 - other.mass),
+				other.location.getY() + (-dy * radiusSum / distance + dy) * mass * (1 - other.mass));
 		}
 	}
 }
