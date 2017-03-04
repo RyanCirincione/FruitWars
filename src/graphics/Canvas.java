@@ -73,11 +73,11 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 	public void tick()
 	{
 		millis = prevClock - System.currentTimeMillis(); // calculate delta time
-		for (Entity e : entities)
+		for(int i = 0; i < entities.size(); i++)
 		{
-			e.tick(millis);
-			for (Entity other : entities)
-				e.separate(other);
+			entities.get(i).tick(millis);
+			for(int j = i; j < entities.size(); j++)
+				entities.get(i).separate(entities.get(j));
 		}
 		prevClock = System.currentTimeMillis();
 	}
