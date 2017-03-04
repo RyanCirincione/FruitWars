@@ -19,7 +19,7 @@ import entity.Entity;
 import entity.Grape;
 import entity.Unit;
 
-public class Canvas extends JPanel implements MouseAdapter
+public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 {
 	private static final long serialVersionUID = 1L;
 
@@ -48,6 +48,7 @@ public class Canvas extends JPanel implements MouseAdapter
 
 		setFocusable(true);
 		addMouseListener(this);
+		addKeyListener(this);
 		requestFocus();
 		mousePosition = new Point();
 	}
