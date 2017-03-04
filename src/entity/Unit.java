@@ -31,8 +31,8 @@ public class Unit extends Entity {
 			{
 				double x = (destination.getX() - location.getX()) / distance * speed;
 				double y = (destination.getY() - location.getY()) / distance * speed;
-				x *= 60.0 * millis / 1000.0;
-				y *= 60.0 * millis / 1000.0;
+				x *= -1 * 60.0 * millis / 1000.0;
+				y *= -1 * 60.0 * millis / 1000.0;
 				location.setLocation(location.getX() + x, location.getY() + y);
 			}
 		}
