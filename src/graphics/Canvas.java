@@ -40,12 +40,8 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		selectedUnits = new ArrayList<>();
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
-		// test*********************************
 		for (int i = 0; i < 15; i++)
 			entities.add(new Grape(new Point2D.Double(200 + i, 200 + i)));
-		// selectedUnits.add((Unit)entities.get(0));
-		entities.get(0);
-		// *************************************
 
 		setFocusable(true);
 		addMouseListener(this);
@@ -102,7 +98,7 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		if (SwingUtilities.isLeftMouseButton(e))
 		{
 			selecting = true;
-			selectionCorner = new Point(getMousePosition());
+			selectionCorner.setLocation(getMousePosition());
 		}
 	}
 
