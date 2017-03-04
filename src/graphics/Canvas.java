@@ -14,7 +14,7 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
-
+import javax.swing.SwingUtilities;
 import entity.Entity;
 import entity.Grape;
 import entity.Unit;
@@ -95,12 +95,7 @@ public class Canvas extends JPanel implements MouseListener
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) 
-	{
-		for(Unit u : selectedUnits)
-			u.setDestination(new Point2D.Double(e.getX(), e.getY()));
-		selecting = false;
-	}
+	public void mouseClicked(MouseEvent e) { }
 
 	@Override
 	public void mouseEntered(MouseEvent e) { }
@@ -111,22 +106,34 @@ public class Canvas extends JPanel implements MouseListener
 	@Override
 	public void mousePressed(MouseEvent e) 
 	{
-		selecting = true;
-		selectionCorner = new Point(getMousePosition());
+		if(SwingUtilities.isLeftMouseButton(e))
+		{
+			selecting = true;
+			selectionCorner = new Point(getMousePosition());
+		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e) 
 	{
-		Point2D mousePos = getMousePosition();
-		if(!selectionCorner.equals(mousePos))
+		if(SwingUtilities.isLeftMouseButton(e))
 		{
-			Rectangle2D selectionRect = getSelectionRect();
-			selectedUnits = new ArrayList<Unit>();
-			for(Entity en : entities)
-				if(en instanceof Unit)
-					if(selectionRect.contains(en.location))
-						selectedUnits.add((Unit)en);
+			Point2D mousePos = getMousePosition();
+			if(!selectionCorner.equals(mousePos))
+			{
+				Rectangle2D selectionRect = getSelectionRect();
+				selectedUnits = new ArrayList<Unit>();
+				for(Entity en : entities)
+					if(en instanceof Unit)
+						if(selectionRect.contains(en.location))
+							selectedUnits.add((Unit)en);
+				selecting = false;
+			}
+		}
+		else
+		{
+			for(Unit u : selectedUnits)
+				u.setDestination(new Point2D.Double(e.getX(), e.getY()));
 			selecting = false;
 		}
 	}
