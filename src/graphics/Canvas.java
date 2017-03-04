@@ -26,6 +26,7 @@ public class Canvas extends JPanel implements MouseListener
 	private ArrayList<Entity> entities;
 	private ArrayList<Unit> selectedUnits;
 	private Point2D selectionCorner;
+	private Point mousePosition;
 	private boolean selecting;
 	private long prevClock, millis;
 	private Color selectionBlue = new Color(102, 153, 255, 64);
@@ -34,8 +35,8 @@ public class Canvas extends JPanel implements MouseListener
 	{
 		setPreferredSize(new Dimension(800, 600));
 		prevClock = System.currentTimeMillis();
-		entities = new ArrayList<Entity>();
-		selectedUnits = new ArrayList<Unit>();
+		entities = new ArrayList<>();
+		selectedUnits = new ArrayList<>();
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		//test*********************************
@@ -47,6 +48,7 @@ public class Canvas extends JPanel implements MouseListener
 		setFocusable(true);
 		addMouseListener(this);
 		requestFocus();
+		mousePosition = new Point();
 	}
 	
 	@Override
@@ -77,10 +79,14 @@ public class Canvas extends JPanel implements MouseListener
 		prevClock = System.currentTimeMillis();
 	}
 	
+	/**
+	 * Returns a reference to a single object, please copy before modifying
+	 */
 	public Point getMousePosition()
 	{
-		return new Point(MouseInfo.getPointerInfo().getLocation().x - getLocationOnScreen().x, 
+		mousePosition.setLocation(MouseInfo.getPointerInfo().getLocation().x - getLocationOnScreen().x, 
 				MouseInfo.getPointerInfo().getLocation().y - getLocationOnScreen().y);
+		return mousePosition;
 	}
 
 	@Override
@@ -92,16 +98,10 @@ public class Canvas extends JPanel implements MouseListener
 	}
 
 	@Override
-	public void mouseEntered(MouseEvent e) 
-	{
-			
-	}
+	public void mouseEntered(MouseEvent e) { }
 
 	@Override
-	public void mouseExited(MouseEvent e) 
-	{
-			
-	}
+	public void mouseExited(MouseEvent e) {	}
 
 	@Override
 	public void mousePressed(MouseEvent e) 
@@ -119,13 +119,9 @@ public class Canvas extends JPanel implements MouseListener
 			Rectangle2D selectionRect = getSelectionRect();
 			selectedUnits = new ArrayList<Unit>();
 			for(Entity en : entities)
-			{
 				if(en instanceof Unit)
-				{
 					if(selectionRect.contains(en.location))
 						selectedUnits.add((Unit)en);
-				}
-			}
 			selecting = false;
 		}
 	}
