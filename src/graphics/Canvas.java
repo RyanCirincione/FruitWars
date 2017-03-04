@@ -51,7 +51,7 @@ public class Canvas extends JPanel implements MouseListener
 	@Override
 	public void paintComponent(Graphics g)
 	{
-		super.paintComponent(g);
+		super.paintComponent(g); //clear the screen
 		Graphics2D g2 = (Graphics2D)g;
 		for(Entity e : entities)
 			e.draw(g2, millis);
@@ -59,13 +59,8 @@ public class Canvas extends JPanel implements MouseListener
 		if(selecting && !mousePos.equals(selectionCorner))
 		{
 			g2.setColor(Color.BLUE);
-			Point2D topLeft = new Point2D.Double(((selectionCorner.getX() < mousePos.getX())? selectionCorner.getX() : mousePos.getX()),
-			((selectionCorner.getY() < mousePos.getY())? selectionCorner.getY() : mousePos.getY()));
-			Point2D bottomRight = new Point2D.Double(((selectionCorner.getX() > mousePos.getX())? selectionCorner.getX() : mousePos.getX()),
-					((selectionCorner.getY() > mousePos.getY())? selectionCorner.getY() : mousePos.getY()));
-			Rectangle2D selectionRect = new Rectangle2D.Double(topLeft.getX(), topLeft.getY(), 
-					bottomRight.getX() - topLeft.getX(), bottomRight.getY() - topLeft.getY());
-			g2.draw(selectionRect);
+			Rectangle2D selectionRect = getSelectionRect();
+			g2.draw(getSelectionRect());
 			g2.setColor(selectionBlue);
 			g2.fill(selectionRect);
 			
@@ -75,7 +70,7 @@ public class Canvas extends JPanel implements MouseListener
 	
 	public void tick()
 	{
-		millis = prevClock - System.currentTimeMillis();
+		millis = prevClock - System.currentTimeMillis(); //calculate delta time
 		for(Entity e : entities)
 			e.tick(millis);
 		prevClock = System.currentTimeMillis();
@@ -114,22 +109,27 @@ public class Canvas extends JPanel implements MouseListener
 		Point2D mousePos = MouseInfo.getPointerInfo().getLocation();
 		if(!selectionCorner.equals(mousePos))
 		{
-			Point2D topLeft = new Point2D.Double(((selectionCorner.getX() < mousePos.getX())? selectionCorner.getX() : mousePos.getX()),
-					((selectionCorner.getY() < mousePos.getY())? selectionCorner.getY() : mousePos.getY()));
-			Point2D bottomRight = new Point2D.Double(((selectionCorner.getX() > mousePos.getX())? selectionCorner.getX() : mousePos.getX()),
-					((selectionCorner.getY() > mousePos.getY())? selectionCorner.getY() : mousePos.getY()));
-			Rectangle2D selectionRect = new Rectangle2D.Double(topLeft.getX(), topLeft.getY(), 
-					bottomRight.getX() - topLeft.getX(), bottomRight.getY() - topLeft.getY());
+			Rectangle2D selectionRect = getSelectionRect();
 			selectedUnits = new ArrayList<Unit>();
 			for(Entity en : entities)
 			{
 				if(en instanceof Unit)
 				{
-					if(selectionRect.contains(en.getLocation()))
+					if(selectionRect.contains(en.location))
 						selectedUnits.add((Unit)en);
 				}
 			}
 			selecting = false;
 		}
+	}
+	
+	private Rectangle2D getSelectionRect() 
+	{
+		Point2D mousePos = getMousePosition();
+		double x = Math.min(selectionCorner.getX(), mousePos.getX());
+		double y = Math.min(selectionCorner.getY(), mousePos.getY());
+		double width = Math.max(selectionCorner.getX(), mousePos.getX()) - x;
+		double height = Math.max(selectionCorner.getY(), mousePos.getY()) - y;
+		return new Rectangle2D.Double(x, y, width, height);
 	}
 }
