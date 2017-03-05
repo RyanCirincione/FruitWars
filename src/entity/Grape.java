@@ -40,7 +40,7 @@ public class Grape extends Unit
 	}
 	
 	/**
-	 * Source: Wikipedia: Red Wine Grape Varieties
+	 * Source: National Grape Registry
 	 */
 	private static ArrayList<String> loadGrapeVarieties()
 	{
