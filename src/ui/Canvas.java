@@ -64,7 +64,7 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		for (Entity e : entities)
 			e.draw(g2, millis);
 		for (UIComponent u : gui)
-			u.draw(g2, millis);
+			u.draw(g2, getMousePosition(), millis);
 		Point2D mousePos = getMousePosition();
 		if (selecting && !mousePos.equals(selectionCorner))
 		{
