@@ -4,18 +4,25 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.geom.Point2D;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
-public class Unit extends Entity
+public abstract class Unit extends Entity
 {
 	private boolean selected;
 	private double speed;
+	protected double health;
 	private Point2D destination;
-
-	public Unit(Image[][] sprite, Point2D location, double radius, double speed)
+	private static ArrayList<String> names = loadNames();
+	
+	public Unit(Image[][] sprite, Point2D location, double radius, double speed, double health)
 	{
 		super(sprite, location, radius);
 		destination = location;
 		this.speed = speed;
+		this.health = health;
 	}
 
 	public void moveToward(long millis)
@@ -57,9 +64,44 @@ public class Unit extends Entity
 		}
 	}
 
+	/**
+	 * Source: 2010 US Census
+	 */
+	private static ArrayList<String> loadNames()
+	{
+		System.out.println("Loading First Names...");
+		ArrayList<String> names = new ArrayList<>();
+		try
+		{
+			Scanner fileScan = new Scanner(new File("assets/firstNames.txt"));
+			while(fileScan.hasNextLine())
+				names.add(fileScan.nextLine());
+		} catch (FileNotFoundException e)
+		{
+			System.err.println("Could not load a ridiculously long list of first names ¯\\_(ツ)_/¯");
+			e.printStackTrace();
+		}
+		return names;
+	}
+	
+	public String getName()
+	{
+		return names.get((int)(Math.random() * names.size()));
+	}
+	
 	public void setDestination(Point2D destination)
 	{
 		this.destination = destination;
+	}
+	
+	public double getHealth()
+	{
+		return health;
+	}
+	
+	public void setHealth(double health)
+	{
+		this.health = health;
 	}
 
 	public void setSelected(boolean select)

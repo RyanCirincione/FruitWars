@@ -5,7 +5,7 @@ import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 
-import graphics.Canvas;
+import ui.Canvas;
 
 public class FruitWars
 {

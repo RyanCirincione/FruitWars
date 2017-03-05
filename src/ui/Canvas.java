@@ -1,4 +1,4 @@
-package graphics;
+package ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -26,6 +26,7 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 
 	private ArrayList<Entity> entities;
 	private ArrayList<Unit> selectedUnits;
+	private ArrayList<UIComponent> gui;
 	private Point2D selectionCorner;
 	private Point mousePosition;
 	private boolean selecting;
@@ -38,6 +39,11 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		prevClock = System.currentTimeMillis();
 		entities = new ArrayList<>();
 		selectedUnits = new ArrayList<>();
+		
+		//gui set up
+		gui = new ArrayList<>();
+		gui.add(new UnitSelectionBar(selectedUnits));
+		
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		for (int i = 0; i < 15; i++)
@@ -57,6 +63,8 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		Graphics2D g2 = (Graphics2D) g;
 		for (Entity e : entities)
 			e.draw(g2, millis);
+		for (UIComponent u : gui)
+			u.draw(g2, millis);
 		Point2D mousePos = getMousePosition();
 		if (selecting && !mousePos.equals(selectionCorner))
 		{
@@ -95,10 +103,23 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 	@Override
 	public void mousePressed(MouseEvent e)
 	{
-		if (SwingUtilities.isLeftMouseButton(e))
+		boolean handled = false;
+		for(UIComponent u : gui)
 		{
-			selecting = true;
-			selectionCorner.setLocation(getMousePosition());
+			if(u.getBounds().contains(getMousePosition()))
+			{
+				handled = u.handlePressed(e);
+				if(handled)
+					break;
+			}
+		}
+		if(!handled)
+		{
+			if (SwingUtilities.isLeftMouseButton(e))
+			{
+				selecting = true;
+				selectionCorner.setLocation(getMousePosition());
+			}
 		}
 	}
 
@@ -119,21 +140,34 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 	@Override
 	public void mouseReleased(MouseEvent e)
 	{
-		if (SwingUtilities.isLeftMouseButton(e))
+		boolean handled = false;
+		for(UIComponent u : gui)
 		{
-			Rectangle2D selectionRect = getSelectionRect();
-			clearSelected();
-			entities.stream().filter(ent -> ent instanceof Unit).map(ent -> (Unit) ent)
-					.filter(unit -> selectionRect.contains(unit.location)).forEach(unit -> {
-						unit.setSelected(true);
-						selectedUnits.add(unit);
-					});
-			selecting = false;
-		} else
+			if(u.getBounds().contains(getMousePosition()))
+			{
+				handled = u.handleReleased(e);
+				if(handled)
+					break;
+			}
+		}
+		if(!handled)
 		{
-			Point2D destination = new Point2D.Double(e.getX(), e.getY());
-			selectedUnits.forEach(unit -> unit.setDestination(destination));
-			selecting = false;
+			if (SwingUtilities.isLeftMouseButton(e))
+			{
+				Rectangle2D selectionRect = getSelectionRect();
+				clearSelected();
+				entities.stream().filter(ent -> ent instanceof Unit).map(ent -> (Unit) ent)
+						.filter(unit -> selectionRect.contains(unit.location)).forEach(unit -> {
+							unit.setSelected(true);
+							selectedUnits.add(unit);
+						});
+				selecting = false;
+			} else
+			{
+				Point2D destination = new Point2D.Double(e.getX(), e.getY());
+				selectedUnits.forEach(unit -> unit.setDestination(destination));
+				selecting = false;
+			}
 		}
 	}
 
