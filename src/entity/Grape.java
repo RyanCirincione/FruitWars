@@ -17,9 +17,9 @@ public class Grape extends Unit
 	public static ArrayList<String> grapeLastNames = loadGrapeVarieties();
 	private String name;
 	
-	public Grape(Point2D location)
+	public Grape(Point2D location, Point2D rallyPoint)
 	{
-		super(loadSprite(), location, RADIUS, 1, MAX_HEALTH);
+		super(loadSprite(), location, rallyPoint, RADIUS, 1, MAX_HEALTH);
 		mass = 0.1f;
 		name = "Pvt. " + getName() + " " + grapeLastNames.get((int)(Math.random() * grapeLastNames.size()));
 	}

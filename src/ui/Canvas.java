@@ -46,8 +46,8 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
-		for (int i = 0; i < 15; i++)
-			entities.add(new Grape(new Point2D.Double(200 + i, 200 + i)));
+		for (int i = 0; i < 10; i++)
+			entities.add(new Grape(new Point2D.Double(100 + (i * 40), 100 + (i * 40)), new Point2D.Double(100 + (i * 40), 100 + (i * 40))));
 
 		setFocusable(true);
 		addMouseListener(this);
