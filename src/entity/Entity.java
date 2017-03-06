@@ -5,7 +5,7 @@ import java.awt.geom.Point2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public class Entity
+public abstract class Entity
 {
 	private Image[][] sprite; // a 2d array of [animation][frame]
 	public Point2D location;
@@ -22,10 +22,7 @@ public class Entity
 		this.radius = radius;
 	}
 
-	public void tick(long millis)
-	{
-
-	}
+	public abstract void tick(long millis);
 
 	public void draw(GraphicsContext g2, long millis)
 	{
