@@ -6,6 +6,7 @@ import java.util.ArrayList;
 
 import entity.Entity;
 import entity.Grape;
+import entity.GrapeVine;
 import entity.Unit;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -38,11 +39,6 @@ public class Game extends Scene
 
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
-		for (int i = 0; i < 15; i++)
-		{
-			Point2D.Double position = new Point2D.Double(200 + i,  200 + i);
-			entities.add(new Grape(position, position, true));
-		}
 		mousePosition = new Point2D.Double();
 		
 		gui = new ArrayList<>();
@@ -53,6 +49,13 @@ public class Game extends Scene
 		addEventHandler(MouseEvent.MOUSE_RELEASED, this::mouseReleased);
 		addEventHandler(KeyEvent.KEY_PRESSED, this::keyPressed);
 		addEventHandler(KeyEvent.KEY_RELEASED, this::keyReleased);
+		
+		entities.add(new GrapeVine(new Point2D.Double(100, 100), new Point2D.Double(350, 300), 48, true, 150));
+		entities.add(new GrapeVine(new Point2D.Double(100, 300), new Point2D.Double(350, 300), 48, true, 150));
+		entities.add(new GrapeVine(new Point2D.Double(100, 500), new Point2D.Double(350, 300), 48, true, 150));
+		entities.add(new GrapeVine(new Point2D.Double(600, 100), new Point2D.Double(350, 300), 48, false, 150));
+		entities.add(new GrapeVine(new Point2D.Double(600, 300), new Point2D.Double(350, 300), 48, false, 150));
+		entities.add(new GrapeVine(new Point2D.Double(600, 500), new Point2D.Double(350, 300), 48, false, 150));
 	}
 
 	public void tick(long milli)

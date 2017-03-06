@@ -15,7 +15,7 @@ public abstract class Entity
 	private int animation, frame;
 	public boolean noclip;
 	public float mass;
-	private boolean friendly;
+	protected boolean friendly;
 
 	public Entity(Image[][] sprite, Point2D location, double radius, boolean friendly, double health)
 	{
