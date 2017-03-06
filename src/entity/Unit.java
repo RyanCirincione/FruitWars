@@ -71,9 +71,8 @@ public abstract class Unit extends Entity
 	{
 		System.out.println("Loading First Names...");
 		ArrayList<String> names = new ArrayList<>();
-		try
+		try(Scanner fileScan = new Scanner(new File("assets/firstNames.txt")))
 		{
-			Scanner fileScan = new Scanner(new File("assets/firstNames.txt"));
 			while(fileScan.hasNextLine())
 				names.add(fileScan.nextLine());
 		} catch (FileNotFoundException e)

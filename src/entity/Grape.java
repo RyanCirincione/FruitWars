@@ -74,9 +74,8 @@ public class Grape extends Unit
 	{
 		System.out.println("Loading types of grapes...");
 		ArrayList<String> grapes = new ArrayList<>();
-		try
+		try(Scanner fileScan = new Scanner(new File("assets/grapeNames.txt")))
 		{
-			Scanner fileScan = new Scanner(new File("assets/grapeNames.txt"));
 			while(fileScan.hasNextLine())
 				grapes.add(fileScan.nextLine());
 		} catch (FileNotFoundException e)
