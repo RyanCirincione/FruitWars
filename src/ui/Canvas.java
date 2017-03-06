@@ -47,7 +47,7 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		for (int i = 0; i < 10; i++)
-			entities.add(new Grape(new Point2D.Double(100 + (i * 40), 100 + (i * 40)), new Point2D.Double(100 + (i * 40), 100 + (i * 40))));
+			entities.add(new Grape(new Point2D.Double(100 + (i * 40), 100 + (i * 40)), new Point2D.Double(100 + (i * 40), 100 + (i * 40)), i%2 == 0));
 
 		setFocusable(true);
 		addMouseListener(this);
@@ -171,7 +171,7 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 				if(!controlHeld)
 					clearSelected();
 				entities.stream().filter(ent -> ent instanceof Unit).map(ent -> (Unit) ent)
-						.filter(unit -> selectionRect.contains(unit.location)).forEach(unit -> {
+						.filter(unit -> selectionRect.contains(unit.location)).filter(ent -> ent.isFriendly()).forEach(unit -> {
 							unit.setSelected(true);
 							selectedUnits.add(unit);
 						});

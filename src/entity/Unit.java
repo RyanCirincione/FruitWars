@@ -17,9 +17,9 @@ public abstract class Unit extends Entity
 	private Point2D destination;
 	private static ArrayList<String> names = loadNames();
 	
-	public Unit(Image[][] sprite, Point2D location, Point2D rallyPoint, double radius, double speed, double health)
+	public Unit(Image[][] sprite, Point2D location, Point2D rallyPoint, double radius, double speed, double health, boolean friendly)
 	{
-		super(sprite, location, radius);
+		super(sprite, location, radius, friendly);
 		destination = rallyPoint;
 		this.speed = speed;
 		this.health = health;

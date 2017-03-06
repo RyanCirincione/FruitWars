@@ -14,8 +14,9 @@ public class Entity
 	private int animation, frame;
 	public boolean noclip;
 	public float mass;
+	private boolean friendly;
 
-	public Entity(Image[][] sprite, Point2D location, double radius)
+	public Entity(Image[][] sprite, Point2D location, double radius, boolean friendly)
 	{
 		this.sprite = sprite;
 		whitedOut = new Image[sprite.length][];
@@ -30,6 +31,7 @@ public class Entity
 		this.location = location;
 		noclip = false;
 		this.radius = radius;
+		this.friendly = friendly;
 	}
 
 	public void tick(long millis)
@@ -46,7 +48,12 @@ public class Entity
 		g2.drawImage(tex, (int) (location.getX() - tex.getWidth(null) / 2),
 				(int) (location.getY() - tex.getHeight(null) / 2), null);
 	}
-
+	
+	public boolean isFriendly()
+	{
+		return friendly;
+	}
+	
 	public Image getWhiteImage()
 	{
 		return whitedOut[animation][frame];

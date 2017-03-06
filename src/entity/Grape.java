@@ -17,9 +17,9 @@ public class Grape extends Unit
 	public static ArrayList<String> grapeLastNames = loadGrapeVarieties();
 	private String name;
 	
-	public Grape(Point2D location, Point2D rallyPoint)
+	public Grape(Point2D location, Point2D rallyPoint, boolean friendly)
 	{
-		super(loadSprite(), location, rallyPoint, RADIUS, 1, MAX_HEALTH);
+		super(loadSprite(), location, rallyPoint, RADIUS, 1, MAX_HEALTH, friendly);
 		mass = 0.1f;
 		name = "Pvt. " + getName() + " " + grapeLastNames.get((int)(Math.random() * grapeLastNames.size()));
 	}
@@ -30,6 +30,7 @@ public class Grape extends Unit
 		Image[][] sprite = new Image[1][1];
 		try
 		{
+			System.out.println("Loading Grape Sprite");
 			sprite[0][0] = ImageIO.read(new File("assets/tempGrape.png"));
 		} catch (IOException e)
 		{
