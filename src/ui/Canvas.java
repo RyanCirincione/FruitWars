@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -24,7 +25,7 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 {
 	private static final long serialVersionUID = 1L;
 
-	private ArrayList<Entity> entities;
+	public ArrayList<Entity> entities;
 	private ArrayList<Unit> selectedUnits;
 	private ArrayList<UIComponent> gui;
 	private Point2D selectionCorner;
@@ -80,10 +81,16 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 
 	public void tick()
 	{
-		millis = prevClock - System.currentTimeMillis(); // calculate delta time
+		millis = System.currentTimeMillis() - prevClock; // calculate delta time
 		for(int i = 0; i < entities.size(); i++)
 		{
-			entities.get(i).tick(millis);
+			entities.get(i).tick(millis, entities);
+			if(entities.get(i).getHealth() <= 0)
+			{
+				selectedUnits.remove(entities.get(i));
+				entities.remove(i);
+				i = Math.max(i - 1, 0);
+			}
 			for(int j = i; j < entities.size(); j++)
 				entities.get(i).separate(entities.get(j));
 		}
@@ -171,9 +178,22 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 				selecting = false;
 			} else
 			{
-				Point2D destination = new Point2D.Double(e.getX(), e.getY());
-				selectedUnits.forEach(unit -> unit.setDestination(destination));
-				selecting = false;
+				for(Entity ent : entities)
+				{
+					if(!ent.isFriendly() && ent.location.distanceSq(getMousePosition()) < ent.radius * ent.radius)
+					{
+						for(Unit u : selectedUnits)
+							u.attack(ent);
+						handled = true;
+						break;
+					}
+				}
+				if(!handled)
+				{
+					Point2D destination = new Point2D.Double(e.getX(), e.getY());
+					selectedUnits.forEach(unit -> unit.setDestination(destination));
+					selecting = false;
+				}
 			}
 		}
 	}

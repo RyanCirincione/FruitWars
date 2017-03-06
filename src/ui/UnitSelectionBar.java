@@ -79,6 +79,7 @@ public class UnitSelectionBar extends UIComponent
 				selectedUnits.forEach(unit -> unit.setSelected(false));
 				selectedUnits.clear();
 				selectedUnits.add(newSelected);
+				newSelected.setSelected(true);
 			}
 			handlingClickDown = true;
 			return true;

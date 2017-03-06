@@ -13,13 +13,12 @@ public abstract class Unit extends Entity
 {
 	private boolean selected;
 	private double speed;
-	protected double health;
 	private Point2D destination;
 	private static ArrayList<String> names = loadNames();
 	
 	public Unit(Image[][] sprite, Point2D location, Point2D rallyPoint, double radius, double speed, double health, boolean friendly)
 	{
-		super(sprite, location, radius, friendly);
+		super(sprite, location, radius, friendly, health);
 		destination = rallyPoint;
 		this.speed = speed;
 		this.health = health;
@@ -37,16 +36,17 @@ public abstract class Unit extends Entity
 			{
 				double x = (destination.getX() - location.getX()) / distance * speed;
 				double y = (destination.getY() - location.getY()) / distance * speed;
-				x *= -1 * 60.0 * millis / 1000.0;
-				y *= -1 * 60.0 * millis / 1000.0;
+				x *= 60.0 * millis / 1000.0;
+				y *= 60.0 * millis / 1000.0;
 				location.setLocation(location.getX() + x, location.getY() + y);
 			}
 		}
 	}
 
-	public void tick(long millis)
+	public void tick(long millis, ArrayList<Entity> entities)
 	{
 		moveToward(millis);
+		super.tick(millis, entities);
 	}
 
 	public void draw(Graphics2D g2, long millis)
@@ -93,19 +93,11 @@ public abstract class Unit extends Entity
 	{
 		this.destination = destination;
 	}
-	
-	public double getHealth()
-	{
-		return health;
-	}
-	
-	public void setHealth(double health)
-	{
-		this.health = health;
-	}
 
 	public void setSelected(boolean select)
 	{
 		selected = select;
 	}
+	
+	public abstract void attack(Entity enemy);
 }
