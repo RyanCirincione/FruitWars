@@ -33,7 +33,7 @@ public class FruitWars extends Application
 			long previousMilli = 0;
 			public void handle(long currentNano)
 			{
-				long currentMilli = currentNano * 1000000;
+				long currentMilli = currentNano / 1000000;
 				long delta = currentMilli - previousMilli;
 				if(previousMilli != 0)
 					game.tick(delta);
