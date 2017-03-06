@@ -95,16 +95,6 @@ public abstract class Unit extends Entity
 		this.destination = destination;
 	}
 
-	public double getHealth()
-	{
-		return health;
-	}
-
-	public void setHealth(double health)
-	{
-		this.health = health;
-	}
-
 	public void setSelected(boolean select)
 	{
 		selected = select;
