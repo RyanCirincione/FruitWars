@@ -19,6 +19,7 @@ import javax.swing.SwingUtilities;
 
 import entity.Entity;
 import entity.Grape;
+import entity.GrapeVine;
 import entity.Unit;
 
 public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
@@ -47,9 +48,16 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
-		for (int i = 0; i < 10; i++)
-			entities.add(new Grape(new Point2D.Double(100 + (i * 40), 100 + (i * 40)), new Point2D.Double(100 + (i * 40), 100 + (i * 40)), i%2 == 0));
+//		for (int i = 0; i < 10; i++)
+//			entities.add(new Grape(new Point2D.Double(100 + (i * 40), 100 + (i * 40)), new Point2D.Double(100 + (i * 40), 100 + (i * 40)), i%2 == 0));
 
+		entities.add(new GrapeVine(new Point2D.Double(100, 100), new Point2D.Double(350, 300), 48, true, 150));
+		entities.add(new GrapeVine(new Point2D.Double(100, 300), new Point2D.Double(350, 300), 48, true, 150));
+		entities.add(new GrapeVine(new Point2D.Double(100, 500), new Point2D.Double(350, 300), 48, true, 150));
+		entities.add(new GrapeVine(new Point2D.Double(600, 100), new Point2D.Double(350, 300), 48, false, 150));
+		entities.add(new GrapeVine(new Point2D.Double(600, 300), new Point2D.Double(350, 300), 48, false, 150));
+		entities.add(new GrapeVine(new Point2D.Double(600, 500), new Point2D.Double(350, 300), 48, false, 150));
+		
 		setFocusable(true);
 		addMouseListener(this);
 		addKeyListener(this);
