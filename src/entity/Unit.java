@@ -17,7 +17,7 @@ public abstract class Unit extends Entity
 	protected double health;
 	private Point2D destination;
 	private static ArrayList<String> names = loadNames();
-	
+
 	public Unit(Image[][] sprite, Point2D location, double radius, double speed, double health)
 	{
 		super(sprite, location, radius);
@@ -45,6 +45,7 @@ public abstract class Unit extends Entity
 		}
 	}
 
+	@Override
 	public void tick(long millis)
 	{
 		moveToward(millis);
@@ -59,7 +60,8 @@ public abstract class Unit extends Entity
 		super.draw(g2, millis);
 		g2.setStroke(Color.CYAN);
 		if (selected)
-			g2.strokeOval((int)(location.getX() - radius), (int)(location.getY() - radius), 2 * (int)radius, 2 * (int)radius);
+			g2.strokeOval((int) (location.getX() - radius), (int) (location.getY() - radius), 2 * (int) radius,
+					2 * (int) radius);
 		g2.stroke();
 	}
 
@@ -73,7 +75,7 @@ public abstract class Unit extends Entity
 		try
 		{
 			Scanner fileScan = new Scanner(new File("assets/firstNames.txt"));
-			while(fileScan.hasNextLine())
+			while (fileScan.hasNextLine())
 				names.add(fileScan.nextLine());
 			fileScan.close();
 		} catch (FileNotFoundException e)
@@ -83,22 +85,22 @@ public abstract class Unit extends Entity
 		}
 		return names;
 	}
-	
+
 	public String getName()
 	{
-		return names.get((int)(Math.random() * names.size()));
+		return names.get((int) (Math.random() * names.size()));
 	}
-	
+
 	public void setDestination(Point2D destination)
 	{
 		this.destination = destination;
 	}
-	
+
 	public double getHealth()
 	{
 		return health;
 	}
-	
+
 	public void setHealth(double health)
 	{
 		this.health = health;
