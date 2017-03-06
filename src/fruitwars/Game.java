@@ -12,6 +12,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import ui.UIComponent;
@@ -127,7 +128,7 @@ public class Game extends Scene
 		}
 		if (!handled)
 		{
-			if (e.isPrimaryButtonDown())
+			if (e.getButton() == MouseButton.PRIMARY)
 			{
 				selecting = true;
 				selectionCorner.setLocation(mousePosition);
@@ -149,7 +150,7 @@ public class Game extends Scene
 		}
 		if (!handled)
 		{
-			if (e.isPrimaryButtonDown())
+			if (e.getButton() == MouseButton.PRIMARY)
 			{
 				Rectangle2D selectionRect = getSelectionRect();
 				if (!controlHeld)
