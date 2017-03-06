@@ -202,7 +202,6 @@ Cornifesto
 Corot noir
 Cortese
 Corvina Veronese
-Cosmo 2
 Cot
 Cottage
 Couceira
@@ -249,7 +248,6 @@ DOVine
 Dr. Collier
 Dracut Amber
 Dunkelfelder
-Dunstan #2
 Durif
 Dutchess
 Dzelshavi
@@ -325,7 +323,6 @@ Gamay
 Gamay Beaujolais
 Gamay Grand
 Gamay noir
-Ganzin 1
 Gara ArnaGirna
 Garanoir
 Garganega
@@ -542,7 +539,6 @@ Mericadel
 Merlot
 Meshei
 Meunier
-Meynieu 6
 Midget Thompson Seedless
 Midsouth
 Minotaur
@@ -552,7 +548,7 @@ MissBlue
 Mission
 Molinara
 Monastrell
-Mondeuse (noire)
+Mondeuse noire
 Montepulciano
 Monukka
 Moore Early
@@ -626,11 +622,9 @@ Olita
 Olivette blanche
 Olivette noire
 Ontario
-Oppenheim #4
 Orange Muscat
 Oraniensteiner
-Orion (Germany)
-Orion (Turkmenistan)
+Orion 
 Orlando Seedless
 Ortega
 Osceola
@@ -732,8 +726,6 @@ Rougeon
 Rougett
 Roussanne
 Royalty
-RS3
-RS9
 Rubin Tairovskii
 Rubired
 Ruby Cabernet
@@ -791,7 +783,6 @@ Siegerrebe
 Sipaska
 Skrlet
 Slankamenka
-SO4
 Somerset Seedless
 Sonona
 Soreli

@@ -11,24 +11,29 @@ import javafx.scene.image.Image;
 
 public class Grape extends Unit
 {
-	private static final double RADIUS = 16;
+	private static final double RADIUS = 16, RANGE = 5;
+	private static final long COOLDOWN = 1000;
+	private long coolDown;
 	public final static double MAX_HEALTH = 50;
 	public static ArrayList<String> grapeLastNames = loadGrapeVarieties();
 	private String name;
-	
-	public Grape(Point2D location)
+	private static Image[][] sprite;
+	private double damage = 5.0;
+
+	public Grape(Point2D location, Point2D rallyPoint, boolean friendly)
 	{
-		super(loadSprite(), location, RADIUS, 1, MAX_HEALTH);
+		super(loadSprite(), location, rallyPoint, RADIUS, 1, MAX_HEALTH, friendly);
 		mass = 0.1f;
-		name = "Pvt. " + getName() + " " + grapeLastNames.get((int)(Math.random() * grapeLastNames.size()));
+		name = "Pvt. " + getName() + " " + grapeLastNames.get((int) (Math.random() * grapeLastNames.size()));
+		coolDown = 0;
 	}
 
 	private static Image[][] loadSprite()
 	{
 		// temp
-		Image[][] sprite = new Image[1][1];
 		try
 		{
+			sprite = new Image[1][1];
 			sprite[0][0] = new Image(new FileInputStream("assets/tempGrape.png"));
 		} catch (FileNotFoundException e)
 		{
@@ -36,7 +41,26 @@ public class Grape extends Unit
 		}
 		return sprite;
 	}
-	
+
+	@Override
+	public void tick(long millis, ArrayList<Entity> entities)
+	{
+		coolDown -= millis;
+		if (coolDown <= 0)
+		{
+			for (Entity e : entities)
+			{
+				double radiusSum = radius + RANGE + e.radius;
+				if (!(e.isFriendly() == isFriendly()) && location.distanceSq(e.location) <= radiusSum * radiusSum)
+				{
+					attack(e);
+					coolDown = COOLDOWN;
+				}
+			}
+		}
+		super.tick(millis, entities);
+	}
+
 	/**
 	 * Source: National Grape Registry
 	 */
@@ -44,10 +68,9 @@ public class Grape extends Unit
 	{
 		System.out.println("Loading types of grapes...");
 		ArrayList<String> grapes = new ArrayList<>();
-		try
+		try (Scanner fileScan = new Scanner(new File("assets/grapeNames.txt")))
 		{
-			Scanner fileScan = new Scanner(new File("assets/grapeNames.txt"));
-			while(fileScan.hasNextLine())
+			while (fileScan.hasNextLine())
 				grapes.add(fileScan.nextLine());
 			fileScan.close();
 		} catch (FileNotFoundException e)
@@ -57,12 +80,27 @@ public class Grape extends Unit
 		}
 		return grapes;
 	}
-	
+
 	public String toString()
 	{
 		String status = name + " (GRAPE)";
-		while(status.length() < 50)
+		while (status.length() < 50)
 			status = status + ".";
 		return status + "HP: " + health + "/" + MAX_HEALTH;
+	}
+
+	@Override
+	public void attack(Entity enemy)
+	{
+		if (!(enemy.isFriendly() == isFriendly()))
+		{
+			// if within range
+			double radiusSum = radius + RANGE + enemy.radius;
+			if (location.distanceSq(enemy.location) <= radiusSum * radiusSum)
+			{
+				enemy.setHealth(enemy.getHealth() - damage);
+			} else
+				super.setDestination(enemy.location);
+		}
 	}
 }

@@ -14,14 +14,14 @@ public abstract class Unit extends Entity
 {
 	private boolean selected;
 	private double speed;
-	protected double health;
 	private Point2D destination;
 	private static ArrayList<String> names = loadNames();
 
-	public Unit(Image[][] sprite, Point2D location, double radius, double speed, double health)
+	public Unit(Image[][] sprite, Point2D location, Point2D rallyPoint, double radius, double speed, double health,
+			boolean friendly)
 	{
-		super(sprite, location, radius);
-		destination = location;
+		super(sprite, location, radius, friendly, health);
+		destination = rallyPoint;
 		this.speed = speed;
 		this.health = health;
 	}
@@ -38,17 +38,17 @@ public abstract class Unit extends Entity
 			{
 				double x = (destination.getX() - location.getX()) / distance * speed;
 				double y = (destination.getY() - location.getY()) / distance * speed;
-				x *= -1 * 60.0 * millis / 1000.0;
-				y *= -1 * 60.0 * millis / 1000.0;
+				x *= 60.0 * millis / 1000.0;
+				y *= 60.0 * millis / 1000.0;
 				location.setLocation(location.getX() + x, location.getY() + y);
 			}
 		}
 	}
 
-	@Override
-	public void tick(long millis)
+	public void tick(long millis, ArrayList<Entity> entities)
 	{
 		moveToward(millis);
+		super.tick(millis, entities);
 	}
 
 	public void draw(GraphicsContext g2, long millis)
@@ -72,9 +72,8 @@ public abstract class Unit extends Entity
 	{
 		System.out.println("Loading First Names...");
 		ArrayList<String> names = new ArrayList<>();
-		try
+		try (Scanner fileScan = new Scanner(new File("assets/firstNames.txt")))
 		{
-			Scanner fileScan = new Scanner(new File("assets/firstNames.txt"));
 			while (fileScan.hasNextLine())
 				names.add(fileScan.nextLine());
 			fileScan.close();
@@ -110,4 +109,6 @@ public abstract class Unit extends Entity
 	{
 		selected = select;
 	}
+
+	public abstract void attack(Entity enemy);
 }

@@ -1,24 +1,12 @@
 Cauliflower
-Broccolli
+Broccoli
 
-Brussel sprouts
-spinach
-chives
+radishes   beet   turnip
 
-Beet
-turnip
+leek   chives   celery
 
-yam
-potato
-carrot
+garlic   onion   ginger
 
-ginger
-onion
-garlic
+potato   yam   carrot
 
-kale
-lettuce
-cabbage
-
-leek
-Celery
+kale   cabbage   lettuce

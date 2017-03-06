@@ -39,7 +39,10 @@ public class Game extends Scene
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		for (int i = 0; i < 15; i++)
-			entities.add(new Grape(new Point2D.Double(200 + i, 200 + i)));
+		{
+			Point2D.Double position = new Point2D.Double(200 + i,  200 + i);
+			entities.add(new Grape(position, position, true));
+		}
 		mousePosition = new Point2D.Double();
 		
 		gui = new ArrayList<>();
@@ -56,7 +59,7 @@ public class Game extends Scene
 	{
 		for (int i = 0; i < entities.size(); i++)
 		{
-			entities.get(i).tick(milli);
+			entities.get(i).tick(milli, entities);
 			for (int j = i; j < entities.size(); j++)
 				entities.get(i).separate(entities.get(j));
 		}
@@ -68,7 +71,7 @@ public class Game extends Scene
 		for (Entity e : entities)
 			e.draw(g, milli);
 		for (UIComponent u : gui)
-			u.draw(g, milli);
+			u.draw(g, milli, mousePosition);
 		if (selecting && !mousePosition.equals(selectionCorner))
 		{
 			g.setStroke(Color.BLUE);
