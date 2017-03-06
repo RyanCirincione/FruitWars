@@ -16,6 +16,7 @@ public class Grape extends Unit
 	public final static double MAX_HEALTH = 50;
 	public static ArrayList<String> grapeLastNames = loadGrapeVarieties();
 	private String name;
+	private static Image[][] sprite;
 	
 	public Grape(Point2D location, Point2D rallyPoint, boolean friendly)
 	{
@@ -27,15 +28,18 @@ public class Grape extends Unit
 	private static Image[][] loadSprite()
 	{
 		// temp
-		Image[][] sprite = new Image[1][1];
-		try
+		if(sprite == null)
 		{
-			System.out.println("Loading Grape Sprite");
-			sprite[0][0] = ImageIO.read(new File("assets/tempGrape.png"));
-		} catch (IOException e)
-		{
-			System.err.println("Could not find grape sprite asset cause fuck you");
-			e.printStackTrace();
+			sprite = new Image[1][1];
+			try
+			{
+				System.out.println("Loading Grape Sprite...");
+				sprite[0][0] = ImageIO.read(new File("assets/tempGrape.png"));
+			} catch (IOException e)
+			{
+				System.err.println("Could not find grape sprite asset");
+				e.printStackTrace();
+			}
 		}
 		return sprite;
 	}
