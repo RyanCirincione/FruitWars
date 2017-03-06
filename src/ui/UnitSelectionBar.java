@@ -13,12 +13,13 @@ public class UnitSelectionBar extends UIComponent
 {
 	private ArrayList<Unit> selectedUnits = new ArrayList<Unit>();
 	private static final Color FILL_GREEN= new Color(102, 255, 102);
+	private boolean handlingClickDown;
 	
 	public UnitSelectionBar(ArrayList<Unit> selectedUnits)
 	{
 		super(new Rectangle(200, 475, 600, 125));
 		this.selectedUnits = selectedUnits;
-
+		handlingClickDown = false;
 	}
 
 	@Override
@@ -68,7 +69,7 @@ public class UnitSelectionBar extends UIComponent
 	@Override
 	public boolean handlePressed(MouseEvent e)
 	{
-		if(selectedUnits.size() > 0)
+		if(selectedUnits.size() > 0 && e.getButton() == MouseEvent.BUTTON1)
 		{
 			//selects unit
 			int selectedIndex = mousePosToIndex(e.getX(), e.getY());
@@ -79,6 +80,7 @@ public class UnitSelectionBar extends UIComponent
 				selectedUnits.clear();
 				selectedUnits.add(newSelected);
 			}
+			handlingClickDown = true;
 			return true;
 		}
 		return false;
@@ -87,8 +89,11 @@ public class UnitSelectionBar extends UIComponent
 	@Override
 	public boolean handleReleased(MouseEvent e)
 	{
-		if(selectedUnits.size() > 0)
+		if(selectedUnits.size() > 0 && handlingClickDown)
+		{
+			handlingClickDown = false;
 			return true;
+		}
 		return false;
 		
 	}

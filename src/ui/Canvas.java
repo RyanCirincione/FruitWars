@@ -29,7 +29,7 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 	private ArrayList<UIComponent> gui;
 	private Point2D selectionCorner;
 	private Point mousePosition;
-	private boolean selecting, controlHeld;
+	private boolean selecting;
 	private long prevClock, millis;
 	private Color selectionBlue = new Color(102, 153, 255, 64);
 
@@ -103,10 +103,7 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 	@Override
 	public void keyPressed(KeyEvent e)
 	{
-		if (e.getKeyCode() == KeyEvent.VK_CONTROL)
-		{
-			controlHeld = true; //Adding additional units
-		}
+		
 	}
 
 	@Override
@@ -144,10 +141,6 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 			selectedUnits.forEach(unit -> unit.setDestination(unit.location)); // Stop
 																			   // moving
 		}
-		if (e.getKeyCode() == KeyEvent.VK_CONTROL)
-		{
-			controlHeld = false; //No longer adding additional units
-		}
 	}
 
 	@Override
@@ -168,7 +161,7 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 			if (SwingUtilities.isLeftMouseButton(e))
 			{
 				Rectangle2D selectionRect = getSelectionRect();
-				if(!controlHeld)
+				if(!e.isControlDown())
 					clearSelected();
 				entities.stream().filter(ent -> ent instanceof Unit).map(ent -> (Unit) ent)
 						.filter(unit -> selectionRect.contains(unit.location)).filter(ent -> ent.isFriendly()).forEach(unit -> {
