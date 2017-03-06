@@ -1,4 +1,4 @@
-package graphics;
+package ui;
 
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,6 +9,7 @@ import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseEvent;
+import java.awt.geom.Ellipse2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
@@ -24,8 +25,9 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 {
 	private static final long serialVersionUID = 1L;
 
-	private ArrayList<Entity> entities;
+	public ArrayList<Entity> entities;
 	private ArrayList<Unit> selectedUnits;
+	private ArrayList<UIComponent> gui;
 	private Point2D selectionCorner;
 	private Point mousePosition;
 	private boolean selecting;
@@ -38,10 +40,15 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		prevClock = System.currentTimeMillis();
 		entities = new ArrayList<>();
 		selectedUnits = new ArrayList<>();
+		
+		//gui set up
+		gui = new ArrayList<>();
+		gui.add(new UnitSelectionBar(selectedUnits));
+		
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
-		for (int i = 0; i < 15; i++)
-			entities.add(new Grape(new Point2D.Double(200 + i, 200 + i)));
+		for (int i = 0; i < 10; i++)
+			entities.add(new Grape(new Point2D.Double(100 + (i * 40), 100 + (i * 40)), new Point2D.Double(100 + (i * 40), 100 + (i * 40)), i%2 == 0));
 
 		setFocusable(true);
 		addMouseListener(this);
@@ -57,6 +64,8 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 		Graphics2D g2 = (Graphics2D) g;
 		for (Entity e : entities)
 			e.draw(g2, millis);
+		for (UIComponent u : gui)
+			u.draw(g2, getMousePosition(), millis);
 		Point2D mousePos = getMousePosition();
 		if (selecting && !mousePos.equals(selectionCorner))
 		{
@@ -72,12 +81,18 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 
 	public void tick()
 	{
-		millis = prevClock - System.currentTimeMillis(); // calculate delta time
-		for (Entity e : entities)
+		millis = System.currentTimeMillis() - prevClock; // calculate delta time
+		for(int i = 0; i < entities.size(); i++)
 		{
-			e.tick(millis);
-			for (Entity other : entities)
-				e.separate(other);
+			entities.get(i).tick(millis, entities);
+			if(entities.get(i).getHealth() <= 0)
+			{
+				selectedUnits.remove(entities.get(i));
+				entities.remove(i);
+				i = Math.max(i - 1, 0);
+			}
+			for(int j = i; j < entities.size(); j++)
+				entities.get(i).separate(entities.get(j));
 		}
 		prevClock = System.currentTimeMillis();
 	}
@@ -91,14 +106,33 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 				MouseInfo.getPointerInfo().getLocation().y - getLocationOnScreen().y);
 		return mousePosition;
 	}
+	
+	@Override
+	public void keyPressed(KeyEvent e)
+	{
+		
+	}
 
 	@Override
 	public void mousePressed(MouseEvent e)
 	{
-		if (SwingUtilities.isLeftMouseButton(e))
+		boolean handled = false;
+		for(UIComponent u : gui)
 		{
-			selecting = true;
-			selectionCorner.setLocation(getMousePosition());
+			if(u.getBounds().contains(getMousePosition()))
+			{
+				handled = u.handlePressed(e);
+				if(handled)
+					break;
+			}
+		}
+		if(!handled)
+		{
+			if (SwingUtilities.isLeftMouseButton(e))
+			{
+				selecting = true;
+				selectionCorner.setLocation(getMousePosition());
+			}
 		}
 	}
 
@@ -107,34 +141,67 @@ public class Canvas extends JPanel implements MouseAdapter, KeyAdapter
 	{
 		if (e.getKeyCode() == KeyEvent.VK_SPACE)
 		{
-			selectedUnits.clear(); // Unselect units
+			clearSelected(); // Unselect units
 		}
 		if (e.getKeyCode() == KeyEvent.VK_C)
 		{
-			selectedUnits.forEach(unit -> unit.setDestination(unit.location)); //Stop moving
+			selectedUnits.forEach(unit -> unit.setDestination(unit.location)); // Stop
+																			   // moving
 		}
 	}
 
 	@Override
 	public void mouseReleased(MouseEvent e)
 	{
-		if (SwingUtilities.isLeftMouseButton(e))
+		boolean handled = false;
+		for(UIComponent u : gui)
 		{
-			Point2D mousePos = getMousePosition();
-			if (!selectionCorner.equals(mousePos))
+			if(u.getBounds().contains(getMousePosition()))
+			{
+				handled = u.handleReleased(e);
+				if(handled)
+					break;
+			}
+		}
+		if(!handled)
+		{
+			if (SwingUtilities.isLeftMouseButton(e))
 			{
 				Rectangle2D selectionRect = getSelectionRect();
-				selectedUnits.clear();
+				if(!e.isControlDown())
+					clearSelected();
 				entities.stream().filter(ent -> ent instanceof Unit).map(ent -> (Unit) ent)
-						.filter(unit -> selectionRect.contains(unit.location)).forEach(selectedUnits::add);
+						.filter(unit -> selectionRect.contains(unit.location)).filter(ent -> ent.isFriendly()).forEach(unit -> {
+							unit.setSelected(true);
+							selectedUnits.add(unit);
+						});
 				selecting = false;
+			} else
+			{
+				for(Entity ent : entities)
+				{
+					if(!ent.isFriendly() && ent.location.distanceSq(getMousePosition()) < ent.radius * ent.radius)
+					{
+						for(Unit u : selectedUnits)
+							u.attack(ent);
+						handled = true;
+						break;
+					}
+				}
+				if(!handled)
+				{
+					Point2D destination = new Point2D.Double(e.getX(), e.getY());
+					selectedUnits.forEach(unit -> unit.setDestination(destination));
+					selecting = false;
+				}
 			}
-		} else
-		{
-			Point2D destination = new Point2D.Double(e.getX(), e.getY());
-			selectedUnits.forEach(unit -> unit.setDestination(destination));
-			selecting = false;
 		}
+	}
+
+	private void clearSelected()
+	{
+		selectedUnits.forEach(unit -> unit.setSelected(false));
+		selectedUnits.clear();
 	}
 
 	private Rectangle2D getSelectionRect()
