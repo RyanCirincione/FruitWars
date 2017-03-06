@@ -1,32 +1,46 @@
 package fruitwars;
 
-import java.util.concurrent.ScheduledThreadPoolExecutor;
-import java.util.concurrent.TimeUnit;
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.stage.Stage;
 
-import javax.swing.JFrame;
-
-import ui.Canvas;
-
-public class FruitWars
+public class FruitWars extends Application
 {
 	final static int WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
 
 	public static void main(String[] args)
 	{
-		JFrame frame = new JFrame("Fruit Wars");
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+		launch(args);
+	}
 
-		Canvas c = new Canvas();
-		frame.add(c);
-		frame.pack();
-
-		frame.setVisible(true);
-		Runnable r = () -> {
-			c.tick();
-			c.repaint();
-		};
-		ScheduledThreadPoolExecutor ex = new ScheduledThreadPoolExecutor(1);
-		ex.scheduleAtFixedRate(r, 0, 1, TimeUnit.MILLISECONDS);
+	@Override
+	public void start(Stage stage) throws Exception
+	{		
+		Canvas canvas = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT);
+		Group root = new Group();
+		
+		root.getChildren().add(canvas);
+		GraphicsContext g = canvas.getGraphicsContext2D();
+		
+		Game game = new Game(root, g);
+		stage.setScene(game);
+		
+		new AnimationTimer()
+		{
+			long previousMilli = 0;
+			public void handle(long currentNano)
+			{
+				long currentMilli = currentNano * 1000000;
+				long delta = currentMilli - previousMilli;
+				if(previousMilli != 0)
+					game.tick(delta);
+				game.draw(delta);
+				previousMilli = currentMilli;
+			}
+		}.start();
+		stage.show();
 	}
 }

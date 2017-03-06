@@ -1,13 +1,14 @@
 package entity;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
+import javafx.scene.paint.Color;
 
 public abstract class Unit extends Entity
 {
@@ -49,19 +50,17 @@ public abstract class Unit extends Entity
 		moveToward(millis);
 	}
 
-	public void draw(Graphics2D g2, long millis)
+	public void draw(GraphicsContext g2, long millis)
 	{
+		g2.setStroke(Color.RED);
 		if (!location.equals(destination))
-		{
-			g2.setColor(Color.RED);
-			g2.drawOval((int) destination.getX(), (int) destination.getY(), 8, 8);
-		}
+			g2.strokeOval((int) destination.getX(), (int) destination.getY(), 8, 8);
+		g2.stroke();
 		super.draw(g2, millis);
+		g2.setStroke(Color.CYAN);
 		if (selected)
-		{
-			g2.setColor(Color.CYAN);
-			g2.drawOval((int)(location.getX() - radius), (int)(location.getY() - radius), 2 * (int)radius, 2 * (int)radius);
-		}
+			g2.strokeOval((int)(location.getX() - radius), (int)(location.getY() - radius), 2 * (int)radius, 2 * (int)radius);
+		g2.stroke();
 	}
 
 	/**
@@ -76,6 +75,7 @@ public abstract class Unit extends Entity
 			Scanner fileScan = new Scanner(new File("assets/firstNames.txt"));
 			while(fileScan.hasNextLine())
 				names.add(fileScan.nextLine());
+			fileScan.close();
 		} catch (FileNotFoundException e)
 		{
 			System.err.println("Could not load a ridiculously long list of first names ¯\\_(ツ)_/¯");

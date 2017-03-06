@@ -1,44 +1,45 @@
 package ui;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.MouseInfo;
 import java.awt.Rectangle;
-import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import entity.Unit;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 
 public class UnitSelectionBar extends UIComponent
 {
 	private ArrayList<Unit> selectedUnits = new ArrayList<Unit>();
-	private static final Color FILL_GREEN= new Color(102, 255, 102);
+	private static final Color FILL_GREEN= Color.color(102.0 / 255, 255.0 / 255, 102 / 255);
 	
 	public UnitSelectionBar(ArrayList<Unit> selectedUnits)
 	{
 		super(new Rectangle(200, 475, 600, 125));
 		this.selectedUnits = selectedUnits;
-
 	}
 
 	@Override
-	public void draw(Graphics2D g2, long millis)
+	public void draw(GraphicsContext g2, long millis)
 	{
 		if(selectedUnits.size() > 0)
 		{
-			g2.setColor(FILL_GREEN);
-			g2.fill(bounds);
-			g2.setColor(Color.GREEN);
-			g2.draw(bounds);
-			g2.setColor(Color.BLACK);
+			g2.setFill(FILL_GREEN);
+			g2.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
+			g2.fill();
+			g2.setStroke(Color.GREEN);
+			g2.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
+			g2.stroke();
+			g2.setStroke(Color.BLACK);
 			//TODO: Add Pages
-			int textHeight = g2.getFont().getSize();
+			double textHeight = g2.getFont().getSize();
 			for(int i = 0; i < selectedUnits.size(); i++)
 			{
 				int yPos = (int)(bounds.y + (bounds.height - (bounds.height * ((i + 1)/(double)selectedUnits.size())))) + 2;
-				g2.drawRect(bounds.x + 6, yPos - 2, bounds.width - 12, (int)(bounds.height * ((i + 1)/(double)selectedUnits.size())));
-				g2.drawString(selectedUnits.get(i).toString(), bounds.x + 8, yPos + textHeight);
+				g2.strokeRect(bounds.x + 6, yPos - 2, bounds.width - 12, (int)(bounds.height * ((i + 1)/(double)selectedUnits.size())));
+				g2.strokeText(selectedUnits.get(i).toString(), bounds.x + 8, yPos + textHeight);
 			}
+			g2.stroke();
 		}
 	}
 

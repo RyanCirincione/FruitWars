@@ -1,14 +1,13 @@
 package entity;
 
-import java.awt.Image;
 import java.awt.geom.Point2D;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javax.imageio.ImageIO;
+import javafx.scene.image.Image;
 
 public class Grape extends Unit
 {
@@ -30,10 +29,9 @@ public class Grape extends Unit
 		Image[][] sprite = new Image[1][1];
 		try
 		{
-			sprite[0][0] = ImageIO.read(new File("assets/tempGrape.png"));
-		} catch (IOException e)
+			sprite[0][0] = new Image(new FileInputStream("assets/tempGrape.png"));
+		} catch (FileNotFoundException e)
 		{
-			System.err.println("Could not find grape sprite asset cause fuck you");
 			e.printStackTrace();
 		}
 		return sprite;
@@ -51,6 +49,7 @@ public class Grape extends Unit
 			Scanner fileScan = new Scanner(new File("assets/grapeNames.txt"));
 			while(fileScan.hasNextLine())
 				grapes.add(fileScan.nextLine());
+			fileScan.close();
 		} catch (FileNotFoundException e)
 		{
 			System.err.println("Could not load a ridiculously long list of grape varieties ¯\\_(ツ)_/¯");
