@@ -63,7 +63,7 @@ public class Game extends Scene
 		{
 			entities.get(i).tick(milli, entities);
 			for (int j = i; j < entities.size(); j++)
-				entities.get(i).separate(entities.get(j));
+				entities.get(i).separate(entities.get(j), milli);
 
 			if (entities.get(i).getHealth() <= 0)
 			{

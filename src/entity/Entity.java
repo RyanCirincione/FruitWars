@@ -9,12 +9,28 @@ import javafx.scene.image.Image;
 public abstract class Entity
 {
 	private Image[][] sprite; // a 2d array of [animation][frame]
+	/**
+	 * The center of the Entity
+	 */
 	public Point2D location;
 	protected double health;
+	/**
+	 * The radius of the Entity's hitbox
+	 */
 	public double radius;
-	private int animation, frame;
+	private int animation, frame; // the indices for the sprite
+	/**
+	 * If the entity should not separate from other entities
+	 */
 	public boolean noclip;
+	/**
+	 * The mass of the entity, used for separation 0 is a bad idea, 1 means it
+	 * has infinite mass
+	 */
 	public float mass;
+	/**
+	 * If it is friendly to the player
+	 */
 	protected boolean friendly;
 
 	public Entity(Image[][] sprite, Point2D location, double radius, boolean friendly, double health)
@@ -61,12 +77,18 @@ public abstract class Entity
 		return sprite[animation][frame];
 	}
 
+	/**
+	 * Randomizes location slightly for the separation algorithm
+	 */
 	private void shake(float otherMass)
 	{
 		location.setLocation(location.getX() + (Math.random() - 0.5), location.getY() + (Math.random() - 0.5));
 	}
 
-	public void separate(Entity other)
+	/**
+	 * Moves entities out of one another
+	 */
+	public void separate(Entity other, long millis)
 	{
 		if (noclip || other.noclip || this == other)
 			return;
@@ -83,13 +105,18 @@ public abstract class Entity
 			double distance = location.distance(other.location);
 			double dx = location.getX() - other.location.getX();
 			double dy = location.getY() - other.location.getY();
-			location.setLocation(location.getX() + (dx * radiusSum / distance - dx) * (1 - mass) * other.mass,
-					location.getY() + (dy * radiusSum / distance - dy) * (1 - mass) * other.mass);
+			double moveX = (dx * radiusSum / distance - dx) * (1 - mass) * other.mass;
+			double moveY = (dy * radiusSum / distance - dy) * (1 - mass) * other.mass;
+			moveX *= 60.0 * millis / 1000.0;
+			moveY *= 60.0 * millis / 1000.0;
+			location.setLocation(location.getX() + moveX, location.getY() + moveY);
 			dx = location.getX() - other.location.getX();
 			dy = location.getY() - other.location.getY();
-			other.location.setLocation(
-					other.location.getX() + (-dx * radiusSum / distance + dx) * mass * (1 - other.mass),
-					other.location.getY() + (-dy * radiusSum / distance + dy) * mass * (1 - other.mass));
+			moveX = (-dx * radiusSum / distance + dx) * mass * (1 - other.mass);
+			moveY = (-dy * radiusSum / distance + dy) * mass * (1 - other.mass);
+			moveX *= 60.0 * millis / 1000.0;
+			moveY *= 60.0 * millis / 1000.0;
+			other.location.setLocation(other.location.getX() + moveX, other.location.getY() + moveY);
 		}
 	}
 }
