@@ -5,7 +5,6 @@ import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
 import entity.Entity;
-import entity.Grape;
 import entity.GrapeVine;
 import entity.Unit;
 import javafx.scene.Group;
@@ -169,7 +168,8 @@ public class Game extends Scene
 				if (!controlHeld)
 					clearSelected();
 				entities.stream().filter(ent -> ent instanceof Unit).map(ent -> (Unit) ent)
-						.filter(unit -> selectionRect.contains(unit.location)).forEach(unit -> {
+						.filter(unit -> unit.isFriendly()).filter(unit -> selectionRect.contains(unit.location))
+						.forEach(unit -> {
 							unit.setSelected(true);
 							selectedUnits.add(unit);
 						});

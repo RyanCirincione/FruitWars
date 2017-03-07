@@ -42,8 +42,8 @@ public class UnitSelectionBar extends UIComponent
 				g2.strokeRect(xPos, yPos, 20, 20);
 				g2.stroke();
 				g2.drawImage(selectedUnits.get(i).getCurrentImage(), xPos + 2, yPos + 2, 16, 16);
-				drawHoverText(g2, mousePos);
 			}
+			drawHoverText(g2, mousePos);
 			g2.stroke();
 		}
 	}
