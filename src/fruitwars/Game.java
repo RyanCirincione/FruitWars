@@ -33,14 +33,14 @@ public class Game extends Scene
 	{
 		super(root);
 		g = ctx;
-		
+
 		entities = new ArrayList<>();
 		selectedUnits = new ArrayList<>();
 
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		mousePosition = new Point2D.Double();
-		
+
 		gui = new ArrayList<>();
 		gui.add(new UnitSelectionBar(selectedUnits));
 
@@ -49,7 +49,7 @@ public class Game extends Scene
 		addEventHandler(MouseEvent.MOUSE_RELEASED, this::mouseReleased);
 		addEventHandler(KeyEvent.KEY_PRESSED, this::keyPressed);
 		addEventHandler(KeyEvent.KEY_RELEASED, this::keyReleased);
-		
+
 		entities.add(new GrapeVine(new Point2D.Double(100, 100), new Point2D.Double(350, 300), 48, true, 150));
 		entities.add(new GrapeVine(new Point2D.Double(100, 300), new Point2D.Double(350, 300), 48, true, 150));
 		entities.add(new GrapeVine(new Point2D.Double(100, 500), new Point2D.Double(350, 300), 48, true, 150));
@@ -65,6 +65,13 @@ public class Game extends Scene
 			entities.get(i).tick(milli, entities);
 			for (int j = i; j < entities.size(); j++)
 				entities.get(i).separate(entities.get(j));
+
+			if (entities.get(i).getHealth() <= 0)
+			{
+				selectedUnits.remove(entities.get(i));
+				entities.remove(i);
+				i = Math.max(i - 1, 0);
+			}
 		}
 	}
 
