@@ -176,9 +176,22 @@ public class Game extends Scene
 				selecting = false;
 			} else
 			{
-				Point2D destination = new Point2D.Double(e.getX(), e.getY());
-				selectedUnits.forEach(unit -> unit.setDestination(destination));
-				selecting = false;
+				for (Entity ent : entities)
+				{
+					if (!ent.isFriendly() && ent.location.distanceSq(mousePosition) < ent.radius * ent.radius)
+					{
+						for (Unit u : selectedUnits)
+							u.attack(ent);
+						handled = true;
+						break;
+					}
+				}
+				if (!handled)
+				{
+					Point2D destination = new Point2D.Double(e.getX(), e.getY());
+					selectedUnits.forEach(unit -> unit.setDestination(destination));
+					selecting = false;
+				}
 			}
 		}
 	}
