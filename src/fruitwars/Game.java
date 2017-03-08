@@ -15,6 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
+import ui.ConstructionBar;
 import ui.UIComponent;
 import ui.UnitSelectionBar;
 
@@ -24,7 +25,8 @@ public class Game extends Scene
 	private ArrayList<Entity> entities;
 	private ArrayList<Unit> selectedUnits;
 	private ArrayList<UIComponent> gui;
-	private boolean selecting, controlHeld;
+	private ConstructionBar cBar;
+	private boolean selecting;
 	private Color selectionBlue = new Color(102.0 / 255, 153.0 / 255, 1, 64 / 255.0);
 	private Point2D selectionCorner, mousePosition;
 
@@ -42,6 +44,8 @@ public class Game extends Scene
 
 		gui = new ArrayList<>();
 		gui.add(new UnitSelectionBar(selectedUnits));
+		cBar = new ConstructionBar(entities);
+		gui.add(cBar);
 
 		addEventHandler(MouseEvent.ANY, this::mouseMove);
 		addEventHandler(MouseEvent.MOUSE_PRESSED, this::mousePressed);
@@ -101,10 +105,7 @@ public class Game extends Scene
 
 	public void keyPressed(KeyEvent e)
 	{
-		if (e.getCode() == KeyCode.CONTROL)
-		{
-			controlHeld = true;
-		}
+		
 	}
 
 	public void keyReleased(KeyEvent e)
@@ -118,9 +119,8 @@ public class Game extends Scene
 			selectedUnits.forEach(unit -> unit.setDestination(unit.location)); // Stop
 			// moving
 			break;
-		case CONTROL:
-			controlHeld = false;
-			break;
+		case B:
+			cBar.setActive(!cBar.getActive());
 		default:
 			break;
 		}
@@ -131,12 +131,9 @@ public class Game extends Scene
 		boolean handled = false;
 		for (UIComponent u : gui)
 		{
-			if (u.getBounds().contains(mousePosition))
-			{
-				handled = u.handlePressed(e);
-				if (handled)
-					break;
-			}
+			handled = u.handlePressed(e);
+			if (handled)
+				break;
 		}
 		if (!handled)
 		{
@@ -165,7 +162,7 @@ public class Game extends Scene
 			if (e.getButton() == MouseButton.PRIMARY)
 			{
 				Rectangle2D selectionRect = getSelectionRect();
-				if (!controlHeld)
+				if (!e.isControlDown())
 					clearSelected();
 				entities.stream().filter(ent -> ent instanceof Unit).map(ent -> (Unit) ent)
 						.filter(unit -> unit.isFriendly()).filter(unit -> selectionRect.contains(unit.location))

@@ -12,8 +12,8 @@ import javafx.scene.paint.Color;
 
 public class UnitSelectionBar extends UIComponent
 {
+	private static final int BORDER = 2, BUTTON_SIZE = 16, BUTTON_BORDER_SIZE = 20;
 	private ArrayList<Unit> selectedUnits = new ArrayList<Unit>();
-	private static final Color FILL_GREEN = Color.color(102.0 / 255, 255.0 / 255, 102 / 255);
 	private boolean handlingClickDown;
 
 	public UnitSelectionBar(ArrayList<Unit> selectedUnits)
@@ -27,7 +27,7 @@ public class UnitSelectionBar extends UIComponent
 	{
 		if (selectedUnits.size() > 0)
 		{
-			g2.setFill(FILL_GREEN);
+			g2.setFill(UIComponent.FILL_GREEN);
 			g2.fillRect(bounds.x, bounds.y, bounds.width, bounds.height);
 			g2.fill();
 			g2.setStroke(Color.GREEN);
@@ -37,11 +37,12 @@ public class UnitSelectionBar extends UIComponent
 			// TODO: Add Pages
 			for (int i = 0; i < selectedUnits.size(); i++)
 			{
-				int yPos = bounds.y + (i / (600 / 16)) * 20 + 2;
-				int xPos = bounds.x + (i % (600 / 16)) * 20 + 2;
-				g2.strokeRect(xPos, yPos, 20, 20);
+				int yPos = bounds.y + (i / (600 / BUTTON_SIZE)) * BUTTON_BORDER_SIZE + BORDER;
+				int xPos = bounds.x + (i % (600 / BUTTON_SIZE)) * BUTTON_BORDER_SIZE + BORDER;
+				g2.strokeRect(xPos, yPos, BUTTON_BORDER_SIZE, BUTTON_BORDER_SIZE);
 				g2.stroke();
-				g2.drawImage(selectedUnits.get(i).getCurrentImage(), xPos + 2, yPos + 2, 16, 16);
+				g2.drawImage(selectedUnits.get(i).getIcon(), xPos + ((BUTTON_BORDER_SIZE - BUTTON_SIZE) / 2),
+						yPos + ((BUTTON_BORDER_SIZE - BUTTON_SIZE) / 2), BUTTON_SIZE, BUTTON_SIZE);
 			}
 			drawHoverText(g2, mousePos);
 			g2.stroke();
@@ -50,7 +51,9 @@ public class UnitSelectionBar extends UIComponent
 
 	private int mousePosToIndex(double mouseX, double mouseY)
 	{
-		return (int) (((mouseY - 477) / 20) + ((mouseX - 202) / 20));
+		int index = (int) ((mouseY - (bounds.y + BORDER)) / BUTTON_BORDER_SIZE) * (bounds.width / BUTTON_BORDER_SIZE);
+		index += (mouseX - (bounds.x + BORDER)) / BUTTON_BORDER_SIZE;
+		return index;
 	}
 
 	private void drawHoverText(GraphicsContext g2, Point2D mousePos)
@@ -75,7 +78,8 @@ public class UnitSelectionBar extends UIComponent
 	@Override
 	public boolean handlePressed(MouseEvent e)
 	{
-		if (selectedUnits.size() > 0 && e.getButton() == MouseButton.PRIMARY)
+		if (bounds.contains(new Point2D.Double(e.getX(), e.getY())) && selectedUnits.size() > 0
+				&& e.getButton() == MouseButton.PRIMARY)
 		{
 			// selects unit
 			int selectedIndex = mousePosToIndex(e.getX(), e.getY());
@@ -96,7 +100,7 @@ public class UnitSelectionBar extends UIComponent
 	@Override
 	public boolean handleReleased(MouseEvent e)
 	{
-		if (selectedUnits.size() > 0 && handlingClickDown)
+		if (bounds.contains(new Point2D.Double(e.getX(), e.getY())) && selectedUnits.size() > 0 && handlingClickDown)
 		{
 			handlingClickDown = false;
 			return true;

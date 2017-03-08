@@ -72,11 +72,16 @@ public abstract class Entity
 		this.health = health;
 	}
 
-	public Image getCurrentImage()
+	private Image getCurrentImage()
 	{
 		return sprite[animation][frame];
 	}
-
+	
+	public Image getIcon()
+	{
+		return sprite[animation][frame];
+	}
+	
 	/**
 	 * Randomizes location slightly for the separation algorithm
 	 */

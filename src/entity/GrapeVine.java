@@ -11,17 +11,17 @@ public class GrapeVine extends Structure
 {
 	private final double SPAWN_TIME = 7*1000, SPAWN_TIME_ERROR = 1.5*1000;
 	private Point2D.Double rally;
-	private static Image[][] sprite;
+	public static Image[][] sprite = loadSprite();
 	private double timeToSpawn;
 	
 	public GrapeVine(Point2D location, Point2D.Double rally, double radius, boolean friendly, double health)
 	{
-		super(loadImage(), location, radius, friendly, health);
+		super(sprite, location, radius, friendly, health);
 		this.rally = rally;
 		timeToSpawn = SPAWN_TIME + (2*Math.random()*SPAWN_TIME_ERROR) - SPAWN_TIME_ERROR;
 	}
 
-	private static Image[][] loadImage()
+	private static Image[][] loadSprite()
 	{
 		try
 		{
