@@ -87,6 +87,7 @@ public class Game extends Scene
 			u.draw(g, milli, mousePosition);
 		if (selecting && !mousePosition.equals(selectionCorner))
 		{
+			System.out.println("here");
 			g.setStroke(Color.BLUE);
 			Rectangle2D selectionRect = getSelectionRect();
 			g.strokeRect(selectionRect.getX(), selectionRect.getY(), selectionRect.getWidth(),

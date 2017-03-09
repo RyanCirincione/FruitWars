@@ -120,8 +120,8 @@ public class ConstructionBar extends UIComponent
 				}
 				if(!e.isShiftDown() && !collides)
 					placing = false;
+				return true;
 			}
-			return true;
 		}
 		return false;
 	}
