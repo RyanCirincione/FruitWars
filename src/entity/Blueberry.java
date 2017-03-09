@@ -9,23 +9,24 @@ import java.util.Scanner;
 
 import javafx.scene.image.Image;
 
-public class Grape extends Unit
+public class Blueberry extends Unit
 {
-	private static final double RADIUS = 16, RANGE = 5;
-	private static final long MAXCOOLDOWN = 1000;
+	private static final double RADIUS = 16, RANGE = 150;
+	private static final double P_RADIUS = 1, P_SPEED = 4, DAMAGE = 2.0;
+	private static final long MAXCOOLDOWN = 500;
 	private long coolDown;
-	public final static double MAX_HEALTH = 50, SPEED = 1;
-	public static ArrayList<String> grapeLastNames = loadGrapeVarieties();
+	public final static double MAX_HEALTH = 25, SPEED = 2;
+	public static ArrayList<String> blueberryLastNames = loadGrapeVarieties();
 	private String name;
 	public static Image[][] sprite = loadSprite();
-	private double damage = 5.0;
-
-	public Grape(Point2D location, Point2D rallyPoint, boolean friendly)
+	
+	public Blueberry(Point2D location, Point2D rallyPoint, boolean friendly)
 	{
 		super(sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
-		name = "Pvt. " + getName() + " " + grapeLastNames.get((int) (Math.random() * grapeLastNames.size()));
+		name = "Pvt. " + getName() + " " + blueberryLastNames.get((int) (Math.random() * blueberryLastNames.size()));
 		coolDown = 0;
+
 	}
 
 	private static Image[][] loadSprite()
@@ -33,7 +34,7 @@ public class Grape extends Unit
 		try
 		{
 			sprite = new Image[1][1];
-			sprite[0][0] = new Image(new FileInputStream("assets/tempGrape.png"));
+			sprite[0][0] = new Image(new FileInputStream("assets/tempBlueberry.png"));
 		} catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
@@ -54,6 +55,7 @@ public class Grape extends Unit
 				{
 					attack(e, entities);
 					coolDown = MAXCOOLDOWN;
+					break;
 				}
 			}
 		}
@@ -65,7 +67,7 @@ public class Grape extends Unit
 	 */
 	private static ArrayList<String> loadGrapeVarieties()
 	{
-		System.out.println("Loading types of grapes...");
+		System.out.println("Loading types of grapes for blueberries for now...");
 		ArrayList<String> grapes = new ArrayList<>();
 		try (Scanner fileScan = new Scanner(new File("assets/grapeNames.txt")))
 		{
@@ -82,7 +84,7 @@ public class Grape extends Unit
 	
 	public String toString()
 	{
-		String status = name + " (GRAPE)";
+		String status = name + " (Blueberry)";
 		while (status.length() < 50)
 			status = status + ".";
 		return status + "HP: " + health + "/" + MAX_HEALTH;
@@ -97,10 +99,11 @@ public class Grape extends Unit
 			double radiusSum = radius + RANGE + enemy.radius;
 			if (location.distanceSq(enemy.location) <= radiusSum * radiusSum  && !(enemy instanceof Projectile))
 			{
-				enemy.setHealth(enemy.getHealth() - damage);
+				entities.add(new Projectile((Point2D)location.clone(), (Point2D)enemy.location.clone(), isFriendly(), P_RADIUS, P_SPEED, DAMAGE, RANGE));
 				super.setDestination(location);
 			} else
 				super.setDestination(enemy.location);
 		}
 	}
+
 }

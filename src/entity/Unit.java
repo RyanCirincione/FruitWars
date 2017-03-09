@@ -36,10 +36,10 @@ public abstract class Unit extends Entity
 				location.setLocation(destination);
 			} else
 			{
-				double x = (destination.getX() - location.getX()) / distance * speed;
-				double y = (destination.getY() - location.getY()) / distance * speed;
-				x *= 60.0 * millis / 1000.0;
-				y *= 60.0 * millis / 1000.0;
+				double x = (destination.getX() - location.getX()) / distance;
+				double y = (destination.getY() - location.getY()) / distance;
+				x *= 60.0 * millis / (1000.0 / speed);
+				y *= 60.0 * millis / (1000.0 / speed);
 				location.setLocation(location.getX() + x, location.getY() + y);
 			}
 		}
@@ -100,5 +100,5 @@ public abstract class Unit extends Entity
 		selected = select;
 	}
 
-	public abstract void attack(Entity enemy);
+	public abstract void attack(Entity enemy, ArrayList<Entity> entities);
 }

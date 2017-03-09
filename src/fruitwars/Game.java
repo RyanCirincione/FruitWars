@@ -4,13 +4,14 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 
+import entity.BlueberryBush;
 import entity.Entity;
 import entity.GrapeVine;
+import entity.Structure;
 import entity.Unit;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -34,7 +35,6 @@ public class Game extends Scene
 	{
 		super(root);
 		g = ctx;
-
 		entities = new ArrayList<>();
 		selectedUnits = new ArrayList<>();
 
@@ -53,12 +53,12 @@ public class Game extends Scene
 		addEventHandler(KeyEvent.KEY_PRESSED, this::keyPressed);
 		addEventHandler(KeyEvent.KEY_RELEASED, this::keyReleased);
 
-		entities.add(new GrapeVine(new Point2D.Double(100, 100), new Point2D.Double(350, 300), 48, true, 150));
-		entities.add(new GrapeVine(new Point2D.Double(100, 300), new Point2D.Double(350, 300), 48, true, 150));
-		entities.add(new GrapeVine(new Point2D.Double(100, 500), new Point2D.Double(350, 300), 48, true, 150));
-		entities.add(new GrapeVine(new Point2D.Double(600, 100), new Point2D.Double(350, 300), 48, false, 150));
-		entities.add(new GrapeVine(new Point2D.Double(600, 300), new Point2D.Double(350, 300), 48, false, 150));
-		entities.add(new GrapeVine(new Point2D.Double(600, 500), new Point2D.Double(350, 300), 48, false, 150));
+		entities.add(new GrapeVine(new Point2D.Double(100, 100), new Point2D.Double(600, 300), 48, true, 150));
+		entities.add(new BlueberryBush(new Point2D.Double(100, 300), new Point2D.Double(600, 300), 48, true, 150));
+		entities.add(new GrapeVine(new Point2D.Double(100, 500), new Point2D.Double(600, 300), 48, true, 150));
+		entities.add(new GrapeVine(new Point2D.Double(600, 100), new Point2D.Double(100, 300), 48, false, 150));
+		entities.add(new BlueberryBush(new Point2D.Double(600, 300), new Point2D.Double(100, 300), 48, false, 150));
+		entities.add(new GrapeVine(new Point2D.Double(600, 500), new Point2D.Double(100, 300), 48, false, 150));
 	}
 
 	public void tick(long milli)
@@ -67,7 +67,9 @@ public class Game extends Scene
 		{
 			entities.get(i).tick(milli, entities);
 			for (int j = i; j < entities.size(); j++)
+			{
 				entities.get(i).separate(entities.get(j), milli);
+			}
 
 			if (entities.get(i).getHealth() <= 0)
 			{
@@ -87,7 +89,6 @@ public class Game extends Scene
 			u.draw(g, milli, mousePosition);
 		if (selecting && !mousePosition.equals(selectionCorner))
 		{
-			System.out.println("here");
 			g.setStroke(Color.BLUE);
 			Rectangle2D selectionRect = getSelectionRect();
 			g.strokeRect(selectionRect.getX(), selectionRect.getY(), selectionRect.getWidth(),
@@ -179,7 +180,7 @@ public class Game extends Scene
 					if (!ent.isFriendly() && ent.location.distanceSq(mousePosition) < ent.radius * ent.radius)
 					{
 						for (Unit u : selectedUnits)
-							u.attack(ent);
+							u.attack(ent, entities);
 						handled = true;
 						break;
 					}

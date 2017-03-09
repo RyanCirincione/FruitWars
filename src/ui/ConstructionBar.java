@@ -4,8 +4,10 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
+import entity.BlueberryBush;
 import entity.Entity;
 import entity.GrapeVine;
+import entity.Structure;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -14,8 +16,8 @@ import javafx.scene.paint.Color;
 public class ConstructionBar extends UIComponent
 {
 	private static final int BORDER = 2, BUTTON_SIZE = 16, BUTTON_BORDER_SIZE = 20;
-	private Image[] icons = new Image[1];
 	private ArrayList<Entity> entities;
+	private ArrayList<Structure> prototypes;
 	private Image ghost;
 	private int placingIndex;
 	private boolean active, placing, handlingClickDown;
@@ -23,9 +25,13 @@ public class ConstructionBar extends UIComponent
 	public ConstructionBar(ArrayList<Entity> entities)
 	{
 		super(new Rectangle(400 - (200 / 2), 300 - (125 / 2), 200, 125));
-		icons[0] = GrapeVine.sprite[0][0];
 		this.entities = entities;
 		active = false;
+		
+		//Prototype structures
+		prototypes = new ArrayList<>();
+		prototypes.add(new GrapeVine(null, null, 0, true, 0));
+		prototypes.add(new BlueberryBush(null, null, 0, true, 0));
 	}
 	
 	public void setActive(boolean active)
@@ -50,13 +56,13 @@ public class ConstructionBar extends UIComponent
 			g2.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
 			
 			// Drawing buttons
-			for (int i = 0; i < icons.length; i++)
+			for (int i = 0; i < prototypes.size(); i++)
 			{
-				g2.strokeRect(bounds.x + BORDER + BUTTON_BORDER_SIZE * i, bounds.y + BORDER + BUTTON_BORDER_SIZE * i,
+				g2.strokeRect(bounds.x + BORDER + BUTTON_BORDER_SIZE * i, bounds.y + BORDER + BUTTON_BORDER_SIZE * (i/(bounds.width/BUTTON_BORDER_SIZE)),
 						BUTTON_BORDER_SIZE, BUTTON_BORDER_SIZE);
 				g2.stroke();
-				g2.drawImage(icons[i], bounds.x + (BUTTON_SIZE * i) + BORDER + (BUTTON_BORDER_SIZE - BUTTON_SIZE) / 2,
-						bounds.y + (BUTTON_SIZE * i) + BORDER + (BUTTON_BORDER_SIZE - BUTTON_SIZE) / 2, BUTTON_SIZE,
+				g2.drawImage(prototypes.get(i).getIcon(), bounds.x + (BUTTON_BORDER_SIZE * i) + BORDER + (BUTTON_BORDER_SIZE - BUTTON_SIZE) / 2,
+						bounds.y + (BUTTON_BORDER_SIZE * (i/(bounds.width/BUTTON_BORDER_SIZE))) + BORDER + (BUTTON_BORDER_SIZE - BUTTON_SIZE) / 2, BUTTON_SIZE,
 						BUTTON_SIZE);
 			}
 		}
@@ -82,9 +88,9 @@ public class ConstructionBar extends UIComponent
 			if(bounds.contains(new Point2D.Double(e.getX(), e.getY())) && !placing)
 			{
 				int selectedIndex = mousePosToIndex(e.getX(), e.getY());
-				if(selectedIndex < icons.length)
+				if(selectedIndex < prototypes.size())
 				{
-					ghost = icons[selectedIndex];
+					ghost = prototypes.get(selectedIndex).getIcon();
 					placingIndex = selectedIndex;
 					placing = true;
 					handlingClickDown = true;
@@ -98,28 +104,34 @@ public class ConstructionBar extends UIComponent
 			{
 				Point2D placement = new Point2D.Double(e.getX(), e.getY());
 				boolean collides = false;
+				Structure s = null;
 				switch (placingIndex)
 				{
 				case 0:
-					GrapeVine g = new GrapeVine(placement,
+					s = new GrapeVine(placement,
 							new Point2D.Double(placement.getX() + 32, placement.getY()), 48, true, 150);
-					for(Entity ent : entities)
-					{
-						if(ent.location.distanceSq(placement) < ((ent.radius + g.radius) * (ent.radius + g.radius)))
-						{
-							collides = true;
-							break;
-						}
-					}
-					if(collides)
-						break;
-					entities.add(g);
+					break;
+				case 1:
+					s = new BlueberryBush(placement,
+							new Point2D.Double(placement.getX() + 32, placement.getY()), 48, true, 150);
 					break;
 				default:
 					break;
 				}
-				if(!e.isShiftDown() && !collides)
-					placing = false;
+				for(Entity ent : entities)
+				{
+					if(ent.location.distanceSq(placement) < ((ent.radius + s.radius) * (ent.radius + s.radius)))
+					{
+						collides = true;
+						break;
+					}
+				}
+				if(!collides)
+				{
+					entities.add(s);
+					if(!e.isShiftDown())
+						placing = false;
+				}
 				return true;
 			}
 		}

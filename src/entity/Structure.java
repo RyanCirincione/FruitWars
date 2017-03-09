@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 
 import javafx.scene.image.Image;
 
-public class Structure extends Entity
+public abstract class Structure extends Entity
 {
 	public Structure(Image[][] sprite, Point2D location, double radius, boolean friendly, double health)
 	{
