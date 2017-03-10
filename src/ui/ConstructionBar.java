@@ -3,6 +3,7 @@ package ui;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.function.Supplier;
 
 import entity.BlueberryBush;
 import entity.Entity;
@@ -17,21 +18,32 @@ public class ConstructionBar extends UIComponent
 {
 	private static final int BORDER = 2, BUTTON_SIZE = 16, BUTTON_BORDER_SIZE = 20;
 	private ArrayList<Entity> entities;
-	private ArrayList<Structure> prototypes;
+	
+	private ArrayList<Image> prototypes;
+	private ArrayList<StructureBuilder> constructors;
 	private Image ghost;
 	private int placingIndex;
 	private boolean active, placing, handlingClickDown;
-
+	
+	private interface StructureBuilder
+	{
+		public Structure build(Point2D location, Point2D.Double rally, double radius, boolean friendly, double health);
+	}
+	
 	public ConstructionBar(ArrayList<Entity> entities)
 	{
 		super(new Rectangle(400 - (200 / 2), 300 - (125 / 2), 200, 125));
 		this.entities = entities;
 		active = false;
 		
+		constructors = new ArrayList<>();
+		constructors.add(GrapeVine::new);
+		constructors.add(BlueberryBush::new);
+		
 		//Prototype structures
 		prototypes = new ArrayList<>();
-		prototypes.add(new GrapeVine(null, null, 0, true, 0));
-		prototypes.add(new BlueberryBush(null, null, 0, true, 0));
+		for(StructureBuilder b : constructors)
+			prototypes.add(b.build(null, null, 0, true, 0).getIcon());
 	}
 	
 	public void setActive(boolean active)
@@ -61,7 +73,7 @@ public class ConstructionBar extends UIComponent
 				g2.strokeRect(bounds.x + BORDER + BUTTON_BORDER_SIZE * i, bounds.y + BORDER + BUTTON_BORDER_SIZE * (i/(bounds.width/BUTTON_BORDER_SIZE)),
 						BUTTON_BORDER_SIZE, BUTTON_BORDER_SIZE);
 				g2.stroke();
-				g2.drawImage(prototypes.get(i).getIcon(), bounds.x + (BUTTON_BORDER_SIZE * i) + BORDER + (BUTTON_BORDER_SIZE - BUTTON_SIZE) / 2,
+				g2.drawImage(prototypes.get(i), bounds.x + (BUTTON_BORDER_SIZE * i) + BORDER + (BUTTON_BORDER_SIZE - BUTTON_SIZE) / 2,
 						bounds.y + (BUTTON_BORDER_SIZE * (i/(bounds.width/BUTTON_BORDER_SIZE))) + BORDER + (BUTTON_BORDER_SIZE - BUTTON_SIZE) / 2, BUTTON_SIZE,
 						BUTTON_SIZE);
 			}
@@ -90,7 +102,7 @@ public class ConstructionBar extends UIComponent
 				int selectedIndex = mousePosToIndex(e.getX(), e.getY());
 				if(selectedIndex < prototypes.size())
 				{
-					ghost = prototypes.get(selectedIndex).getIcon();
+					ghost = prototypes.get(selectedIndex);
 					placingIndex = selectedIndex;
 					placing = true;
 					handlingClickDown = true;
@@ -105,19 +117,7 @@ public class ConstructionBar extends UIComponent
 				Point2D placement = new Point2D.Double(e.getX(), e.getY());
 				boolean collides = false;
 				Structure s = null;
-				switch (placingIndex)
-				{
-				case 0:
-					s = new GrapeVine(placement,
-							new Point2D.Double(placement.getX() + 32, placement.getY()), 48, true, 150);
-					break;
-				case 1:
-					s = new BlueberryBush(placement,
-							new Point2D.Double(placement.getX() + 32, placement.getY()), 48, true, 150);
-					break;
-				default:
-					break;
-				}
+				s = constructors.get(placingIndex).build(placement,	new Point2D.Double(placement.getX() + 32, placement.getY()), 48, true, 150);
 				for(Entity ent : entities)
 				{
 					if(ent.location.distanceSq(placement) < ((ent.radius + s.radius) * (ent.radius + s.radius)))
