@@ -3,6 +3,7 @@ package fruitwars;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import entity.BlueberryBush;
 import entity.Entity;
@@ -65,16 +66,18 @@ public class Game extends Scene
 		for (int i = 0; i < entities.size(); i++)
 		{
 			entities.get(i).tick(milli, entities);
-			for (int j = i; j < entities.size(); j++)
+			for (int j = i + 1; j < entities.size(); j++)
 			{
 				entities.get(i).separate(entities.get(j), milli);
 			}
-
-			if (entities.get(i).getHealth() <= 0)
+		}
+		for(Iterator<Entity> iter = entities.iterator(); iter.hasNext(); )
+		{
+			Entity ent = iter.next();
+			if(ent.getHealth() <= 0)
 			{
-				selectedUnits.remove(entities.get(i));
-				entities.remove(i);
-				i = Math.max(i - 1, 0);
+				iter.remove();
+				selectedUnits.remove(ent);
 			}
 		}
 	}
