@@ -7,7 +7,6 @@ import java.util.ArrayList;
 import entity.BlueberryBush;
 import entity.Entity;
 import entity.GrapeVine;
-import entity.Structure;
 import entity.Unit;
 import javafx.scene.Group;
 import javafx.scene.Scene;
