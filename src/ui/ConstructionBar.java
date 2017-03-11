@@ -3,8 +3,9 @@ package ui;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.function.Supplier;
+import java.util.List;
 
+import data.FastList;
 import entity.BlueberryBush;
 import entity.Entity;
 import entity.GrapeVine;
@@ -17,10 +18,10 @@ import javafx.scene.paint.Color;
 public class ConstructionBar extends UIComponent
 {
 	private static final int BORDER = 2, BUTTON_SIZE = 16, BUTTON_BORDER_SIZE = 20;
-	private ArrayList<Entity> entities;
+	private List<Entity> entities;
 	
-	private ArrayList<Image> prototypes;
-	private ArrayList<StructureBuilder> constructors;
+	private List<Image> prototypes;
+	private List<StructureBuilder> constructors;
 	private Image ghost;
 	private int placingIndex;
 	private boolean active, placing, handlingClickDown;
@@ -30,15 +31,13 @@ public class ConstructionBar extends UIComponent
 		public Structure build(Point2D location, Point2D.Double rally, double radius, boolean friendly, double health);
 	}
 	
-	public ConstructionBar(ArrayList<Entity> entities)
+	public ConstructionBar(List<Entity> entities)
 	{
 		super(new Rectangle(400 - (200 / 2), 300 - (125 / 2), 200, 125));
 		this.entities = entities;
 		active = false;
 		
-		constructors = new ArrayList<>();
-		constructors.add(GrapeVine::new);
-		constructors.add(BlueberryBush::new);
+		constructors = new FastList<>(new StructureBuilder[] { GrapeVine::new, BlueberryBush::new } );
 		
 		//Prototype structures
 		prototypes = new ArrayList<>();

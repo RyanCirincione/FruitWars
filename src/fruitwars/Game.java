@@ -4,7 +4,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
+import data.FastList;
 import entity.BlueberryBush;
 import entity.Entity;
 import entity.GrapeVine;
@@ -23,9 +25,9 @@ import ui.UnitSelectionBar;
 public class Game extends Scene
 {
 	private GraphicsContext g;
-	private ArrayList<Entity> entities;
-	private ArrayList<Unit> selectedUnits;
-	private ArrayList<UIComponent> gui;
+	private List<Entity> entities;
+	private List<Unit> selectedUnits;
+	private List<UIComponent> gui;
 	private ConstructionBar cBar;
 	private boolean selecting;
 	private Color selectionBlue = new Color(102.0 / 255, 153.0 / 255, 1, 64 / 255.0);
@@ -35,14 +37,14 @@ public class Game extends Scene
 	{
 		super(root);
 		g = ctx;
-		entities = new ArrayList<>();
-		selectedUnits = new ArrayList<>();
+		entities = new FastList<>();
+		selectedUnits = new FastList<>();
 
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		mousePosition = new Point2D.Double();
 
-		gui = new ArrayList<>();
+		gui = new FastList<>();
 		gui.add(new UnitSelectionBar(selectedUnits));
 		cBar = new ConstructionBar(entities);
 		gui.add(cBar);
