@@ -1,7 +1,6 @@
 package entity;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -11,7 +10,6 @@ import javafx.scene.image.Image;
 public class Projectile extends Entity
 {
 	public final static double MAX_HEALTH = 1000;
-	private boolean friendly;
 	public static Image[][] sprite = loadSprite();
 	private double range, radius, damage, speed;
 	private Point2D velocity, startingPoint;
