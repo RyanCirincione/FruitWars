@@ -1,7 +1,7 @@
 package entity;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -43,7 +43,7 @@ public abstract class Entity
 		this.health = health;
 	}
 
-	public void tick(long millis, ArrayList<Entity> entities)
+	public void tick(long millis, List<Entity> entities)
 	{
 
 	}

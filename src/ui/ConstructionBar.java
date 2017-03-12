@@ -3,7 +3,9 @@ package ui;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
+import data.FastList;
 import entity.BlueberryBush;
 import entity.Cauliflower;
 import entity.Entity;
@@ -17,34 +19,31 @@ import javafx.scene.paint.Color;
 public class ConstructionBar extends UIComponent
 {
 	private static final int BORDER = 2, BUTTON_SIZE = 16, BUTTON_BORDER_SIZE = 20;
-	private ArrayList<Entity> entities;
+	private List<Entity> entities;
 	
-	private ArrayList<Image> prototypes;
-	private ArrayList<StructureBuilder> constructors;
+	private List<Image> prototypes;
+	private List<StructureBuilder> constructors;
 	private Image ghost;
 	private int placingIndex;
 	private boolean active, placing, handlingClickDown;
 	
 	private interface StructureBuilder
 	{
-		public Structure build(Point2D location, Point2D.Double rally, double radius, boolean friendly, double health);
+		public Structure build(Point2D location, boolean friendly, double health);
 	}
 	
-	public ConstructionBar(ArrayList<Entity> entities)
+	public ConstructionBar(List<Entity> entities)
 	{
 		super(new Rectangle(400 - (200 / 2), 300 - (125 / 2), 200, 125));
 		this.entities = entities;
 		active = false;
 		
-		constructors = new ArrayList<>();
-		constructors.add(GrapeVine::new);
-		constructors.add(BlueberryBush::new);
-		constructors.add(Cauliflower::new);
+		constructors = new FastList<>(new StructureBuilder[] { GrapeVine::new, BlueberryBush::new, Cauliflower::new} );
 		
 		//Prototype structures
 		prototypes = new ArrayList<>();
 		for(StructureBuilder b : constructors)
-			prototypes.add(b.build(null, null, 0, true, 0).getIcon());
+			prototypes.add(b.build(null, true, 0).getIcon());
 	}
 	
 	public void setActive(boolean active)
@@ -118,7 +117,7 @@ public class ConstructionBar extends UIComponent
 				Point2D placement = new Point2D.Double(e.getX(), e.getY());
 				boolean collides = false;
 				Structure s = null;
-				s = constructors.get(placingIndex).build(placement,	new Point2D.Double(placement.getX() + 32, placement.getY()), 48, true, 150);
+				s = constructors.get(placingIndex).build(placement, true, 150);
 				for(Entity ent : entities)
 				{
 					if(ent.location.distanceSq(placement) < ((ent.radius + s.radius) * (ent.radius + s.radius)))

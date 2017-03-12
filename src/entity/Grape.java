@@ -5,6 +5,7 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import javafx.scene.image.Image;
@@ -42,7 +43,7 @@ public class Grape extends Unit
 	}
 
 	@Override
-	public void tick(long millis, ArrayList<Entity> entities)
+	public void tick(long millis, List<Entity> entities)
 	{
 		coolDown -= millis;
 		if (coolDown <= 0)
@@ -89,7 +90,7 @@ public class Grape extends Unit
 	}
 
 	@Override
-	public void attack(Entity enemy, ArrayList<Entity> entities)
+	public void attack(Entity enemy, List<Entity> entities)
 	{
 		if (!(enemy.isFriendly() == isFriendly()))
 		{

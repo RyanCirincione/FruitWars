@@ -1,17 +1,15 @@
 package entity;
 
 import java.awt.geom.Point2D;
-import java.awt.geom.Point2D.Double;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.ArrayList;
+import java.util.List;
 
 import javafx.scene.image.Image;
 
 public class Projectile extends Entity
 {
 	public final static double MAX_HEALTH = 1000;
-	private boolean friendly;
 	public static Image[][] sprite = loadSprite();
 	private double range, radius, damage, speed;
 	private Point2D velocity, startingPoint;
@@ -45,7 +43,7 @@ public class Projectile extends Entity
 	}
 	
 	@Override
-	public void tick(long millis, ArrayList<Entity> entities)
+	public void tick(long millis, List<Entity> entities)
 	{
 		double x = velocity.getX() * 60.0 * millis / (1000.0 / speed);
 		double y = velocity.getY() * 60.0 * millis / (1000.0 / speed);

@@ -11,7 +11,7 @@ public class Cauliflower extends Structure
 	static Image[][] sprite = loadSprite();
 	final static double RADIUS = 32;
 	
-	public Cauliflower(Point2D location, double radius, boolean friendly, double health)
+	public Cauliflower(Point2D location, boolean friendly, double health)
 	{
 		super(sprite, location, RADIUS, friendly, health);
 	}

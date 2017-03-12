@@ -2,12 +2,13 @@ package fruitwars;
 
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
+import data.FastList;
 import entity.BlueberryBush;
 import entity.Entity;
 import entity.GrapeVine;
-import entity.Structure;
 import entity.Unit;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -23,9 +24,9 @@ import ui.UnitSelectionBar;
 public class Game extends Scene
 {
 	private GraphicsContext g;
-	private ArrayList<Entity> entities;
-	private ArrayList<Unit> selectedUnits;
-	private ArrayList<UIComponent> gui;
+	private List<Entity> entities;
+	private List<Unit> selectedUnits;
+	private List<UIComponent> gui;
 	private ConstructionBar cBar;
 	private boolean selecting;
 	private Color selectionBlue = new Color(102.0 / 255, 153.0 / 255, 1, 64 / 255.0);
@@ -35,14 +36,14 @@ public class Game extends Scene
 	{
 		super(root);
 		g = ctx;
-		entities = new ArrayList<>();
-		selectedUnits = new ArrayList<>();
+		entities = new FastList<>();
+		selectedUnits = new FastList<>();
 
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		mousePosition = new Point2D.Double();
 
-		gui = new ArrayList<>();
+		gui = new FastList<>();
 		gui.add(new UnitSelectionBar(selectedUnits));
 		cBar = new ConstructionBar(entities);
 		gui.add(cBar);
@@ -53,12 +54,24 @@ public class Game extends Scene
 		addEventHandler(KeyEvent.KEY_PRESSED, this::keyPressed);
 		addEventHandler(KeyEvent.KEY_RELEASED, this::keyReleased);
 
-		entities.add(new GrapeVine(new Point2D.Double(100, 100), new Point2D.Double(600, 300), 48, true, 150));
-		entities.add(new BlueberryBush(new Point2D.Double(100, 300), new Point2D.Double(600, 300), 48, true, 150));
-		entities.add(new GrapeVine(new Point2D.Double(100, 500), new Point2D.Double(600, 300), 48, true, 150));
-		entities.add(new GrapeVine(new Point2D.Double(600, 100), new Point2D.Double(100, 300), 48, false, 150));
-		entities.add(new BlueberryBush(new Point2D.Double(600, 300), new Point2D.Double(100, 300), 48, false, 150));
-		entities.add(new GrapeVine(new Point2D.Double(600, 500), new Point2D.Double(100, 300), 48, false, 150));
+		GrapeVine e = new GrapeVine(new Point2D.Double(100, 100), true, 150);
+		e.setRally(new Point2D.Double(600, 300));
+		entities.add(e);
+		e = new GrapeVine(new Point2D.Double(100, 500), true, 150);
+		e.setRally(new Point2D.Double(600, 300));
+		entities.add(e);
+		e = new GrapeVine(new Point2D.Double(600, 100), true, 150);
+		e.setRally(new Point2D.Double(100, 300));
+		entities.add(e);
+		e = new GrapeVine(new Point2D.Double(600, 500), true, 150);
+		e.setRally(new Point2D.Double(100, 300));
+		entities.add(e);
+		BlueberryBush b = new BlueberryBush(new Point2D.Double(100, 300), true, 150);
+		b.setRally(new Point2D.Double(600, 300));
+		entities.add(b);
+		b = new BlueberryBush(new Point2D.Double(600, 300), true, 150);
+		b.setRally(new Point2D.Double(100, 300));
+		entities.add(b);
 	}
 
 	public void tick(long milli)
@@ -66,16 +79,18 @@ public class Game extends Scene
 		for (int i = 0; i < entities.size(); i++)
 		{
 			entities.get(i).tick(milli, entities);
-			for (int j = i; j < entities.size(); j++)
+			for (int j = i + 1; j < entities.size(); j++)
 			{
 				entities.get(i).separate(entities.get(j), milli);
 			}
-
-			if (entities.get(i).getHealth() <= 0)
+		}
+		for(Iterator<Entity> iter = entities.iterator(); iter.hasNext(); )
+		{
+			Entity ent = iter.next();
+			if(ent.getHealth() <= 0)
 			{
-				selectedUnits.remove(entities.get(i));
-				entities.remove(i);
-				i = Math.max(i - 1, 0);
+				iter.remove();
+				selectedUnits.remove(ent);
 			}
 		}
 	}

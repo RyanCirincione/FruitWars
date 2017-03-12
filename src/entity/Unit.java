@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import javafx.scene.canvas.GraphicsContext;
@@ -45,7 +46,7 @@ public abstract class Unit extends Entity
 		}
 	}
 
-	public void tick(long millis, ArrayList<Entity> entities)
+	public void tick(long millis, List<Entity> entities)
 	{
 		moveToward(millis);
 		super.tick(millis, entities);
@@ -100,5 +101,5 @@ public abstract class Unit extends Entity
 		selected = select;
 	}
 
-	public abstract void attack(Entity enemy, ArrayList<Entity> entities);
+	public abstract void attack(Entity enemy, List<Entity> entities);
 }
