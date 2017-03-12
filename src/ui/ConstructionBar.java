@@ -3,9 +3,9 @@ package ui;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
-import java.util.function.Supplier;
 
 import entity.BlueberryBush;
+import entity.Cauliflower;
 import entity.Entity;
 import entity.GrapeVine;
 import entity.Structure;
@@ -39,6 +39,7 @@ public class ConstructionBar extends UIComponent
 		constructors = new ArrayList<>();
 		constructors.add(GrapeVine::new);
 		constructors.add(BlueberryBush::new);
+		constructors.add(Cauliflower::new);
 		
 		//Prototype structures
 		prototypes = new ArrayList<>();
