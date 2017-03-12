@@ -37,12 +37,14 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 
 	private List<T> contained;
 	private List<QuadNode<T>> children;
+	private List<T> buffer;
 	private Rectangle bounds, temp;
 
 	public QuadNode(QuadNode<T> parent, Rectangle bounds, int smallestWidth, int smallestHeight)
 	{
 		contained = new FastList<>();
 		children = new FastList<>(4);
+		buffer = new FastList<>();
 		temp = new Rectangle();
 		this.bounds = bounds;
 		int childWidth = (int) (this.bounds.getWidth() / 2);
@@ -116,14 +118,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 
 	public void add(T obj)
 	{
-		QuadNode<T> child = findChild(obj);
-		if (child != null)
-			child.add(obj);
-		else
-		{
-			contained.add(obj);
-			obj.setCurrentNode(this);
-		}
+		buffer.add(obj);
 	}
 
 	public void remove(T obj)
@@ -251,5 +246,16 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		}
 		for(T child : contained)
 			updateNode(child);
+		for(T obj : buffer)
+		{
+			QuadNode<T> child = findChild(obj);
+			if (child != null)
+				child.add(obj);
+			else
+			{
+				contained.add(obj);
+				obj.setCurrentNode(this);
+			}
+		}
 	}
 }
