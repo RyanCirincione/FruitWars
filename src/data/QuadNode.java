@@ -15,7 +15,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 	 */
 	public static interface Bounded<E extends Bounded<E>>
 	{
-		Point2D getCenter();
+		public Point2D getCenter();
 
 		double getRadius();
 
@@ -25,7 +25,9 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 
 		void setCurrentNode(QuadNode<E> node);
 
-		void collide(E other);
+		void collide(E other, long millis);
+		
+		void tick(long millis);
 	}
 
 	public static interface ValidPair<T>
@@ -130,53 +132,14 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		obj.setCurrentNode(null);
 	}
 
-	public void move(T obj, double x, double y)
+	public void updateNode(T obj)
 	{
 		QuadNode<T> current = obj.getCurrentNode();
-		obj.setCenter(x, y);
 		if (!current.contains(obj))
 		{
 			current.contained.remove(obj);
 			add(obj);
 		}
-	}
-
-	private void checkCollisions(QuadNode<T> checkAgainst)
-	{
-		for (T outer : checkAgainst.contained)
-		{
-			for (T inner : contained)
-			{
-				if (objectsOverlap(outer, inner))
-				{
-					outer.collide(inner);
-					inner.collide(outer);
-				}
-			}
-		}
-		for (QuadNode<T> child : children)
-			child.checkCollisions(checkAgainst);
-	}
-
-	public void checkCollisions()
-	{
-		for (int i = 0; i < contained.size(); i++)
-		{
-			for (int j = i + 1; j < contained.size(); j++)
-			{
-				T o1 = contained.get(i);
-				T o2 = contained.get(j);
-				if (objectsOverlap(o1, o2))
-				{
-					o1.collide(o2);
-					o2.collide(o1);
-				}
-			}
-		}
-		for (QuadNode<T> child : children)
-			child.checkCollisions(this);
-		for (QuadNode<T> child : children)
-			child.checkCollisions();
 	}
 
 	public void clear()
@@ -245,5 +208,48 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 			}
 		}
 		return closest;
+	}
+	
+	private void checkCollisions(QuadNode<T> checkAgainst, long millis)
+	{
+		for (T outer : checkAgainst.contained)
+		{
+			for (T inner : contained)
+			{
+				if (objectsOverlap(outer, inner))
+				{
+					outer.collide(inner, millis);
+					inner.collide(outer, millis);
+				}
+			}
+		}
+		for (QuadNode<T> child : children)
+			child.checkCollisions(checkAgainst, millis);
+	}
+	
+	public void tickAll(long millis)
+	{
+		for(T obj : contained)
+			obj.tick(millis);
+		for (int i = 0; i < contained.size(); i++)
+		{
+			for (int j = i + 1; j < contained.size(); j++)
+			{
+				T o1 = contained.get(i);
+				T o2 = contained.get(j);
+				if (objectsOverlap(o1, o2))
+				{
+					o1.collide(o2, millis);
+					o2.collide(o1, millis);
+				}
+			}
+		}
+		for (QuadNode<T> child : children)
+		{
+			child.checkCollisions(this, millis);
+			child.tickAll(millis);
+		}
+		for(T child : contained)
+			updateNode(child);
 	}
 }
