@@ -46,14 +46,14 @@ public abstract class Unit extends Entity
 			}
 		}
 	}
-	
+
 	@Override
 	public void tick(long millis)
 	{
 		moveToward(millis);
 		super.tick(millis);
 	}
-	
+
 	@Override
 	public void draw(GraphicsContext g2, long millis)
 	{
@@ -106,5 +106,6 @@ public abstract class Unit extends Entity
 	}
 
 	public abstract void attack(Entity enemy);
+
 	public abstract void target(Entity enemy);
 }

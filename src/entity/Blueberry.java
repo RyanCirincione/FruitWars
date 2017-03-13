@@ -20,7 +20,7 @@ public class Blueberry extends Unit
 	public static ArrayList<String> blueberryLastNames = loadGrapeVarieties();
 	private String name;
 	public static Image[][] sprite = loadSprite();
-	
+
 	public Blueberry(QuadNode<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
 	{
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
@@ -52,10 +52,10 @@ public class Blueberry extends Unit
 			Entity e = root.getClosest(this, (e1, e2) -> {
 				return e1.isFriendly() != e2.isFriendly() && !(e2 instanceof Projectile);
 			});
-			if(e != null)
+			if (e != null)
 			{
 				double radiusSum = radius + RANGE + e.radius;
-				if(getCenter().distanceSq(e.getCenter()) <= radiusSum * radiusSum)
+				if (getCenter().distanceSq(e.getCenter()) <= radiusSum * radiusSum)
 					attack(e);
 				else
 					target(e);
@@ -83,7 +83,7 @@ public class Blueberry extends Unit
 		}
 		return grapes;
 	}
-	
+
 	public String toString()
 	{
 		String status = name + " (Blueberry)";
@@ -96,18 +96,19 @@ public class Blueberry extends Unit
 	public void attack(Entity enemy)
 	{
 		coolDown = MAXCOOLDOWN;
-		root.add(new Projectile(root, (Point2D)getCenter().clone(), (Point2D)enemy.getCenter().clone(), isFriendly(), P_RADIUS, P_SPEED, DAMAGE, RANGE));
+		root.add(new Projectile(root, (Point2D) getCenter().clone(), (Point2D) enemy.getCenter().clone(), isFriendly(),
+				P_RADIUS, P_SPEED, DAMAGE, RANGE));
 		super.setDestination(getCenter());
 	}
 
 	@Override
 	public void target(Entity enemy)
 	{
-		if (!(enemy.isFriendly() == isFriendly()))
+		if (enemy.isFriendly() != isFriendly())
 		{
 			// if within range
 			double radiusSum = radius + RANGE + enemy.radius;
-			if (getCenter().distanceSq(enemy.getCenter()) <= radiusSum * radiusSum  && !(enemy instanceof Projectile))
+			if (getCenter().distanceSq(enemy.getCenter()) <= radiusSum * radiusSum && !(enemy instanceof Projectile))
 				attack(enemy);
 			else
 				super.setDestination(enemy.getCenter());

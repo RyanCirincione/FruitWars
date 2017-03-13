@@ -18,24 +18,25 @@ public class FruitWars extends Application
 
 	@Override
 	public void start(Stage stage) throws Exception
-	{		
+	{
 		Canvas canvas = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT);
 		Group root = new Group();
-		
+
 		root.getChildren().add(canvas);
 		GraphicsContext g = canvas.getGraphicsContext2D();
-		
+
 		Game game = new Game(root, g);
 		stage.setScene(game);
-		
+
 		new AnimationTimer()
 		{
 			long previousMilli = 0;
+
 			public void handle(long currentNano)
 			{
 				long currentMilli = currentNano / 1000000;
 				long delta = currentMilli - previousMilli;
-				if(previousMilli != 0)
+				if (previousMilli != 0)
 					game.tick(delta);
 				game.draw(delta);
 				previousMilli = currentMilli;

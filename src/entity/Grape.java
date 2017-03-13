@@ -51,10 +51,10 @@ public class Grape extends Unit
 			Entity e = root.getClosest(this, (e1, e2) -> {
 				return e1.isFriendly() != e2.isFriendly() && !(e2 instanceof Projectile);
 			});
-			if(e != null)
+			if (e != null)
 			{
 				double radiusSum = radius + RANGE + e.radius;
-				if(getCenter().distanceSq(e.getCenter()) <= radiusSum * radiusSum)
+				if (getCenter().distanceSq(e.getCenter()) <= radiusSum * radiusSum)
 					attack(e);
 				else
 					target(e);
@@ -82,7 +82,7 @@ public class Grape extends Unit
 		}
 		return grapes;
 	}
-	
+
 	public String toString()
 	{
 		String status = name + " (GRAPE)";
@@ -102,14 +102,13 @@ public class Grape extends Unit
 	@Override
 	public void target(Entity enemy)
 	{
-		if (!(enemy.isFriendly() == isFriendly()))
+		if (enemy.isFriendly() != isFriendly())
 		{
 			// if within range
 			double radiusSum = radius + RANGE + enemy.radius;
-			if (getCenter().distanceSq(enemy.getCenter()) <= radiusSum * radiusSum  && !(enemy instanceof Projectile))
-			{
+			if (getCenter().distanceSq(enemy.getCenter()) <= radiusSum * radiusSum && !(enemy instanceof Projectile))
 				attack(enemy);
-			} else
+			else
 				super.setDestination(enemy.getCenter());
 		}
 	}

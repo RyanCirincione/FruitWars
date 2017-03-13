@@ -12,9 +12,11 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
  * 
  * In retrospect, I should have just overrode the 'remove' method <br/>
  * 
- * To remove elements, the last element is swapped into its place, making the operation O(1)
+ * To remove elements, the last element is swapped into its place, making the
+ * operation O(1)
  *
- * @param <T> The type stored in the list
+ * @param <T>
+ *            The type stored in the list
  */
 public class FastList<T> implements List<T>
 {

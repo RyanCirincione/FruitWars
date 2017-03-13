@@ -13,11 +13,12 @@ public class Projectile extends Entity
 	public static Image[][] sprite = loadSprite();
 	private double range, damage, speed;
 	private Point2D velocity, startingPoint;
-	
-	public Projectile(QuadNode<Entity> root, Point2D location, Point2D target, boolean friendly, double radius, double speed, double damage, double range)
+
+	public Projectile(QuadNode<Entity> root, Point2D location, Point2D target, boolean friendly, double radius,
+			double speed, double damage, double range)
 	{
 		super(root, sprite, location, radius, friendly, MAX_HEALTH);
-		
+
 		double distance = location.distance(target);
 		this.speed = speed;
 		double x = (target.getX() - location.getX()) / distance;
@@ -28,7 +29,7 @@ public class Projectile extends Entity
 		location.setLocation(startingPoint = new Point2D.Double(location.getX(), location.getY()));
 		mass = 0f;
 	}
-	
+
 	private static Image[][] loadSprite()
 	{
 		try
@@ -41,7 +42,7 @@ public class Projectile extends Entity
 		}
 		return sprite;
 	}
-	
+
 	@Override
 	public void tick(long millis)
 	{
@@ -49,13 +50,13 @@ public class Projectile extends Entity
 		double y = velocity.getY() * 60.0 * millis / (1000.0 / speed);
 		Point2D location = getCenter();
 		location.setLocation(location.getX() + x, location.getY() + y);
-		//Out of range
-		if(startingPoint.distanceSq(location) > range * range)
+		// Out of range
+		if (startingPoint.distanceSq(location) > range * range)
 			health = 0;
 		else
 			super.tick(millis);
 	}
-	
+
 	@Override
 	public void collide(Entity e, long milis)
 	{

@@ -11,7 +11,7 @@ public class Cauliflower extends Structure
 {
 	static Image[][] sprite = loadSprite();
 	final static double RADIUS = 32;
-	
+
 	public Cauliflower(QuadNode<Entity> root, Point2D location, boolean friendly, double health)
 	{
 		super(root, sprite, location, RADIUS, friendly, health);

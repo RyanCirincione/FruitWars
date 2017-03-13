@@ -209,17 +209,18 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		}
 		return closest;
 	}
-	
+
 	public T getAtPoint(Point2D pointer)
 	{
-		for(T obj : contained)
-			if(obj.getCenter().distanceSq(pointer) < obj.getRadius() * obj.getRadius())
+		for (T obj : contained)
+			if (obj.getCenter().distanceSq(pointer) < obj.getRadius() * obj.getRadius())
 				return obj;
-		for(QuadNode<T> child : children)
+		for (QuadNode<T> child : children)
 		{
-			if(!child.bounds.contains(pointer)) break;
+			if (!child.bounds.contains(pointer))
+				break;
 			T returned = child.getAtPoint(pointer);
-			if(returned != null)
+			if (returned != null)
 				return returned;
 		}
 		return null;
@@ -305,11 +306,11 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		for (QuadNode<T> child : children)
 			child.forEach(func);
 	}
-	
+
 	public void filter(Predicate<T> func)
 	{
 		contained.retainAll(contained.stream().filter(func).collect(Collectors.toList()));
-		for(QuadNode<T> child : children)
+		for (QuadNode<T> child : children)
 		{
 			child.filter(func);
 		}

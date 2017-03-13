@@ -182,7 +182,7 @@ public class Game extends Scene
 			} else
 			{
 				Entity clicked = entities.getAtPoint(mousePosition);
-				if(clicked != null)
+				if (clicked != null)
 				{
 					selectedUnits.forEach(u -> u.target(clicked));
 					handled = true;
