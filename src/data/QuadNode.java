@@ -278,6 +278,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 				obj.setCurrentNode(this);
 			}
 		}
+		buffer.clear();
 	}
 
 	public boolean areaFree(double x, double y, double radius)
