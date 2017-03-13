@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import data.FastList;
+import data.QuadNode;
 import entity.BlueberryBush;
 import entity.Cauliflower;
 import entity.Entity;
@@ -19,23 +20,22 @@ import javafx.scene.paint.Color;
 public class ConstructionBar extends UIComponent
 {
 	private static final int BORDER = 2, BUTTON_SIZE = 16, BUTTON_BORDER_SIZE = 20;
-	private List<Entity> entities;
 	
 	private List<Image> prototypes;
 	private List<StructureBuilder> constructors;
 	private Image ghost;
 	private int placingIndex;
 	private boolean active, placing, handlingClickDown;
+	private QuadNode<Entity> root;
 	
 	private interface StructureBuilder
 	{
-		public Structure build(Point2D location, boolean friendly, double health);
+		public Structure build(QuadNode<Entity> root, Point2D location, boolean friendly, double health);
 	}
 	
-	public ConstructionBar(List<Entity> entities)
+	public ConstructionBar(QuadNode<Entity> root)
 	{
 		super(new Rectangle(400 - (200 / 2), 300 - (125 / 2), 200, 125));
-		this.entities = entities;
 		active = false;
 		
 		constructors = new FastList<>(new StructureBuilder[] { GrapeVine::new, BlueberryBush::new, Cauliflower::new} );
@@ -43,7 +43,9 @@ public class ConstructionBar extends UIComponent
 		//Prototype structures
 		prototypes = new ArrayList<>();
 		for(StructureBuilder b : constructors)
-			prototypes.add(b.build(null, true, 0).getIcon());
+			prototypes.add(b.build(null, null, true, 0).getIcon());
+		
+		this.root = root;
 	}
 	
 	public void setActive(boolean active)
@@ -115,20 +117,12 @@ public class ConstructionBar extends UIComponent
 			if(placing)
 			{
 				Point2D placement = new Point2D.Double(e.getX(), e.getY());
-				boolean collides = false;
 				Structure s = null;
-				s = constructors.get(placingIndex).build(placement, true, 150);
-				for(Entity ent : entities)
-				{
-					if(ent.location.distanceSq(placement) < ((ent.radius + s.radius) * (ent.radius + s.radius)))
-					{
-						collides = true;
-						break;
-					}
-				}
+				s = constructors.get(placingIndex).build(root, placement, true, 150);
+				boolean collides = root.areaFree(e.getX(), e.getY(), s.getRadius());
 				if(!collides)
 				{
-					entities.add(s);
+					root.add(s);
 					if(!e.isShiftDown())
 						placing = false;
 				}

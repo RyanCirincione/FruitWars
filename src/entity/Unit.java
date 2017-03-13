@@ -4,9 +4,9 @@ import java.awt.geom.Point2D;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
+import data.QuadNode;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -18,10 +18,10 @@ public abstract class Unit extends Entity
 	private Point2D destination;
 	private static ArrayList<String> names = loadNames();
 
-	public Unit(Image[][] sprite, Point2D location, Point2D rallyPoint, double radius, double speed, double health,
-			boolean friendly)
+	public Unit(QuadNode<Entity> root, Image[][] sprite, Point2D location, Point2D rallyPoint, double radius,
+			double speed, double health, boolean friendly)
 	{
-		super(sprite, location, radius, friendly, health);
+		super(root, sprite, location, radius, friendly, health);
 		destination = rallyPoint;
 		this.speed = speed;
 		this.health = health;
@@ -29,7 +29,8 @@ public abstract class Unit extends Entity
 
 	public void moveToward(long millis)
 	{
-		if (!location.equals(destination))
+		Point2D location = getCenter();
+		if (!getCenter().equals(destination))
 		{
 			double distance = location.distance(destination);
 			if (distance < speed)
@@ -45,15 +46,18 @@ public abstract class Unit extends Entity
 			}
 		}
 	}
-
-	public void tick(long millis, List<Entity> entities)
+	
+	@Override
+	public void tick(long millis)
 	{
 		moveToward(millis);
-		super.tick(millis, entities);
+		super.tick(millis);
 	}
-
+	
+	@Override
 	public void draw(GraphicsContext g2, long millis)
 	{
+		Point2D location = getCenter();
 		g2.setStroke(Color.RED);
 		if (!location.equals(destination))
 			g2.strokeOval((int) destination.getX(), (int) destination.getY(), 8, 8);
@@ -101,5 +105,6 @@ public abstract class Unit extends Entity
 		selected = select;
 	}
 
-	public abstract void attack(Entity enemy, List<Entity> entities);
+	public abstract void attack(Entity enemy);
+	public abstract void target(Entity enemy);
 }

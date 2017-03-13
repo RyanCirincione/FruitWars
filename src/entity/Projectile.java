@@ -3,20 +3,20 @@ package entity;
 import java.awt.geom.Point2D;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.List;
 
+import data.QuadNode;
 import javafx.scene.image.Image;
 
 public class Projectile extends Entity
 {
 	public final static double MAX_HEALTH = 1000;
 	public static Image[][] sprite = loadSprite();
-	private double range, radius, damage, speed;
+	private double range, damage, speed;
 	private Point2D velocity, startingPoint;
 	
-	public Projectile(Point2D location, Point2D target, boolean friendly, double radius, double speed, double damage, double range)
+	public Projectile(QuadNode<Entity> root, Point2D location, Point2D target, boolean friendly, double radius, double speed, double damage, double range)
 	{
-		super(sprite, location, radius, friendly, MAX_HEALTH);
+		super(root, sprite, location, radius, friendly, MAX_HEALTH);
 		
 		double distance = location.distance(target);
 		this.speed = speed;
@@ -43,27 +43,26 @@ public class Projectile extends Entity
 	}
 	
 	@Override
-	public void tick(long millis, List<Entity> entities)
+	public void tick(long millis)
 	{
 		double x = velocity.getX() * 60.0 * millis / (1000.0 / speed);
 		double y = velocity.getY() * 60.0 * millis / (1000.0 / speed);
+		Point2D location = getCenter();
 		location.setLocation(location.getX() + x, location.getY() + y);
 		//Out of range
 		if(startingPoint.distanceSq(location) > range * range)
-			entities.remove(this);
+			health = 0;
 		else
+			super.tick(millis);
+	}
+	
+	@Override
+	public void collide(Entity e, long milis)
+	{
+		if (e.isFriendly() != isFriendly() && intersects(e) && !(e instanceof Projectile))
 		{
-			for (Entity e : entities)
-			{
-				double radiusSum = radius + e.radius;
-				if (!(e.isFriendly() == isFriendly()) && location.distanceSq(e.location) <= radiusSum * radiusSum && !(e instanceof Projectile))
-				{
-					e.setHealth(e.getHealth() - damage);
-					health = 0;
-					break;
-				}
-			}
-			super.tick(millis, entities);
+			e.setHealth(e.getHealth() - damage);
+			health = 0;
 		}
 	}
 }

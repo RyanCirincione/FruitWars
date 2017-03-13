@@ -3,8 +3,8 @@ package entity;
 import java.awt.geom.Point2D;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.util.List;
 
+import data.QuadNode;
 import javafx.scene.image.Image;
 
 public class BlueberryBush extends Structure
@@ -15,9 +15,9 @@ public class BlueberryBush extends Structure
 	public static Image[][] sprite = loadSprite();
 	private double timeToSpawn;
 	
-	public BlueberryBush(Point2D location, boolean friendly, double health)
+	public BlueberryBush(QuadNode<Entity> root, Point2D location, boolean friendly, double health)
 	{
-		super(sprite, location, RADIUS, friendly, health);
+		super(root, sprite, location, RADIUS, friendly, health);
 		this.rally = new Point2D.Double();
 		timeToSpawn = SPAWN_TIME + (2*Math.random()*SPAWN_TIME_ERROR) - SPAWN_TIME_ERROR;
 	}
@@ -41,7 +41,7 @@ public class BlueberryBush extends Structure
 	}
 
 	@Override
-	public void tick(long millis, List<Entity> entities)
+	public void tick(long millis)
 	{
 		timeToSpawn -= millis;
 		if(timeToSpawn <= 0)
@@ -49,8 +49,8 @@ public class BlueberryBush extends Structure
 			timeToSpawn += SPAWN_TIME + (2*Math.random()*SPAWN_TIME_ERROR) - SPAWN_TIME_ERROR;
 			int count = 3 + (int)(Math.random()*2);
 			for(int i = 0; i < count; i++)
-				entities.add(new Blueberry(new Point2D.Double(location.getX() + Math.random()*radius*2 - radius,
-						location.getY() + Math.random()*radius*2 - radius), rally, friendly));
+				root.add(new Blueberry(root, new Point2D.Double(getCenter().getX() + Math.random()*radius*2 - radius,
+						getCenter().getY() + Math.random()*radius*2 - radius), rally, friendly));
 		}
 	}
 

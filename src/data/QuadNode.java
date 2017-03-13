@@ -5,6 +5,8 @@ import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.function.Predicate;
+import java.util.stream.Collectors;
 
 /**
  * A quadtree to make collision checking between objects more efficient
@@ -27,7 +29,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		void setCurrentNode(QuadNode<E> node);
 
 		void collide(E other, long millis);
-		
+
 		void tick(long millis);
 	}
 
@@ -36,12 +38,12 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		boolean check(T one, T two);
 	}
 
-	private List<T> contained;
-	private List<QuadNode<T>> children;
+	List<T> contained;
+	List<QuadNode<T>> children;
 	private List<T> buffer;
 	private Rectangle bounds, temp;
 
-	public QuadNode(QuadNode<T> parent, Rectangle bounds, int smallestWidth, int smallestHeight)
+	public QuadNode(Rectangle bounds, int smallestWidth, int smallestHeight)
 	{
 		contained = new FastList<>();
 		children = new FastList<>(4);
@@ -54,15 +56,15 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		int yOffset = childHeight / 2;
 		if (childWidth >= smallestWidth && childHeight >= smallestHeight)
 		{
-			children.add(new QuadNode<T>(this,
-					new Rectangle((int) bounds.getX(), (int) bounds.getY(), childWidth, childHeight), smallestWidth,
-					smallestHeight));
-			children.add(new QuadNode<T>(this,
+			children.add(
+					new QuadNode<T>(new Rectangle((int) bounds.getX(), (int) bounds.getY(), childWidth, childHeight),
+							smallestWidth, smallestHeight));
+			children.add(new QuadNode<T>(
 					new Rectangle((int) bounds.getX() + xOffset, (int) bounds.getY(), childWidth, childHeight),
 					smallestWidth, smallestHeight));
-			children.add(new QuadNode<T>(this, new Rectangle((int) bounds.getX() + xOffset,
-					(int) bounds.getY() + yOffset, childWidth, childHeight), smallestWidth, smallestHeight));
-			children.add(new QuadNode<T>(this,
+			children.add(new QuadNode<T>(new Rectangle((int) bounds.getX() + xOffset, (int) bounds.getY() + yOffset,
+					childWidth, childHeight), smallestWidth, smallestHeight));
+			children.add(new QuadNode<T>(
 					new Rectangle((int) bounds.getX(), (int) bounds.getY() + yOffset, childWidth, childHeight),
 					smallestWidth, smallestHeight));
 		}
@@ -191,14 +193,16 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 			T nodeClosest = child.getClosest(obj, func);
 			if (closest == null)
 				closest = nodeClosest;
-			else if(obj.getCenter().distanceSq(nodeClosest.getCenter()) < obj.getCenter().distanceSq(closest.getCenter()))
+			else if (obj.getCenter().distanceSq(nodeClosest.getCenter()) < obj.getCenter()
+					.distanceSq(closest.getCenter()))
 			{
 				closest = nodeClosest;
 			}
 		}
-		for(T other : contained)
+		for (T other : contained)
 		{
-			if(func.check(obj, other) && obj.getCenter().distanceSq(other.getCenter()) < obj.getCenter().distanceSq(closest.getCenter()))
+			if (func.check(obj, other)
+					&& obj.getCenter().distanceSq(other.getCenter()) < obj.getCenter().distanceSq(closest.getCenter()))
 			{
 				closest = other;
 			}
@@ -206,6 +210,21 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		return closest;
 	}
 	
+	public T getAtPoint(Point2D pointer)
+	{
+		for(T obj : contained)
+			if(obj.getCenter().distanceSq(pointer) < obj.getRadius() * obj.getRadius())
+				return obj;
+		for(QuadNode<T> child : children)
+		{
+			if(!child.bounds.contains(pointer)) break;
+			T returned = child.getAtPoint(pointer);
+			if(returned != null)
+				return returned;
+		}
+		return null;
+	}
+
 	private void checkCollisions(QuadNode<T> checkAgainst, long millis)
 	{
 		for (T outer : checkAgainst.contained)
@@ -222,10 +241,10 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		for (QuadNode<T> child : children)
 			child.checkCollisions(checkAgainst, millis);
 	}
-	
+
 	public void tickAll(long millis)
 	{
-		for(T obj : contained)
+		for (T obj : contained)
 			obj.tick(millis);
 		for (int i = 0; i < contained.size(); i++)
 		{
@@ -245,9 +264,9 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 			child.checkCollisions(this, millis);
 			child.tickAll(millis);
 		}
-		for(T child : contained)
+		for (T child : contained)
 			updateNode(child);
-		for(T obj : buffer)
+		for (T obj : buffer)
 		{
 			QuadNode<T> child = findChild(obj);
 			if (child != null)
@@ -259,31 +278,40 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 			}
 		}
 	}
-	
+
 	public boolean areaFree(double x, double y, double radius)
 	{
-		for(T obj : contained)
+		for (T obj : contained)
 		{
 			double radSum = obj.getRadius() + radius;
-			if(obj.getCenter().distanceSq(x, y) < radSum * radSum)
+			if (obj.getCenter().distanceSq(x, y) < radSum * radSum)
 				return false;
 		}
-		for(QuadNode<T> child : children)
+		for (QuadNode<T> child : children)
 		{
-			if(!child.contains(x - radius, y - radius, x + radius, y + radius))
+			if (!child.contains(x - radius, y - radius, x + radius, y + radius))
 				break;
 			boolean free = child.areaFree(x, y, radius);
-			if(!free)
+			if (!free)
 				return false;
 		}
 		return true;
 	}
-	
+
 	public void forEach(Consumer<T> func)
 	{
-		for(T obj : contained)
+		for (T obj : contained)
 			func.accept(obj);
-		for(QuadNode<T> child : children)
+		for (QuadNode<T> child : children)
 			child.forEach(func);
+	}
+	
+	public void filter(Predicate<T> func)
+	{
+		contained.retainAll(contained.stream().filter(func).collect(Collectors.toList()));
+		for(QuadNode<T> child : children)
+		{
+			child.filter(func);
+		}
 	}
 }

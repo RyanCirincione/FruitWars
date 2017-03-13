@@ -5,9 +5,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
+import data.QuadNode;
 import javafx.scene.image.Image;
 
 public class Blueberry extends Unit
@@ -21,9 +21,9 @@ public class Blueberry extends Unit
 	private String name;
 	public static Image[][] sprite = loadSprite();
 	
-	public Blueberry(Point2D location, Point2D rallyPoint, boolean friendly)
+	public Blueberry(QuadNode<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
 	{
-		super(sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
+		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
 		name = "Pvt. " + getName() + " " + blueberryLastNames.get((int) (Math.random() * blueberryLastNames.size()));
 		coolDown = 0;
@@ -44,23 +44,24 @@ public class Blueberry extends Unit
 	}
 
 	@Override
-	public void tick(long millis, List<Entity> entities)
+	public void tick(long millis)
 	{
 		coolDown -= millis;
 		if (coolDown <= 0)
 		{
-			for (Entity e : entities)
+			Entity e = root.getClosest(this, (e1, e2) -> {
+				return e1.isFriendly() != e2.isFriendly() && !(e2 instanceof Projectile);
+			});
+			if(e != null)
 			{
 				double radiusSum = radius + RANGE + e.radius;
-				if (!(e.isFriendly() == isFriendly()) && location.distanceSq(e.location) <= radiusSum * radiusSum  && !(e instanceof Projectile))
-				{
-					attack(e, entities);
-					coolDown = MAXCOOLDOWN;
-					break;
-				}
+				if(getCenter().distanceSq(e.getCenter()) <= radiusSum * radiusSum)
+					attack(e);
+				else
+					target(e);
 			}
 		}
-		super.tick(millis, entities);
+		super.tick(millis);
 	}
 
 	/**
@@ -92,18 +93,24 @@ public class Blueberry extends Unit
 	}
 
 	@Override
-	public void attack(Entity enemy, List<Entity> entities)
+	public void attack(Entity enemy)
+	{
+		coolDown = MAXCOOLDOWN;
+		root.add(new Projectile(root, (Point2D)getCenter().clone(), (Point2D)enemy.getCenter().clone(), isFriendly(), P_RADIUS, P_SPEED, DAMAGE, RANGE));
+		super.setDestination(getCenter());
+	}
+
+	@Override
+	public void target(Entity enemy)
 	{
 		if (!(enemy.isFriendly() == isFriendly()))
 		{
 			// if within range
 			double radiusSum = radius + RANGE + enemy.radius;
-			if (location.distanceSq(enemy.location) <= radiusSum * radiusSum  && !(enemy instanceof Projectile))
-			{
-				entities.add(new Projectile((Point2D)location.clone(), (Point2D)enemy.location.clone(), isFriendly(), P_RADIUS, P_SPEED, DAMAGE, RANGE));
-				super.setDestination(location);
-			} else
-				super.setDestination(enemy.location);
+			if (getCenter().distanceSq(enemy.getCenter()) <= radiusSum * radiusSum  && !(enemy instanceof Projectile))
+				attack(enemy);
+			else
+				super.setDestination(enemy.getCenter());
 		}
 	}
 
