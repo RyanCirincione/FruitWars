@@ -4,6 +4,7 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.Collection;
 import java.util.List;
+import java.util.function.Consumer;
 
 /**
  * A quadtree to make collision checking between objects more efficient
@@ -276,5 +277,13 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 				return false;
 		}
 		return true;
+	}
+	
+	public void forEach(Consumer<T> func)
+	{
+		for(T obj : contained)
+			func.accept(obj);
+		for(QuadNode<T> child : children)
+			child.forEach(func);
 	}
 }
