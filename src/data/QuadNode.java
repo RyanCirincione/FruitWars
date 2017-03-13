@@ -206,7 +206,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		}
 		for (T other : contained)
 		{
-			if(closest == null)
+			if(closest == null && func.check(obj, other))
 				closest = other;
 			else if (func.check(obj, other)
 					&& obj.getCenter().distanceSq(other.getCenter()) < obj.getCenter().distanceSq(closest.getCenter()))
