@@ -9,23 +9,23 @@ import java.util.Scanner;
 
 import javafx.scene.image.Image;
 
-public class Blueberry extends Unit
+public class Strawberry extends Unit
 {
 	private static final double RADIUS = 16, RANGE = 150;
 	private static final double P_RADIUS = 1, P_SPEED = 4, DAMAGE = 2.0;
 	private static final long MAXCOOLDOWN = 500;
 	private long coolDown;
 	public final static double MAX_HEALTH = 25, SPEED = 2;
-	public static ArrayList<String> blueberryLastNames = loadGrapeVarieties();
+	public static ArrayList<String> strawberryLastNames = loadGrapeVarieties();
 	private String name;
 	public static Image[][] sprite = loadSprite();
 	private boolean attacking;
 	
-	public Blueberry(Point2D location, Point2D rallyPoint, boolean friendly)
+	public Strawberry(Point2D location, Point2D rallyPoint, boolean friendly)
 	{
 		super(sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
-		name = "Pvt. " + getName() + " " + blueberryLastNames.get((int) (Math.random() * blueberryLastNames.size()));
+		name = "Pvt. " + getName() + " " + strawberryLastNames.get((int) (Math.random() * strawberryLastNames.size()));
 		coolDown = 0;
 		attacking = false;
 
@@ -36,7 +36,7 @@ public class Blueberry extends Unit
 		try
 		{
 			sprite = new Image[1][1];
-			sprite[0][0] = new Image(new FileInputStream("assets/tempBlueberry.png"));
+			sprite[0][0] = new Image(new FileInputStream("assets/tempstrawberry.png"));
 		} catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
@@ -80,16 +80,16 @@ public class Blueberry extends Unit
 	 */
 	private static ArrayList<String> loadGrapeVarieties()
 	{
-		System.out.println("Loading types of blueberries...");
+		System.out.println("Loading types of strawberries...");
 		ArrayList<String> grapes = new ArrayList<>();
-		try (Scanner fileScan = new Scanner(new File("assets/blueberryNames.txt")))
+		try (Scanner fileScan = new Scanner(new File("assets/strawberryNames.txt")))
 		{
 			while (fileScan.hasNextLine())
 				grapes.add(fileScan.nextLine());
 			fileScan.close();
 		} catch (FileNotFoundException e)
 		{
-			System.err.println("Could not load a ridiculously long list of blueberry varieties ¯\\_(ツ)_/¯");
+			System.err.println("Could not load a ridiculously long list of strawberry varieties ¯\\_(ツ)_/¯");
 			e.printStackTrace();
 		}
 		return grapes;
@@ -97,7 +97,7 @@ public class Blueberry extends Unit
 	
 	public String toString()
 	{
-		String status = name + " (Blueberry)";
+		String status = name + " (strawberry)";
 		while (status.length() < 50)
 			status = status + ".";
 		return status + "HP: " + health + "/" + MAX_HEALTH;

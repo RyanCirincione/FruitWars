@@ -19,13 +19,15 @@ public class Grape extends Unit
 	private String name;
 	public static Image[][] sprite = loadSprite();
 	private double damage = 5.0;
-
+	private boolean attacking;
+	
 	public Grape(Point2D location, Point2D rallyPoint, boolean friendly)
 	{
 		super(sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
 		name = "Pvt. " + getName() + " " + grapeLastNames.get((int) (Math.random() * grapeLastNames.size()));
 		coolDown = 0;
+		attacking = false;
 	}
 
 	private static Image[][] loadSprite()
@@ -45,16 +47,28 @@ public class Grape extends Unit
 	public void tick(long millis, ArrayList<Entity> entities)
 	{
 		coolDown -= millis;
+		boolean attackingNow = false;
 		if (coolDown <= 0)
 		{
-			for (Entity e : entities)
+			for (int i = 0; i < entities.size(); i++)
 			{
-				double radiusSum = radius + RANGE + e.radius;
-				if (!(e.isFriendly() == isFriendly()) && location.distanceSq(e.location) <= radiusSum * radiusSum  && !(e instanceof Projectile))
+				double radiusSum = radius + RANGE + entities.get(i).radius;
+				if (!attackingNow && !(entities.get(i).isFriendly() == isFriendly()) && location.distanceSq(entities.get(i).location) <= radiusSum * radiusSum  && !(entities.get(i) instanceof Projectile))
 				{
-					attack(e, entities);
+					if(!attacking)
+					{
+						super.startAttack();
+						attacking = true;
+					}
+					attackingNow = true;
+					attack(entities.get(i), entities);
 					coolDown = MAXCOOLDOWN;
 				}
+			}
+			if(attacking && !attackingNow)
+			{
+				attacking = false;
+				super.endAttack();
 			}
 		}
 		super.tick(millis, entities);

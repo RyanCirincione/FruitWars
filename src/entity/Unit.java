@@ -14,7 +14,7 @@ public abstract class Unit extends Entity
 {
 	private boolean selected;
 	private double speed;
-	private Point2D destination;
+	private Point2D destination, longTermDestination;
 	private static ArrayList<String> names = loadNames();
 
 	public Unit(Image[][] sprite, Point2D location, Point2D rallyPoint, double radius, double speed, double health,
@@ -49,6 +49,16 @@ public abstract class Unit extends Entity
 	{
 		moveToward(millis);
 		super.tick(millis, entities);
+	}
+	
+	public void startAttack()
+	{
+		longTermDestination = (Point2D) destination.clone();
+	}
+	
+	public void endAttack()
+	{
+		destination = longTermDestination;
 	}
 
 	public void draw(GraphicsContext g2, long millis)
