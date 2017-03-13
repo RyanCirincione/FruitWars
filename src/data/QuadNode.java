@@ -258,4 +258,23 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 			}
 		}
 	}
+	
+	public boolean areaFree(double x, double y, double radius)
+	{
+		for(T obj : contained)
+		{
+			double radSum = obj.getRadius() + radius;
+			if(obj.getCenter().distanceSq(x, y) < radSum * radSum)
+				return false;
+		}
+		for(QuadNode<T> child : children)
+		{
+			if(!child.contains(x - radius, y - radius, x + radius, y + radius))
+				break;
+			boolean free = child.areaFree(x, y, radius);
+			if(!free)
+				return false;
+		}
+		return true;
+	}
 }
