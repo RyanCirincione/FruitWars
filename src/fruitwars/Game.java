@@ -62,16 +62,16 @@ public class Game extends Scene
 		e = new GrapeVine(entities, new Point2D.Double(100, 500), true, 150);
 		e.setRally(new Point2D.Double(600, 300));
 		entities.add(e);
-		e = new GrapeVine(entities, new Point2D.Double(600, 100), true, 150);
+		e = new GrapeVine(entities, new Point2D.Double(600, 100), false, 150);
 		e.setRally(new Point2D.Double(100, 300));
 		entities.add(e);
-		e = new GrapeVine(entities, new Point2D.Double(600, 500), true, 150);
+		e = new GrapeVine(entities, new Point2D.Double(600, 500), false, 150);
 		e.setRally(new Point2D.Double(100, 300));
 		entities.add(e);
 		BlueberryBush b = new BlueberryBush(entities, new Point2D.Double(100, 300), true, 150);
 		b.setRally(new Point2D.Double(600, 300));
 		entities.add(b);
-		b = new BlueberryBush(entities, new Point2D.Double(600, 300), true, 150);
+		b = new BlueberryBush(entities, new Point2D.Double(600, 300), false, 150);
 		b.setRally(new Point2D.Double(100, 300));
 		entities.add(b);
 	}

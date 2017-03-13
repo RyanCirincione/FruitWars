@@ -101,6 +101,11 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 	{
 		return bounds.contains(x, y, width, height);
 	}
+	
+	public boolean intersects(double x, double y, double width, double height)
+	{
+		return bounds.intersects(x, y, width, height);
+	}
 
 	public boolean contains(T obj)
 	{
@@ -156,7 +161,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 	{
 		for (QuadNode<T> child : children)
 		{
-			if (child.contains(x, y, width, height))
+			if (child.intersects(x, y, width, height))
 			{
 				child.addContained(x, y, width, height, list);
 				return;
@@ -193,7 +198,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 			T nodeClosest = child.getClosest(obj, func);
 			if (closest == null)
 				closest = nodeClosest;
-			else if (obj.getCenter().distanceSq(nodeClosest.getCenter()) < obj.getCenter()
+			else if (nodeClosest != null && obj.getCenter().distanceSq(nodeClosest.getCenter()) < obj.getCenter()
 					.distanceSq(closest.getCenter()))
 			{
 				closest = nodeClosest;
@@ -201,7 +206,9 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		}
 		for (T other : contained)
 		{
-			if (func.check(obj, other)
+			if(closest == null)
+				closest = other;
+			else if (func.check(obj, other)
 					&& obj.getCenter().distanceSq(other.getCenter()) < obj.getCenter().distanceSq(closest.getCenter()))
 			{
 				closest = other;

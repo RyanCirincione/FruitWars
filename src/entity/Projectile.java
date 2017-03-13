@@ -28,6 +28,7 @@ public class Projectile extends Entity
 		this.damage = damage;
 		location.setLocation(startingPoint = new Point2D.Double(location.getX(), location.getY()));
 		mass = 0f;
+		noclip = true;
 	}
 
 	private static Image[][] loadSprite()
@@ -60,7 +61,7 @@ public class Projectile extends Entity
 	@Override
 	public void collide(Entity e, long milis)
 	{
-		if (e.isFriendly() != isFriendly() && intersects(e) && !(e instanceof Projectile))
+		if (e.isFriendly() != isFriendly() && !(e instanceof Projectile))
 		{
 			e.setHealth(e.getHealth() - damage);
 			health = 0;
