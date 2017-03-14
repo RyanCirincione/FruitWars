@@ -38,7 +38,7 @@ public class FastList<T> implements List<T>
 	public FastList(T[] initial)
 	{
 		data = initial;
-		size = 0;
+		size = initial.length;
 	}
 
 	@Override
