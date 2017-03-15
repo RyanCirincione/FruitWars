@@ -3,6 +3,7 @@ package ui;
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.util.ArrayList;
+import java.util.List;
 
 import entity.Unit;
 import javafx.scene.canvas.GraphicsContext;
@@ -13,10 +14,10 @@ import javafx.scene.paint.Color;
 public class UnitSelectionBar extends UIComponent
 {
 	private static final int BORDER = 2, BUTTON_SIZE = 16, BUTTON_BORDER_SIZE = 20;
-	private ArrayList<Unit> selectedUnits = new ArrayList<Unit>();
+	private List<Unit> selectedUnits = new ArrayList<Unit>();
 	private boolean handlingClickDown;
 
-	public UnitSelectionBar(ArrayList<Unit> selectedUnits)
+	public UnitSelectionBar(List<Unit> selectedUnits)
 	{
 		super(new Rectangle(200, 475, 600, 125));
 		this.selectedUnits = selectedUnits;

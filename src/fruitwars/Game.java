@@ -1,13 +1,15 @@
 package fruitwars;
 
+import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import java.util.ArrayList;
+import java.util.List;
 
+import data.FastList;
+import data.QuadNode;
 import entity.BlueberryBush;
 import entity.Entity;
 import entity.GrapeVine;
-import entity.Structure;
 import entity.Unit;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -23,9 +25,9 @@ import ui.UnitSelectionBar;
 public class Game extends Scene
 {
 	private GraphicsContext g;
-	private ArrayList<Entity> entities;
-	private ArrayList<Unit> selectedUnits;
-	private ArrayList<UIComponent> gui;
+	private QuadNode<Entity> entities;
+	private List<Unit> selectedUnits;
+	private List<UIComponent> gui;
 	private ConstructionBar cBar;
 	private boolean selecting;
 	private Color selectionBlue = new Color(102.0 / 255, 153.0 / 255, 1, 64 / 255.0);
@@ -35,14 +37,15 @@ public class Game extends Scene
 	{
 		super(root);
 		g = ctx;
-		entities = new ArrayList<>();
-		selectedUnits = new ArrayList<>();
+		Rectangle gameBounds = new Rectangle(0, 0, (int) ctx.getCanvas().getWidth(), (int) ctx.getCanvas().getHeight());
+		entities = new QuadNode<>(gameBounds, 128, 128);
+		selectedUnits = new FastList<>();
 
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		mousePosition = new Point2D.Double();
 
-		gui = new ArrayList<>();
+		gui = new FastList<>();
 		gui.add(new UnitSelectionBar(selectedUnits));
 		cBar = new ConstructionBar(entities);
 		gui.add(cBar);
@@ -53,38 +56,36 @@ public class Game extends Scene
 		addEventHandler(KeyEvent.KEY_PRESSED, this::keyPressed);
 		addEventHandler(KeyEvent.KEY_RELEASED, this::keyReleased);
 
-		entities.add(new GrapeVine(new Point2D.Double(100, 100), new Point2D.Double(600, 300), 48, true, 150));
-		entities.add(new BlueberryBush(new Point2D.Double(100, 300), new Point2D.Double(600, 300), 48, true, 150));
-		entities.add(new GrapeVine(new Point2D.Double(100, 500), new Point2D.Double(600, 300), 48, true, 150));
-		entities.add(new GrapeVine(new Point2D.Double(600, 100), new Point2D.Double(100, 300), 48, false, 150));
-		entities.add(new BlueberryBush(new Point2D.Double(600, 300), new Point2D.Double(100, 300), 48, false, 150));
-		entities.add(new GrapeVine(new Point2D.Double(600, 500), new Point2D.Double(100, 300), 48, false, 150));
+		GrapeVine e = new GrapeVine(entities, new Point2D.Double(100, 100), true, 150);
+		e.setRally(new Point2D.Double(600, 300));
+		entities.add(e);
+		e = new GrapeVine(entities, new Point2D.Double(100, 500), true, 150);
+		e.setRally(new Point2D.Double(600, 300));
+		entities.add(e);
+		e = new GrapeVine(entities, new Point2D.Double(600, 100), false, 150);
+		e.setRally(new Point2D.Double(100, 300));
+		entities.add(e);
+		e = new GrapeVine(entities, new Point2D.Double(600, 500), false, 150);
+		e.setRally(new Point2D.Double(100, 300));
+		entities.add(e);
+		BlueberryBush b = new BlueberryBush(entities, new Point2D.Double(100, 300), true, 150);
+		b.setRally(new Point2D.Double(600, 300));
+		entities.add(b);
+		b = new BlueberryBush(entities, new Point2D.Double(600, 300), false, 150);
+		b.setRally(new Point2D.Double(100, 300));
+		entities.add(b);
 	}
 
 	public void tick(long milli)
 	{
-		for (int i = 0; i < entities.size(); i++)
-		{
-			entities.get(i).tick(milli, entities);
-			for (int j = i; j < entities.size(); j++)
-			{
-				entities.get(i).separate(entities.get(j), milli);
-			}
-
-			if (entities.get(i).getHealth() <= 0)
-			{
-				selectedUnits.remove(entities.get(i));
-				entities.remove(i);
-				i = Math.max(i - 1, 0);
-			}
-		}
+		entities.tickAll(milli);
+		entities.filter(entity -> entity.getHealth() > 0);
 	}
 
 	public void draw(long milli)
 	{
 		g.clearRect(0, 0, FruitWars.WINDOW_WIDTH, FruitWars.WINDOW_HEIGHT);
-		for (Entity e : entities)
-			e.draw(g, milli);
+		entities.forEach(e -> e.draw(g, milli));
 		for (UIComponent u : gui)
 			u.draw(g, milli, mousePosition);
 		if (selecting && !mousePosition.equals(selectionCorner))
@@ -107,7 +108,7 @@ public class Game extends Scene
 
 	public void keyPressed(KeyEvent e)
 	{
-		
+
 	}
 
 	public void keyReleased(KeyEvent e)
@@ -118,7 +119,7 @@ public class Game extends Scene
 			clearSelected(); // Unselect units
 			break;
 		case C:
-			selectedUnits.forEach(unit -> unit.setDestination(unit.location)); // Stop
+			selectedUnits.forEach(unit -> unit.setDestination(unit.getCenter())); // Stop
 			// moving
 			break;
 		case B:
@@ -147,6 +148,8 @@ public class Game extends Scene
 		}
 	}
 
+	private List<Entity> selectionBuffer = new FastList<>();
+
 	public void mouseReleased(MouseEvent e)
 	{
 		boolean handled = false;
@@ -166,24 +169,23 @@ public class Game extends Scene
 				Rectangle2D selectionRect = getSelectionRect();
 				if (!e.isControlDown())
 					clearSelected();
-				entities.stream().filter(ent -> ent instanceof Unit).map(ent -> (Unit) ent)
-						.filter(unit -> unit.isFriendly()).filter(unit -> selectionRect.contains(unit.location))
-						.forEach(unit -> {
-							unit.setSelected(true);
-							selectedUnits.add(unit);
-						});
+				entities.addContained((int) selectionRect.getX(), (int) selectionRect.getY(),
+						(int) selectionRect.getWidth(), (int) selectionRect.getHeight(), selectionBuffer);
+				for (Entity ent : selectionBuffer)
+					if (ent instanceof Unit)
+					{
+						Unit u = (Unit) ent;
+						u.setSelected(true);
+						selectedUnits.add(u);
+					}
 				selecting = false;
 			} else
 			{
-				for (Entity ent : entities)
+				Entity clicked = entities.getAtPoint(mousePosition);
+				if (clicked != null)
 				{
-					if (!ent.isFriendly() && ent.location.distanceSq(mousePosition) < ent.radius * ent.radius)
-					{
-						for (Unit u : selectedUnits)
-							u.attack(ent, entities);
-						handled = true;
-						break;
-					}
+					selectedUnits.forEach(u -> u.target(clicked));
+					handled = true;
 				}
 				if (!handled)
 				{

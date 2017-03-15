@@ -1,18 +1,18 @@
 package entity;
 
 import java.awt.geom.Point2D;
-import java.util.ArrayList;
 
+import data.QuadNode;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public abstract class Entity
+public abstract class Entity implements QuadNode.Bounded<Entity>
 {
 	private Image[][] sprite; // a 2d array of [animation][frame]
 	/**
 	 * The center of the Entity
 	 */
-	public Point2D location;
+	private Point2D location;
 	protected double health;
 	/**
 	 * The radius of the Entity's hitbox
@@ -32,9 +32,19 @@ public abstract class Entity
 	 * If it is friendly to the player
 	 */
 	protected boolean friendly;
+	/**
+	 * The QuadNode this entity is stored in
+	 */
+	private QuadNode<Entity> currentNode;
+	/**
+	 * The root of the quadtree
+	 */
+	protected QuadNode<Entity> root;
 
-	public Entity(Image[][] sprite, Point2D location, double radius, boolean friendly, double health)
+	public Entity(QuadNode<Entity> root, Image[][] sprite, Point2D location, double radius, boolean friendly,
+			double health)
 	{
+		this.root = root;
 		this.sprite = sprite;
 		this.location = location;
 		noclip = false;
@@ -43,7 +53,8 @@ public abstract class Entity
 		this.health = health;
 	}
 
-	public void tick(long millis, ArrayList<Entity> entities)
+	@Override
+	public void tick(long millis)
 	{
 
 	}
@@ -76,12 +87,12 @@ public abstract class Entity
 	{
 		return sprite[animation][frame];
 	}
-	
+
 	public Image getIcon()
 	{
 		return sprite[animation][frame];
 	}
-	
+
 	/**
 	 * Randomizes location slightly for the separation algorithm
 	 */
@@ -98,7 +109,7 @@ public abstract class Entity
 		if (noclip || other.noclip || this == other)
 			return;
 		double radiusSum = radius + other.radius;
-		if (location.distanceSq(other.location) > radiusSum * radiusSum)
+		if (!intersects(other))
 			return;
 		// If the two objects are perfectly centered, shake them around a bit
 		if (location.equals(other.location))
@@ -123,5 +134,47 @@ public abstract class Entity
 			moveY *= 60.0 * millis / 1000.0;
 			other.location.setLocation(other.location.getX() + moveX, other.location.getY() + moveY);
 		}
+	}
+
+	@Override
+	public Point2D getCenter()
+	{
+		return location;
+	}
+
+	@Override
+	public double getRadius()
+	{
+		return radius;
+	}
+
+	@Override
+	public void setCenter(double x, double y)
+	{
+		location.setLocation(x, y);
+	}
+
+	@Override
+	public QuadNode<Entity> getCurrentNode()
+	{
+		return currentNode;
+	}
+
+	@Override
+	public void setCurrentNode(QuadNode<Entity> node)
+	{
+		currentNode = node;
+	}
+
+	@Override
+	public void collide(Entity other, long millis)
+	{
+		separate(other, millis);
+	}
+
+	public boolean intersects(Entity other)
+	{
+		double radSum = radius + other.radius;
+		return location.distanceSq(other.location) < radSum * radSum;
 	}
 }

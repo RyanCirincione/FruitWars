@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import data.QuadNode;
 import javafx.scene.image.Image;
 
 public class Grape extends Unit
@@ -21,9 +22,9 @@ public class Grape extends Unit
 	private double damage = 5.0;
 	private boolean attacking;
 	
-	public Grape(Point2D location, Point2D rallyPoint, boolean friendly)
+	public Grape(QuadNode<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
 	{
-		super(sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
+		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
 		name = "Pvt. " + getName() + " " + grapeLastNames.get((int) (Math.random() * grapeLastNames.size()));
 		coolDown = 0;
@@ -44,26 +45,22 @@ public class Grape extends Unit
 	}
 
 	@Override
-	public void tick(long millis, ArrayList<Entity> entities)
+	public void tick(long millis)
 	{
 		coolDown -= millis;
 		boolean attackingNow = false;
 		if (coolDown <= 0)
 		{
-			for (int i = 0; i < entities.size(); i++)
+			Entity e = root.getClosest(this, (e1, e2) -> {
+				return e1.isFriendly() != e2.isFriendly() && !(e2 instanceof Projectile);
+			});
+			if (e != null)
 			{
-				double radiusSum = radius + RANGE + entities.get(i).radius;
-				if (!attackingNow && !(entities.get(i).isFriendly() == isFriendly()) && location.distanceSq(entities.get(i).location) <= radiusSum * radiusSum  && !(entities.get(i) instanceof Projectile))
-				{
-					if(!attacking)
-					{
-						super.startAttack();
-						attacking = true;
-					}
-					attackingNow = true;
-					attack(entities.get(i), entities);
-					coolDown = MAXCOOLDOWN;
-				}
+				double radiusSum = radius + RANGE + e.radius;
+				if (getCenter().distanceSq(e.getCenter()) <= radiusSum * radiusSum)
+					attack(e);
+				else
+					target(e);
 			}
 			if(attacking && !attackingNow)
 			{
@@ -71,7 +68,7 @@ public class Grape extends Unit
 				super.endAttack();
 			}
 		}
-		super.tick(millis, entities);
+		super.tick(millis);
 	}
 
 	/**
@@ -93,7 +90,7 @@ public class Grape extends Unit
 		}
 		return grapes;
 	}
-	
+
 	public String toString()
 	{
 		String status = name + " (GRAPE)";
@@ -103,18 +100,24 @@ public class Grape extends Unit
 	}
 
 	@Override
-	public void attack(Entity enemy, ArrayList<Entity> entities)
+	public void attack(Entity enemy)
 	{
-		if (!(enemy.isFriendly() == isFriendly()))
+		enemy.setHealth(enemy.getHealth() - damage);
+		super.setDestination(getCenter());
+		coolDown = MAXCOOLDOWN;
+	}
+
+	@Override
+	public void target(Entity enemy)
+	{
+		if (enemy.isFriendly() != isFriendly())
 		{
 			// if within range
 			double radiusSum = radius + RANGE + enemy.radius;
-			if (location.distanceSq(enemy.location) <= radiusSum * radiusSum  && !(enemy instanceof Projectile))
-			{
-				enemy.setHealth(enemy.getHealth() - damage);
-				super.setDestination(location);
-			} else
-				super.setDestination(enemy.location);
+			if (getCenter().distanceSq(enemy.getCenter()) <= radiusSum * radiusSum && !(enemy instanceof Projectile))
+				attack(enemy);
+			else
+				super.setDestination(enemy.getCenter());
 		}
 	}
 }
