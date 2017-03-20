@@ -9,6 +9,7 @@ import javafx.scene.image.Image;
 public abstract class Entity implements QuadNode.Bounded<Entity>
 {
 	private Image[][] sprite; // a 2d array of [animation][frame]
+	protected String type;
 	/**
 	 * The center of the Entity
 	 */
@@ -51,6 +52,7 @@ public abstract class Entity implements QuadNode.Bounded<Entity>
 		this.radius = radius;
 		this.friendly = friendly;
 		this.health = health;
+		type = "entity";
 	}
 
 	@Override
@@ -71,6 +73,11 @@ public abstract class Entity implements QuadNode.Bounded<Entity>
 	public boolean isFriendly()
 	{
 		return friendly;
+	}
+	
+	public String getType()
+	{
+		return type;
 	}
 
 	public double getHealth()

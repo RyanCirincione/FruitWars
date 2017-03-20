@@ -19,6 +19,7 @@ public class GrapeVine extends Structure
 		super(root, sprite, location, RADIUS, friendly, health);
 		this.rally = new Point2D.Double();
 		timeToSpawn = SPAWN_TIME + (2 * Math.random() * SPAWN_TIME_ERROR) - SPAWN_TIME_ERROR;
+		type = "grape_vine";
 	}
 
 	private static Image[][] loadSprite()
