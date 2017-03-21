@@ -11,6 +11,7 @@ import entity.BlueberryBush;
 import entity.Cauliflower;
 import entity.Entity;
 import entity.GrapeVine;
+import entity.Potato;
 import entity.Structure;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
@@ -38,7 +39,8 @@ public class ConstructionBar extends UIComponent
 		super(new Rectangle(400 - (200 / 2), 300 - (125 / 2), 200, 125));
 		active = false;
 
-		constructors = new FastList<>(new StructureBuilder[] { GrapeVine::new, BlueberryBush::new, Cauliflower::new });
+		constructors = new FastList<>(new StructureBuilder[] { GrapeVine::new, BlueberryBush::new, Cauliflower::new,
+				Potato::new});
 
 		// Prototype structures
 		prototypes = new ArrayList<>();

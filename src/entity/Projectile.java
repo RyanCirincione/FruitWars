@@ -29,6 +29,7 @@ public class Projectile extends Entity
 		location.setLocation(startingPoint = new Point2D.Double(location.getX(), location.getY()));
 		mass = 0f;
 		noclip = true;
+		type = "projectile";
 	}
 
 	private static Image[][] loadSprite()

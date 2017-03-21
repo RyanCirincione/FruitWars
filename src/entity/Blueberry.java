@@ -30,7 +30,7 @@ public class Blueberry extends Unit
 		name = "Pvt. " + getName() + " " + blueberryLastNames.get((int) (Math.random() * blueberryLastNames.size()));
 		coolDown = 0;
 		attacking = false;
-
+		type = "blueberry";
 	}
 
 	private static Image[][] loadSprite()

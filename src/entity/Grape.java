@@ -29,6 +29,7 @@ public class Grape extends Unit
 		name = "Pvt. " + getName() + " " + grapeLastNames.get((int) (Math.random() * grapeLastNames.size()));
 		coolDown = 0;
 		attacking = false;
+		type = "grape";
 	}
 
 	private static Image[][] loadSprite()

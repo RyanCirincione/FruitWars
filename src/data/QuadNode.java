@@ -74,16 +74,14 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 	{
 		Point2D location = obj.getCenter();
 		double radius = obj.getRadius();
-		return r.intersects(location.getX() - radius, location.getY() - radius, location.getX() + radius,
-				location.getY() + radius);
+		return r.intersects(location.getX() - radius, location.getY() - radius, 2 * radius, 2 * radius);
 	}
 
 	private boolean rectContainsObject(T obj, Rectangle r)
 	{
 		Point2D location = obj.getCenter();
 		double radius = obj.getRadius();
-		return r.contains(location.getX() - radius, location.getY() - radius, location.getX() + radius,
-				location.getY() + radius);
+		return r.contains(location.getX() - radius, location.getY() - radius, 2 * radius, 2 * radius);
 	}
 
 	private boolean objectsOverlap(T o1, T o2)
@@ -101,7 +99,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 	{
 		return bounds.contains(x, y, width, height);
 	}
-	
+
 	public boolean intersects(double x, double y, double width, double height)
 	{
 		return bounds.intersects(x, y, width, height);
@@ -206,7 +204,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		}
 		for (T other : contained)
 		{
-			if(closest == null && func.check(obj, other))
+			if (closest == null && func.check(obj, other))
 				closest = other;
 			else if (func.check(obj, other)
 					&& obj.getCenter().distanceSq(other.getCenter()) < obj.getCenter().distanceSq(closest.getCenter()))

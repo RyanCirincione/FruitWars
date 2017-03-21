@@ -7,15 +7,16 @@ import java.io.FileNotFoundException;
 import data.QuadNode;
 import javafx.scene.image.Image;
 
-public class Cauliflower extends Structure
+public class Potato extends Structure
 {
-	static Image[][] sprite = loadSprite();
-	final static double RADIUS = 32;
-
-	public Cauliflower(QuadNode<Entity> root, Point2D location, boolean friendly, double health)
+	private static final double RADIUS = 28;
+	public static Image[][] sprite = loadSprite();
+	
+	public Potato(QuadNode<Entity> root, Point2D location, boolean friendly, double health)
 	{
 		super(root, sprite, location, RADIUS, friendly, health);
-		type = "cauliflower";
+		techRequired.add("cauliflower");
+		type = "potato";
 	}
 
 	private static Image[][] loadSprite()
@@ -23,7 +24,7 @@ public class Cauliflower extends Structure
 		try
 		{
 			sprite = new Image[1][1];
-			sprite[0][0] = new Image(new FileInputStream("assets/tempCauliflower.png"));
+			sprite[0][0] = new Image(new FileInputStream("assets/tempPotato.png"));
 		} catch (FileNotFoundException e)
 		{
 			e.printStackTrace();

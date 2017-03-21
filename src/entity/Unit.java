@@ -25,6 +25,7 @@ public abstract class Unit extends Entity
 		destination = rallyPoint;
 		this.speed = speed;
 		this.health = health;
+		type = "unit";
 	}
 
 	public void moveToward(long millis)
