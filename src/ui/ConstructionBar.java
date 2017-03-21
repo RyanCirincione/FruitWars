@@ -123,8 +123,7 @@ public class ConstructionBar extends UIComponent
 				Point2D placement = new Point2D.Double(e.getX(), e.getY());
 				Structure s = null;
 				s = constructors.get(placingIndex).build(root, placement, true, 150);
-				boolean collides = root.areaFree(e.getX(), e.getY(), s.getRadius());
-				if (!collides)
+				if (root.areaFree(e.getX(), e.getY(), s.getRadius()))
 				{
 					root.add(s);
 					if (!e.isShiftDown())
