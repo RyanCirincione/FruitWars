@@ -64,7 +64,7 @@ public class Projectile extends Entity
 		if (e.isFriendly() != isFriendly() && !(e instanceof Projectile))
 		{
 			e.setHealth(e.getHealth() - damage);
-			health = 0;
+			health = -1;
 		}
 	}
 }

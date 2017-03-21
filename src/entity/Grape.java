@@ -61,6 +61,7 @@ public class Grape extends Unit
 					attack(e);
 				else
 					target(e);
+				attackingNow = true;
 			}
 			if(attacking && !attackingNow)
 			{

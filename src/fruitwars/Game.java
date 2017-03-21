@@ -39,7 +39,7 @@ public class Game extends Scene
 		g = ctx;
 		Rectangle gameBounds = new Rectangle(0, 0, (int) ctx.getCanvas().getWidth(), (int) ctx.getCanvas().getHeight());
 		entities = new QuadNode<>(gameBounds, 128, 128);
-		selectedUnits = new FastList<>();
+		selectedUnits = new FastList<>(1000009);
 
 		selecting = false;
 		selectionCorner = new Point2D.Double(0, 0);

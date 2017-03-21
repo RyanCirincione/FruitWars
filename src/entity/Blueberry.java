@@ -17,7 +17,7 @@ public class Blueberry extends Unit
 	private static final long MAXCOOLDOWN = 500;
 	private long coolDown;
 	public final static double MAX_HEALTH = 25, SPEED = 2;
-	public static ArrayList<String> blueberryLastNames = loadGrapeVarieties();
+	public static ArrayList<String> blueberryLastNames = loadBlueberryVarieties();
 	private String name;
 	public static Image[][] sprite = loadSprite();
 	private boolean attacking;
@@ -63,6 +63,7 @@ public class Blueberry extends Unit
 					attack(e);
 				else
 					target(e);
+				attackingNow = true;
 			}
 			if(attacking && !attackingNow)
 			{
@@ -76,7 +77,7 @@ public class Blueberry extends Unit
 	/**
 	 * Source: Rutgers New Jersey Agricultural Experiment Station
 	 */
-	private static ArrayList<String> loadGrapeVarieties()
+	private static ArrayList<String> loadBlueberryVarieties()
 	{
 		System.out.println("Loading types of blueberries...");
 		ArrayList<String> grapes = new ArrayList<>();
