@@ -32,6 +32,7 @@ public class Game extends Scene
 	private boolean selecting;
 	private Color selectionBlue = new Color(102.0 / 255, 153.0 / 255, 1, 64 / 255.0);
 	private Point2D selectionCorner, mousePosition;
+	private Rectangle camera;
 
 	public Game(Group root, GraphicsContext ctx)
 	{
@@ -74,6 +75,8 @@ public class Game extends Scene
 		b = new BlueberryBush(entities, new Point2D.Double(600, 300), false, 150);
 		b.setRally(new Point2D.Double(100, 300));
 		entities.add(b);
+		
+		camera = new Rectangle(0, 0, 800, 600);
 	}
 
 	public void tick(long milli)
@@ -84,6 +87,8 @@ public class Game extends Scene
 
 	public void draw(long milli)
 	{
+		g.translate(-camera.x, -camera.y);
+		g.scale(g.getCanvas().getWidth() / camera.width, g.getCanvas().getHeight() / camera.height);
 		g.clearRect(0, 0, FruitWars.WINDOW_WIDTH, FruitWars.WINDOW_HEIGHT);
 		entities.forEach(e -> e.draw(g, milli));
 		for (UIComponent u : gui)
@@ -99,6 +104,8 @@ public class Game extends Scene
 			g.fillRect(selectionRect.getX(), selectionRect.getY(), selectionRect.getWidth(), selectionRect.getHeight());
 			g.fill();
 		}
+		g.translate(camera.x, camera.y);
+		g.scale(camera.width / g.getCanvas().getWidth(), camera.height / g.getCanvas().getHeight());
 	}
 
 	public void mouseMove(MouseEvent e)
