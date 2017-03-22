@@ -168,7 +168,6 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 			if (child.intersects(x, y, width, height))
 			{
 				child.addContained(x, y, width, height, list);
-				return;
 			}
 		}
 		temp.setBounds(x, y, width, height);
