@@ -67,7 +67,7 @@ public abstract class Entity implements QuadNode.Bounded<Entity>
 		frame = (int) (frame + 60 * millis / 1000.0) % sprite[animation].length;
 		Image tex = getCurrentImage();
 		// Draw the object, centered
-		g2.drawImage(tex, location.getX() - tex.getWidth() / 2, location.getY() - tex.getHeight() / 2);
+		g2.drawImage(tex, location.getX() - radius, location.getY() - radius, radius * 2, radius * 2);
 	}
 
 	public boolean isFriendly()

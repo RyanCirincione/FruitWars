@@ -12,7 +12,7 @@ import javafx.scene.image.Image;
 
 public class Grape extends Unit
 {
-	private static final double RADIUS = 16, RANGE = 5;
+	private static final double RADIUS = 12, RANGE = 5;
 	private static final long MAXCOOLDOWN = 1000;
 	private long coolDown;
 	public final static double MAX_HEALTH = 50, SPEED = 1;
