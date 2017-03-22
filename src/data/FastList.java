@@ -277,4 +277,16 @@ public class FastList<T> implements List<T>
 
 	}
 
+	public String toString()
+	{
+		String str = "[";
+		for(int i = 0; i < data.length; i++)
+		{
+			str += data[i].toString();
+			if(i != data.length - 1)
+				str += ",";
+		}
+		return str + "]";
+	}
+
 }
