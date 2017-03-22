@@ -280,10 +280,10 @@ public class FastList<T> implements List<T>
 	public String toString()
 	{
 		String str = "[";
-		for(int i = 0; i < data.length; i++)
+		for(int i = 0; i < size; i++)
 		{
 			str += data[i].toString();
-			if(i != data.length - 1)
+			if(i != size - 1)
 				str += ",";
 		}
 		return str + "]";
