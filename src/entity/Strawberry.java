@@ -27,7 +27,16 @@ public class Strawberry extends Unit
 	{
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
-		name = "Pvt. " + getName() + " " + strawberryLastNames.get((int) (Math.random() * strawberryLastNames.size()));
+		
+		double rankNum = Math.random();
+		if(rankNum < 0.7)
+			name = "Pvt. ";
+		else if(rankNum < 0.9)
+			name = "Cpl. ";
+		else
+			name = "Sgt. ";
+		name += getName() + " " + strawberryLastNames.get((int) (Math.random() * strawberryLastNames.size()));
+		
 		coolDown = 0;
 		attacking = false;
 		type = "strawberry";

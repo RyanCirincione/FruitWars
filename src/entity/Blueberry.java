@@ -27,7 +27,16 @@ public class Blueberry extends Unit
 	{
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
-		name = "Pvt. " + getName() + " " + blueberryLastNames.get((int) (Math.random() * blueberryLastNames.size()));
+		
+		double rankNum = Math.random();
+		if(rankNum < 0.7)
+			name = "Pvt. ";
+		else if(rankNum < 0.9)
+			name = "Cpl. ";
+		else
+			name = "Sgt. ";
+		name += getName() + " " + blueberryLastNames.get((int) (Math.random() * blueberryLastNames.size()));
+		
 		coolDown = 0;
 		attacking = false;
 		type = "blueberry";
