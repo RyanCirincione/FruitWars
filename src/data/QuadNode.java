@@ -51,7 +51,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		temp = new Rectangle();
 		this.bounds = bounds;
 		int childWidth = (int) (this.bounds.getWidth() / 2);
-		int childHeight = (int) (this.bounds.getWidth() / 2);
+		int childHeight = (int) (this.bounds.getHeight() / 2);
 		int xOffset = childWidth / 2;
 		int yOffset = childHeight / 2;
 		if (childWidth >= smallestWidth && childHeight >= smallestHeight)
@@ -60,12 +60,12 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 					new QuadNode<T>(new Rectangle((int) bounds.getX(), (int) bounds.getY(), childWidth, childHeight),
 							smallestWidth, smallestHeight));
 			children.add(new QuadNode<T>(
-					new Rectangle((int) bounds.getX() + xOffset, (int) bounds.getY(), childWidth, childHeight),
+					new Rectangle((int) bounds.getX() + xOffset * 2, (int) bounds.getY(), childWidth, childHeight),
 					smallestWidth, smallestHeight));
-			children.add(new QuadNode<T>(new Rectangle((int) bounds.getX() + xOffset, (int) bounds.getY() + yOffset,
+			children.add(new QuadNode<T>(new Rectangle((int) bounds.getX() + xOffset * 2, (int) bounds.getY() + yOffset * 2,
 					childWidth, childHeight), smallestWidth, smallestHeight));
 			children.add(new QuadNode<T>(
-					new Rectangle((int) bounds.getX(), (int) bounds.getY() + yOffset, childWidth, childHeight),
+					new Rectangle((int) bounds.getX(), (int) bounds.getY() + yOffset * 2, childWidth, childHeight),
 					smallestWidth, smallestHeight));
 		}
 	}
@@ -124,6 +124,12 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 
 	public void add(T obj)
 	{
+		for(QuadNode<T> child : children)
+			if(child.contains(obj))
+			{
+				child.add(obj);
+				return;
+			}
 		buffer.add(obj);
 	}
 
@@ -296,7 +302,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		}
 		for (QuadNode<T> child : children)
 		{
-			if (!child.contains(x - radius, y - radius, x + radius, y + radius))
+			if (!child.contains(x - radius, y - radius, 2 * radius, 2 * radius))
 				break;
 			boolean free = child.areaFree(x, y, radius);
 			if (!free)
@@ -320,5 +326,21 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 		{
 			child.filter(func);
 		}
+	}
+	
+	public String toString() 
+	{
+		return toString(0);
+	}
+	
+	private String toString(int indent) {
+		String tabs = "";
+		for(int i = 0; i < indent; i++) {
+			tabs += "\t";
+		}
+		String thisString = tabs + "QuadNode " + bounds.toString() + "\n" + tabs + buffer.toString();
+		for(QuadNode<T> child : children)
+			thisString += "\n" + child.toString(indent + 1);
+		return thisString;
 	}
 }
