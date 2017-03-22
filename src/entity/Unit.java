@@ -86,7 +86,7 @@ public abstract class Unit extends Entity
 	 */
 	private static ArrayList<String> loadNames()
 	{
-		System.out.println("Loading First Names...");
+		System.out.println("Loading first names...");
 		ArrayList<String> names = new ArrayList<>();
 		try (Scanner fileScan = new Scanner(new File("assets/firstNames.txt")))
 		{
