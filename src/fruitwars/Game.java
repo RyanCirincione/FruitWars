@@ -10,6 +10,7 @@ import data.QuadNode;
 import entity.BlueberryBush;
 import entity.Entity;
 import entity.GrapeVine;
+import entity.StrawberryBush;
 import entity.Unit;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -56,24 +57,24 @@ public class Game extends Scene
 		addEventHandler(KeyEvent.KEY_PRESSED, this::keyPressed);
 		addEventHandler(KeyEvent.KEY_RELEASED, this::keyReleased);
 
-		GrapeVine e = new GrapeVine(entities, new Point2D.Double(100, 100), true, 150);
-		e.setRally(new Point2D.Double(600, 300));
-		entities.add(e);
-		e = new GrapeVine(entities, new Point2D.Double(100, 500), true, 150);
-		e.setRally(new Point2D.Double(600, 300));
-		entities.add(e);
-		e = new GrapeVine(entities, new Point2D.Double(600, 100), false, 150);
-		e.setRally(new Point2D.Double(100, 300));
-		entities.add(e);
-		e = new GrapeVine(entities, new Point2D.Double(600, 500), false, 150);
-		e.setRally(new Point2D.Double(100, 300));
-		entities.add(e);
-		BlueberryBush b = new BlueberryBush(entities, new Point2D.Double(100, 300), true, 150);
-		b.setRally(new Point2D.Double(600, 300));
-		entities.add(b);
-		b = new BlueberryBush(entities, new Point2D.Double(600, 300), false, 150);
+		StrawberryBush s = new StrawberryBush(entities, new Point2D.Double(100, 100), true, 150);
+		s.setRally(new Point2D.Double(600, 300));
+		entities.add(s);
+		s = new StrawberryBush(entities, new Point2D.Double(600, 500), false, 150);
+		s.setRally(new Point2D.Double(600, 300));
+		entities.add(s);
+		BlueberryBush b = new BlueberryBush(entities, new Point2D.Double(600, 100), false, 150);
 		b.setRally(new Point2D.Double(100, 300));
 		entities.add(b);
+		b = new BlueberryBush(entities, new Point2D.Double(100, 500), true, 150);
+		b.setRally(new Point2D.Double(100, 300));
+		entities.add(b);
+		GrapeVine g = new GrapeVine(entities, new Point2D.Double(100, 300), true, 150);
+		g.setRally(new Point2D.Double(600, 300));
+		entities.add(g);
+		g = new GrapeVine(entities, new Point2D.Double(600, 300), false, 150);
+		g.setRally(new Point2D.Double(100, 300));
+		entities.add(g);
 	}
 
 	public void tick(long milli)
