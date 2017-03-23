@@ -184,4 +184,11 @@ public abstract class Entity implements QuadNode.Bounded<Entity>
 		double radSum = radius + other.radius;
 		return location.distanceSq(other.location) < radSum * radSum;
 	}
+	
+	@Override
+	public boolean equals(Object o)
+	{
+		//Since two entities cannot overlap, any two with the same location must be the same entity
+		return (o instanceof Entity && ((Entity)o).location.equals(location));
+	}
 }

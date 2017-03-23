@@ -180,12 +180,14 @@ public class Game extends Scene
 				entities.addContained((int) selectionRect.getX(), (int) selectionRect.getY(),
 						(int) selectionRect.getWidth(), (int) selectionRect.getHeight(), selectionBuffer);
 				for (Entity ent : selectionBuffer)
-					if (ent instanceof Unit && ent.isFriendly())
+				{
+					if (ent instanceof Unit && ent.isFriendly() && !selectedUnits.contains(ent))
 					{
 						Unit u = (Unit) ent;
 						u.setSelected(true);
 						selectedUnits.add(u);
 					}
+				}
 				selecting = false;
 			} else
 			{

@@ -56,8 +56,8 @@ public class FastList<T> implements List<T>
 	@Override
 	public boolean contains(Object o)
 	{
-		for (Object obj : data)
-			if (obj.equals(o))
+		for (int i = 0; i < size; i++)
+			if (data[i].equals(o))
 				return true;
 		return false;
 	}
