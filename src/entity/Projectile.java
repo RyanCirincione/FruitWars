@@ -65,7 +65,7 @@ public class Projectile extends Entity
 	{
 		if (e.isFriendly() != isFriendly() && !(e instanceof Projectile))
 		{
-			if(e.getHealth() <= damage)
+			if(e.getHealth() <= damage && firingUnit != null)
 				firingUnit.addKill();
 			e.setHealth(e.getHealth() - damage);
 			health = -1;
