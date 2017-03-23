@@ -15,7 +15,7 @@ public class Potato extends Structure
 	public Potato(QuadNode<Entity> root, Point2D location, boolean friendly, double health)
 	{
 		super(root, sprite, location, RADIUS, friendly, health);
-		techRequired.add("cauliflower");
+		techRequired.add(Cauliflower.class);
 		type = "potato";
 	}
 
