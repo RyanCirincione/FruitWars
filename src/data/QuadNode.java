@@ -270,6 +270,7 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 				}
 			}
 		}
+		checkCollisions(this, millis);
 		for (QuadNode<T> child : children)
 		{
 			child.checkCollisions(this, millis);
