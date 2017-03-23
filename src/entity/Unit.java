@@ -125,9 +125,9 @@ public abstract class Unit extends Entity
 	
 	protected String getRank()
 	{
-		if(kills < 10)
+		if(kills < 5)
 			return RANKS[0];
-		else if(kills < 15)
+		else if(kills < 10)
 			return RANKS[1];
 		else
 			return RANKS[2];
