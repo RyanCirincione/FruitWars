@@ -183,6 +183,7 @@ public class Game extends Scene
 			if (e.getButton() == MouseButton.PRIMARY)
 			{
 				Rectangle2D selectionRect = getSelectionRect();
+				selectionBuffer.clear();
 				if (!e.isControlDown())
 					clearSelected();
 				entities.addContained((int) selectionRect.getX(), (int) selectionRect.getY(),
