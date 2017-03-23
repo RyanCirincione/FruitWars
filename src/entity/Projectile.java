@@ -13,11 +13,12 @@ public class Projectile extends Entity
 	public static Image[][] sprite = loadSprite();
 	private double range, damage, speed;
 	private Point2D velocity, startingPoint;
+	private Unit firingUnit;
 
-	public Projectile(QuadNode<Entity> root, Point2D location, Point2D target, boolean friendly, double radius,
+	public Projectile(QuadNode<Entity> root, Point2D location, Point2D target, Unit firingUnit, double radius,
 			double speed, double damage, double range)
 	{
-		super(root, sprite, location, radius, friendly, MAX_HEALTH);
+		super(root, sprite, location, radius, firingUnit.friendly, MAX_HEALTH);
 
 		double distance = location.distance(target);
 		this.speed = speed;
@@ -64,6 +65,8 @@ public class Projectile extends Entity
 	{
 		if (e.isFriendly() != isFriendly() && !(e instanceof Projectile))
 		{
+			if(e.getHealth() <= damage)
+				firingUnit.addKill();
 			e.setHealth(e.getHealth() - damage);
 			health = -1;
 		}

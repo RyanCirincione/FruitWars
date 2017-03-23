@@ -28,14 +28,7 @@ public class Blueberry extends Unit
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
 		
-		double rankNum = Math.random();
-		if(rankNum < 0.7)
-			name = "Pvt. ";
-		else if(rankNum < 0.9)
-			name = "Cpl. ";
-		else
-			name = "Sgt. ";
-		name += getName() + " " + blueberryLastNames.get((int) (Math.random() * blueberryLastNames.size()));
+		name = getRank() + " " + getName() + " " + blueberryLastNames.get((int) (Math.random() * blueberryLastNames.size()));
 		
 		coolDown = 0;
 		attacking = false;
@@ -115,7 +108,7 @@ public class Blueberry extends Unit
 	public void attack(Entity enemy)
 	{
 		coolDown = MAXCOOLDOWN;
-		root.add(new Projectile(root, (Point2D) getCenter().clone(), (Point2D) enemy.getCenter().clone(), isFriendly(),
+		root.add(new Projectile(root, (Point2D) getCenter().clone(), (Point2D) enemy.getCenter().clone(), this,
 				P_RADIUS, P_SPEED, DAMAGE, RANGE));
 		super.setDestination(getCenter());
 	}

@@ -27,14 +27,7 @@ public class Grape extends Unit
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
 		
-		double rankNum = Math.random();
-		if(rankNum < 0.7)
-			name = "Pvt. ";
-		else if(rankNum < 0.9)
-			name = "Cpl. ";
-		else
-			name = "Sgt. ";
-		name += getName() + " " + grapeLastNames.get((int) (Math.random() * grapeLastNames.size()));
+		name = getRank() + " " + getName() + " " + grapeLastNames.get((int) (Math.random() * grapeLastNames.size()));
 		
 		coolDown = 0;
 		attacking = false;
@@ -113,6 +106,8 @@ public class Grape extends Unit
 	@Override
 	public void attack(Entity enemy)
 	{
+		if(enemy.getHealth() <= damage)
+			addKill();
 		enemy.setHealth(enemy.getHealth() - damage);
 		super.setDestination(getCenter());
 		coolDown = MAXCOOLDOWN;

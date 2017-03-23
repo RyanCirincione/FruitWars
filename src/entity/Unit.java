@@ -16,6 +16,8 @@ public abstract class Unit extends Entity
 	private boolean selected;
 	private double speed;
 	private Point2D destination, longTermDestination;
+	private final static String[] RANKS = {"Pvt.", "Cpl.", "Sgt."};
+	private int kills = 0;
 	private static ArrayList<String> names = loadNames();
 
 	public Unit(QuadNode<Entity> root, Image[][] sprite, Point2D location, Point2D rallyPoint, double radius,
@@ -115,7 +117,21 @@ public abstract class Unit extends Entity
 	{
 		selected = select;
 	}
-
+	
+	protected void addKill()
+	{
+		kills++;
+	}
+	
+	protected String getRank()
+	{
+		if(kills < 10)
+			return RANKS[0];
+		else if(kills < 15)
+			return RANKS[1];
+		else
+			return RANKS[2];
+	}
 	public abstract void attack(Entity enemy);
 
 	public abstract void target(Entity enemy);

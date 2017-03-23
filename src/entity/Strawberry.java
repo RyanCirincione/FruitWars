@@ -28,14 +28,7 @@ public class Strawberry extends Unit
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
 		
-		double rankNum = Math.random();
-		if(rankNum < 0.7)
-			name = "Pvt. ";
-		else if(rankNum < 0.9)
-			name = "Cpl. ";
-		else
-			name = "Sgt. ";
-		name += getName() + " " + strawberryLastNames.get((int) (Math.random() * strawberryLastNames.size()));
+		name = getRank() + " " + getName() + " " + strawberryLastNames.get((int) (Math.random() * strawberryLastNames.size()));
 		
 		coolDown = 0;
 		attacking = false;
@@ -121,7 +114,7 @@ public class Strawberry extends Unit
 			double angle = (Math.PI * i) / (projectiles/2);
 			double dist = getCenter().distance(enemy.getCenter());
 			Point2D.Double destination = new Point2D.Double(getCenter().getX() + (Math.cos(angle) * dist), getCenter().getY() + (Math.sin(angle) * dist));
-			root.add(new Projectile(root, (Point2D) getCenter().clone(), destination, isFriendly(),
+			root.add(new Projectile(root, (Point2D) getCenter().clone(), destination, this,
 					P_RADIUS, P_SPEED, DAMAGE, RANGE));
 		}
 		super.setDestination(getCenter());
