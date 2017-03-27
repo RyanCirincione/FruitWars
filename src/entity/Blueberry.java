@@ -40,7 +40,7 @@ public class Blueberry extends Unit
 		try
 		{
 			sprite = new Image[1][1];
-			sprite[0][0] = new Image(new FileInputStream("assets/tempBlueberry.png"));
+			sprite[0][0] = new Image(new FileInputStream("assets/blueberry.png"));
 		} catch (FileNotFoundException e)
 		{
 			e.printStackTrace();
