@@ -5,8 +5,9 @@ import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import data.BruteStore;
+import data.EntityStore;
 import data.FastList;
-import data.QuadNode;
 import entity.BlueberryBush;
 import entity.Entity;
 import entity.GrapeVine;
@@ -26,7 +27,7 @@ import ui.UnitSelectionBar;
 public class Game extends Scene
 {
 	private GraphicsContext g;
-	private QuadNode<Entity> entities;
+	private EntityStore<Entity> entities;
 	private List<Unit> selectedUnits;
 	private List<UIComponent> gui;
 	private ConstructionBar cBar;
@@ -39,8 +40,7 @@ public class Game extends Scene
 	{
 		super(root);
 		g = ctx;
-		Rectangle gameBounds = new Rectangle(0, 0, (int) ctx.getCanvas().getWidth(), (int) ctx.getCanvas().getHeight());
-		entities = new QuadNode<>(gameBounds, 128, 128);
+		entities = new BruteStore<>();
 		selectedUnits = new FastList<>(1000009);
 
 		selecting = false;
@@ -83,22 +83,14 @@ public class Game extends Scene
 	public void tick(long milli)
 	{
 		entities.tickAll(milli);
-		entities.filter(entity -> entity.getHealth() > 0);
-		for(int i = 0; i < selectedUnits.size(); i++)
-		{
-			if(selectedUnits.get(i).getHealth() <= 0)
-			{
-				selectedUnits.remove(i);
-				i = Math.max(i - 1, 0);
-			}
-		}
+		entities.filter(entity -> entity.getHealth() > 0, entity -> selectedUnits.remove(entity));
 	}
 
 	public void draw(long milli)
 	{
+		g.clearRect(0, 0, FruitWars.WINDOW_WIDTH, FruitWars.WINDOW_HEIGHT);
 		g.translate(-camera.x, -camera.y);
 		g.scale(g.getCanvas().getWidth() / camera.width, g.getCanvas().getHeight() / camera.height);
-		g.clearRect(0, 0, FruitWars.WINDOW_WIDTH, FruitWars.WINDOW_HEIGHT);
 		entities.forEach(e -> e.draw(g, milli));
 		for (UIComponent u : gui)
 			u.draw(g, milli, mousePosition);
@@ -186,8 +178,7 @@ public class Game extends Scene
 				selectionBuffer.clear();
 				if (!e.isControlDown())
 					clearSelected();
-				entities.addContained((int) selectionRect.getX(), (int) selectionRect.getY(),
-						(int) selectionRect.getWidth(), (int) selectionRect.getHeight(), selectionBuffer);
+				entities.addContained(selectionRect, selectionBuffer);
 				for (Entity ent : selectionBuffer)
 				{
 					if (ent instanceof Unit && ent.isFriendly() && !selectedUnits.contains(ent))

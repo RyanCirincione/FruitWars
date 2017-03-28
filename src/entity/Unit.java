@@ -6,7 +6,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
@@ -16,11 +16,11 @@ public abstract class Unit extends Entity
 	private boolean selected;
 	private double speed;
 	private Point2D destination, longTermDestination;
-	private final static String[] RANKS = {"Pvt.", "Cpl.", "Sgt."};
+	private final static String[] RANKS = { "Pvt.", "Cpl.", "Sgt." };
 	private int kills = 0;
 	private static ArrayList<String> names = loadNames();
 
-	public Unit(QuadNode<Entity> root, Image[][] sprite, Point2D location, Point2D rallyPoint, double radius,
+	public Unit(EntityStore<Entity> root, Image[][] sprite, Point2D location, Point2D rallyPoint, double radius,
 			double speed, double health, boolean friendly)
 	{
 		super(root, sprite, location, radius, friendly, health);
@@ -56,12 +56,12 @@ public abstract class Unit extends Entity
 		moveToward(millis);
 		super.tick(millis);
 	}
-	
+
 	public void startAttack()
 	{
 		longTermDestination = (Point2D) destination.clone();
 	}
-	
+
 	public void endAttack()
 	{
 		destination = longTermDestination;
@@ -117,21 +117,22 @@ public abstract class Unit extends Entity
 	{
 		selected = select;
 	}
-	
+
 	protected void addKill()
 	{
 		kills++;
 	}
-	
+
 	protected String getRank()
 	{
-		if(kills < 5)
+		if (kills < 5)
 			return RANKS[0];
-		else if(kills < 10)
+		else if (kills < 10)
 			return RANKS[1];
 		else
 			return RANKS[2];
 	}
+
 	public abstract void attack(Entity enemy);
 
 	public abstract void target(Entity enemy);

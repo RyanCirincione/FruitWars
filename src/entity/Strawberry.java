@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.image.Image;
 
 public class Strawberry extends Unit
@@ -23,7 +23,7 @@ public class Strawberry extends Unit
 	private boolean attacking;
 	
 
-	public Strawberry(QuadNode<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
+	public Strawberry(EntityStore<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
 	{
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;

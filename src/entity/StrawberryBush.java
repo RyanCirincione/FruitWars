@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.image.Image;
 
 public class StrawberryBush extends Structure
@@ -13,7 +13,7 @@ public class StrawberryBush extends Structure
 	private Point2D.Double rally;
 	public static Image[][] sprite = loadSprite();
 	private double timeToSpawn;
-	public StrawberryBush(QuadNode<Entity> root, Point2D location, boolean friendly, double health)
+	public StrawberryBush(EntityStore<Entity> root, Point2D location, boolean friendly, double health)
 	{
 		super(root, sprite, location, RADIUS, friendly, health);
 		this.rally = new Point2D.Double();

@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.image.Image;
 
 public class Grape extends Unit
@@ -22,7 +22,7 @@ public class Grape extends Unit
 	private double damage = 5.0;
 	private boolean attacking;
 	
-	public Grape(QuadNode<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
+	public Grape(EntityStore<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
 	{
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;

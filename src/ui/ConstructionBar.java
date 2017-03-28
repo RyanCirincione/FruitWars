@@ -5,8 +5,8 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import data.EntityStore;
 import data.FastList;
-import data.QuadNode;
 import entity.BlueberryBush;
 import entity.Cauliflower;
 import entity.Entity;
@@ -28,14 +28,14 @@ public class ConstructionBar extends UIComponent
 	private Image ghost;
 	private int placingIndex;
 	private boolean active, placing, handlingClickDown;
-	private QuadNode<Entity> root;
+	private EntityStore<Entity> root;
 
 	private interface StructureBuilder
 	{
-		public Structure build(QuadNode<Entity> root, Point2D location, boolean friendly, double health);
+		public Structure build(EntityStore<Entity> root, Point2D location, boolean friendly, double health);
 	}
 
-	public ConstructionBar(QuadNode<Entity> root)
+	public ConstructionBar(EntityStore<Entity> root)
 	{
 		super(new Rectangle(400 - (200 / 2), 300 - (125 / 2), 200, 125));
 		active = false;

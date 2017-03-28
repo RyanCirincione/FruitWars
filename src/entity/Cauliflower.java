@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.image.Image;
 
 public class Cauliflower extends Structure
@@ -12,7 +12,7 @@ public class Cauliflower extends Structure
 	static Image[][] sprite = loadSprite();
 	final static double RADIUS = 32;
 
-	public Cauliflower(QuadNode<Entity> root, Point2D location, boolean friendly, double health)
+	public Cauliflower(EntityStore<Entity> root, Point2D location, boolean friendly, double health)
 	{
 		super(root, sprite, location, RADIUS, friendly, health);
 		type = "cauliflower";

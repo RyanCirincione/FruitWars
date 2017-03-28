@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.image.Image;
 
 public class Projectile extends Entity
@@ -15,7 +15,7 @@ public class Projectile extends Entity
 	private Point2D velocity, startingPoint;
 	private Unit firingUnit;
 
-	public Projectile(QuadNode<Entity> root, Point2D location, Point2D target, Unit firingUnit, double radius,
+	public Projectile(EntityStore<Entity> root, Point2D location, Point2D target, Unit firingUnit, double radius,
 			double speed, double damage, double range)
 	{
 		super(root, sprite, location, radius, firingUnit.friendly, MAX_HEALTH);

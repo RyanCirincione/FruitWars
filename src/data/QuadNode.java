@@ -2,36 +2,18 @@ package data;
 
 import java.awt.Rectangle;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
-import java.util.stream.Collectors;
 
 /**
  * A quadtree to make collision checking between objects more efficient
  */
-public class QuadNode<T extends QuadNode.Bounded<T>>
+public class QuadNode<T extends Bounded<T>> implements EntityStore<T>
 {
-	/**
-	 * An interface for objects that can be inserted into the quadtree
-	 */
-	public static interface Bounded<E extends Bounded<E>>
-	{
-		public Point2D getCenter();
-
-		double getRadius();
-
-		void setCenter(double x, double y);
-
-		QuadNode<E> getCurrentNode();
-
-		void setCurrentNode(QuadNode<E> node);
-
-		void collide(E other, long millis);
-
-		void tick(long millis);
-	}
 
 	public static interface ValidPair<T>
 	{
@@ -135,13 +117,13 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 
 	public void remove(T obj)
 	{
-		obj.getCurrentNode().contained.remove(obj);
+		((QuadNode<T>)obj.getCurrentNode()).contained.remove(obj);
 		obj.setCurrentNode(null);
 	}
 
 	public void updateNode(T obj)
 	{
-		QuadNode<T> current = obj.getCurrentNode();
+		QuadNode<T> current = ((QuadNode<T>)obj.getCurrentNode());
 		if (!current.contains(obj))
 		{
 			current.contained.remove(obj);
@@ -156,9 +138,9 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 			child.clear();
 	}
 
-	public void addContained(Rectangle r, Collection<T> list)
+	public void addContained(Rectangle2D r, Collection<T> list)
 	{
-		addContained(r.x, r.y, r.width, r.height, list);
+		addContained((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight(), list);
 	}
 
 	public void addContained(int x, int y, int width, int height, Collection<T> list)
@@ -176,9 +158,9 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 				list.add(obj);
 	}
 
-	public void addIntersecting(Rectangle r, Collection<T> list)
+	public void addIntersecting(Rectangle2D r, Collection<T> list)
 	{
-		addIntersecting(r.x, r.y, r.width, r.height, list);
+		addIntersecting((int)r.getX(), (int)r.getY(), (int)r.getWidth(), (int)r.getHeight(), list);
 	}
 
 	public void addIntersecting(int x, int y, int width, int height, Collection<T> list)
@@ -319,12 +301,20 @@ public class QuadNode<T extends QuadNode.Bounded<T>>
 			child.forEach(func);
 	}
 
-	public void filter(Predicate<T> func)
+	public void filter(Predicate<T> func, Consumer<T> consume)
 	{
-		contained.retainAll(contained.stream().filter(func).collect(Collectors.toList()));
+		for(Iterator<T> iter = contained.iterator(); iter.hasNext(); )
+		{
+			T obj = iter.next();
+			if(!func.test(obj))
+			{
+				consume.accept(obj);
+				iter.remove();
+			}
+		}
 		for (QuadNode<T> child : children)
 		{
-			child.filter(func);
+			child.filter(func, consume);
 		}
 	}
 	
