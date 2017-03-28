@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -147,13 +146,14 @@ public class BruteStore<T extends Bounded<T>> implements EntityStore<T>
 	@Override
 	public void filter(Predicate<T> func, Consumer<T> action)
 	{
-		for(Iterator<T> iter = list.iterator(); iter.hasNext(); )
+		for(int i = 0; i < list.size(); i++ )
 		{
-			T obj = iter.next();
+			T obj = list.get(i);
 			if(!func.test(obj))
 			{
 				action.accept(obj);
-				iter.remove();
+				list.remove(i);
+				i--;
 			}
 		}
 	}
