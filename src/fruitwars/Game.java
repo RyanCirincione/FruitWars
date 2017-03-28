@@ -15,6 +15,7 @@ import entity.Unit;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -34,6 +35,8 @@ public class Game extends Scene
 	private Color selectionBlue = new Color(102.0 / 255, 153.0 / 255, 1, 64 / 255.0);
 	private Point2D selectionCorner, mousePosition;
 	private Rectangle camera;
+	private float camera_xspeed, camera_yspeed;
+	private final float CAMERA_SPEED = 4;
 
 	public Game(Group root, GraphicsContext ctx)
 	{
@@ -84,6 +87,8 @@ public class Game extends Scene
 	{
 		entities.tickAll(milli);
 		entities.filter(entity -> entity.getHealth() > 0);
+		camera.x += (int)(camera_xspeed * 60.0 / 1000);
+		camera.y += (int)(camera_yspeed * 60.0 / 1000);
 		for(int i = 0; i < selectedUnits.size(); i++)
 		{
 			if(selectedUnits.get(i).getHealth() <= 0)
@@ -124,11 +129,26 @@ public class Game extends Scene
 
 	public void keyPressed(KeyEvent e)
 	{
-
+		if(e.getCode() == KeyCode.UP)
+			camera_yspeed -= CAMERA_SPEED;
+		if(e.getCode() == KeyCode.DOWN)
+			camera_yspeed += CAMERA_SPEED;
+		if(e.getCode() == KeyCode.RIGHT)
+			camera_xspeed += CAMERA_SPEED;
+		if(e.getCode() == KeyCode.LEFT)
+			camera_xspeed -= CAMERA_SPEED;
 	}
 
 	public void keyReleased(KeyEvent e)
 	{
+		if(e.getCode() == KeyCode.UP)
+			camera_yspeed -= -CAMERA_SPEED;
+		if(e.getCode() == KeyCode.DOWN)
+			camera_yspeed += -CAMERA_SPEED;
+		if(e.getCode() == KeyCode.RIGHT)
+			camera_xspeed += -CAMERA_SPEED;
+		if(e.getCode() == KeyCode.LEFT)
+			camera_xspeed -= -CAMERA_SPEED;
 		switch (e.getCode())
 		{
 		case SPACE:
