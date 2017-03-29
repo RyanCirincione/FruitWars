@@ -3,9 +3,11 @@ package fruitwars;
 import java.io.File;
 
 import javafx.animation.AnimationTimer;
-import javafx.scene.Group;
+import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.layout.TilePane;
 import javafx.stage.Stage;
 
 public class Menu extends Scene
@@ -14,7 +16,7 @@ public class Menu extends Scene
 	
 	public static Menu construct(Stage stage) 
 	{
-		Group root = new Group();
+		TilePane root = new TilePane();
 		Button button = new Button();
 		button.setText("Play game");
 		button.setOnMouseClicked(evt -> {
@@ -43,18 +45,18 @@ public class Menu extends Scene
 				}
 			}.start();
 		});
+		root.setAlignment(Pos.CENTER);
 
 		root.getChildren().add(button);
 		
 		return new Menu(root);
 	}
 
-	public Menu(Group root)
+	public Menu(Parent root)
 	{
 		super(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 		getStylesheets().clear();
 		getStylesheets().add("file:///" + new File("style.css").getAbsolutePath().replace("\\", "/"));
-		root.getChildren().forEach(node -> node.applyCss());
 	}
 
 }
