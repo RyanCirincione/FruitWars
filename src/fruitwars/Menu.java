@@ -3,11 +3,12 @@ package fruitwars;
 import java.io.File;
 
 import javafx.animation.AnimationTimer;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.layout.TilePane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
 public class Menu extends Scene
@@ -16,10 +17,10 @@ public class Menu extends Scene
 	
 	public static Menu construct(Stage stage) 
 	{
-		TilePane root = new TilePane();
-		Button button = new Button();
-		button.setText("Play game");
-		button.setOnMouseClicked(evt -> {
+		VBox root = new VBox();
+		Button play = new Button();
+		play.setText("Play game");
+		play.setOnMouseClicked(evt -> {
 			Game game = Game.construct(WINDOW_WIDTH, WINDOW_HEIGHT);
 			stage.setScene(game);
 			
@@ -45,9 +46,21 @@ public class Menu extends Scene
 				}
 			}.start();
 		});
+		play.setPrefWidth(400);
+		play.setPrefHeight(100);
+		root.getChildren().add(play);
+		Button exit = new Button();
+		exit.setText("Exit Game");
+		exit.setPrefWidth(400);
+		exit.setPrefHeight(100);
+		exit.setOnMouseClicked(evt -> {
+			System.exit(0);
+		});
+		root.getChildren().add(exit);
+		root.setSpacing(50);
 		root.setAlignment(Pos.CENTER);
 
-		root.getChildren().add(button);
+		
 		
 		return new Menu(root);
 	}
