@@ -51,7 +51,7 @@ public class Menu extends Scene
 
 	public Menu(Group root)
 	{
-		super(root);
+		super(root, WINDOW_WIDTH, WINDOW_HEIGHT);
 		getStylesheets().clear();
 		getStylesheets().add("file:///" + new File("style.css").getAbsolutePath().replace("\\", "/"));
 		root.getChildren().forEach(node -> node.applyCss());
