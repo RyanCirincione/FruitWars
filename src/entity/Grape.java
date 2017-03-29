@@ -19,7 +19,7 @@ public class Grape extends Unit
 	public static ArrayList<String> grapeLastNames = loadGrapeVarieties();
 	private String name;
 	public static Image[][] sprite = loadSprite();
-	private double damage = 5.0;
+	private double damage = 10.0;
 	private boolean attacking;
 	
 	public Grape(EntityStore<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)

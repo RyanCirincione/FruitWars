@@ -47,7 +47,7 @@ public class GrapeVine extends Structure
 		if (timeToSpawn <= 0)
 		{
 			timeToSpawn += SPAWN_TIME + (2 * Math.random() * SPAWN_TIME_ERROR) - SPAWN_TIME_ERROR;
-			int count = 3 + (int) (Math.random() * 2);
+			int count = 12 + (int) (Math.random() * 2);
 			for (int i = 0; i < count; i++)
 			{
 				Point2D point = new Point2D.Double(getCenter().getX() + Math.random() * radius * 2 - radius,
