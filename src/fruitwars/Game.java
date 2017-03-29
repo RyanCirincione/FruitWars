@@ -15,6 +15,7 @@ import entity.StrawberryBush;
 import entity.Unit;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -27,7 +28,7 @@ import ui.UnitSelectionBar;
 
 public class Game extends Scene
 {
-	private GraphicsContext g;
+	public GraphicsContext g;
 	private EntityStore<Entity> entities;
 	private List<Unit> selectedUnits;
 	private List<UIComponent> gui;
@@ -39,7 +40,18 @@ public class Game extends Scene
 	private float camera_xspeed, camera_yspeed;
 	private final float CAMERA_SPEED = 4;
 
-	public Game(Group root, GraphicsContext ctx)
+	public static Game construct(int width, int height) 
+	{
+		Canvas canvas = new Canvas(width, height);
+		Group root = new Group();
+
+		root.getChildren().add(canvas);
+		GraphicsContext g = canvas.getGraphicsContext2D();
+		
+		return new Game(root, g);
+	}
+	
+	private Game(Group root, GraphicsContext ctx)
 	{
 		super(root);
 		g = ctx;

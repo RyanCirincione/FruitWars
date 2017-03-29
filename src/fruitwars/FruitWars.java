@@ -19,20 +19,14 @@ public class FruitWars extends Application
 	@Override
 	public void start(Stage stage) throws Exception
 	{
-		Canvas canvas = new Canvas(WINDOW_WIDTH, WINDOW_HEIGHT);
-		Group root = new Group();
-
-		root.getChildren().add(canvas);
-		GraphicsContext g = canvas.getGraphicsContext2D();
-
-		Game game = new Game(root, g);
+		Game game = Game.construct(WINDOW_WIDTH, WINDOW_HEIGHT);
 		stage.setScene(game);
 		
 		stage.widthProperty().addListener((obs, oldVal, newVal) -> {
-			canvas.setWidth(newVal.doubleValue());
+			game.g.getCanvas().setWidth(newVal.doubleValue());
 		});
 		stage.heightProperty().addListener((obs, oldVal, newVal) -> {
-			canvas.setHeight(newVal.doubleValue());
+			game.g.getCanvas().setHeight(newVal.doubleValue());
 		});
 
 		new AnimationTimer()
