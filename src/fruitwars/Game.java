@@ -93,7 +93,7 @@ public class Game extends Scene
 
 	public void draw(long milli)
 	{
-		g.clearRect(0, 0, FruitWars.WINDOW_WIDTH, FruitWars.WINDOW_HEIGHT);
+		g.clearRect(0, 0, g.getCanvas().getWidth(), g.getCanvas().getHeight());
 		g.translate(-camera.x, -camera.y);
 		g.scale(g.getCanvas().getWidth() / camera.width, g.getCanvas().getHeight() / camera.height);
 		entities.forEach(e -> e.draw(g, milli));

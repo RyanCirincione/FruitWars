@@ -27,6 +27,13 @@ public class FruitWars extends Application
 
 		Game game = new Game(root, g);
 		stage.setScene(game);
+		
+		stage.widthProperty().addListener((obs, oldVal, newVal) -> {
+			canvas.setWidth(newVal.doubleValue());
+		});
+		stage.heightProperty().addListener((obs, oldVal, newVal) -> {
+			canvas.setHeight(newVal.doubleValue());
+		});
 
 		new AnimationTimer()
 		{
