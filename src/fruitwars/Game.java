@@ -95,8 +95,6 @@ public class Game extends Scene
 		g.translate(-camera.getX(), -camera.getY());
 		g.scale(g.getCanvas().getWidth() / camera.getWidth(), g.getCanvas().getHeight() / camera.getHeight());
 		entities.forEach(e -> e.draw(g, milli));
-		for (UIComponent u : gui)
-			u.draw(g, milli, mousePosition);
 		if (selecting && !mousePosition.equals(selectionCorner))
 		{
 			g.setStroke(Color.BLUE);
@@ -109,6 +107,8 @@ public class Game extends Scene
 			g.fill();
 		}
 		g.translate(camera.getX(), camera.getY());
+		for (UIComponent u : gui)
+			u.draw(g, milli, mousePosition);
 		g.scale(camera.getWidth() / g.getCanvas().getWidth(), camera.getHeight() / g.getCanvas().getHeight());
 	}
 
@@ -233,10 +233,10 @@ public class Game extends Scene
 
 	private Rectangle2D getSelectionRect()
 	{
-		double x = Math.min(selectionCorner.getX(), mousePosition.getX() + camera.getY());
+		double x = Math.min(selectionCorner.getX(), mousePosition.getX() + camera.getX());
 		double y = Math.min(selectionCorner.getY(), mousePosition.getY() + camera.getY());
-		double width = Math.max(selectionCorner.getX(), mousePosition.getX() + camera.getY()) - x;
-		double height = Math.max(selectionCorner.getY(), mousePosition.getY() + camera.getX()) - y;
+		double width = Math.max(selectionCorner.getX(), mousePosition.getX() + camera.getX()) - x;
+		double height = Math.max(selectionCorner.getY(), mousePosition.getY() + camera.getY()) - y;
 		return new Rectangle2D.Double(x, y, width, height);
 	}
 }

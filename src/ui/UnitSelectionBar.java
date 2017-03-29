@@ -35,7 +35,7 @@ public class UnitSelectionBar extends UIComponent
 			g2.strokeRect(bounds.x, bounds.y, bounds.width, bounds.height);
 			g2.stroke();
 			g2.setStroke(Color.BLACK);
-			// TODO: Add Pages
+			
 			for (int i = 0; i < selectedUnits.size(); i++)
 			{
 				int yPos = bounds.y + (i / (600 / BUTTON_SIZE)) * BUTTON_BORDER_SIZE + BORDER;
