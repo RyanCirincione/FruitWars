@@ -1,5 +1,7 @@
 package fruitwars;
 
+import java.io.File;
+
 import javafx.animation.AnimationTimer;
 import javafx.scene.Group;
 import javafx.scene.Scene;
@@ -13,7 +15,6 @@ public class Menu extends Scene
 	public static Menu construct(Stage stage) 
 	{
 		Group root = new Group();
-		
 		Button button = new Button();
 		button.setText("Play game");
 		button.setOnMouseClicked(evt -> {
@@ -42,7 +43,7 @@ public class Menu extends Scene
 				}
 			}.start();
 		});
-		
+
 		root.getChildren().add(button);
 		
 		return new Menu(root);
@@ -51,6 +52,9 @@ public class Menu extends Scene
 	public Menu(Group root)
 	{
 		super(root);
+		getStylesheets().clear();
+		getStylesheets().add("file:///" + new File("style.css").getAbsolutePath().replace("\\", "/"));
+		root.getChildren().forEach(node -> node.applyCss());
 	}
 
 }
