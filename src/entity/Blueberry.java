@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 public class Blueberry extends Unit
 {
 	private static final double RADIUS = 8, RANGE = 150;
-	private static final double P_RADIUS = 1, P_SPEED = 4, DAMAGE = 2.0;
+	private static final double P_RADIUS = 1, P_SPEED = 4, DAMAGE = 6.0;
 	private static final long MAXCOOLDOWN = 500;
 	private long coolDown;
 	public final static double MAX_HEALTH = 25, SPEED = 2;

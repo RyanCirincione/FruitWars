@@ -54,7 +54,7 @@ public class Projectile extends Entity
 		Point2D location = getCenter();
 		location.setLocation(location.getX() + x, location.getY() + y);
 		// Out of range
-		if (startingPoint.distanceSq(location) > range * range)
+		if (startingPoint.distanceSq(location) > ((range * range) + 5))
 			health = 0;
 		else
 			super.tick(millis);

@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 public class Strawberry extends Unit
 {
 	private static final double RADIUS = 16, RANGE = 150;
-	private static final double P_RADIUS = 1, P_SPEED = 4, DAMAGE = 2.0;
+	private static final double P_RADIUS = 1, P_SPEED = 4, DAMAGE = 5.0;
 	private static final long MAXCOOLDOWN = 2000;
 	private long coolDown;
 	public final static double MAX_HEALTH = 30, SPEED = 1.5;
@@ -109,9 +109,11 @@ public class Strawberry extends Unit
 	{
 		coolDown = MAXCOOLDOWN;
 		int projectiles = 8;
+		double enemyAngle = Math.atan((enemy.getCenter().getY() - getCenter().getY()) / (enemy.getCenter().getX() - getCenter().getX()));
 		for(int i = 0; i < projectiles; i++)
 		{
-			double angle = (Math.PI * i) / (projectiles/2);
+			
+			double angle = (Math.PI * i) / (projectiles/2) + enemyAngle;
 			double dist = getCenter().distance(enemy.getCenter());
 			Point2D.Double destination = new Point2D.Double(getCenter().getX() + (Math.cos(angle) * dist), getCenter().getY() + (Math.sin(angle) * dist));
 			root.add(new Projectile(root, (Point2D) getCenter().clone(), destination, this,
