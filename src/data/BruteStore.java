@@ -4,7 +4,6 @@ import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
@@ -52,12 +51,12 @@ public class BruteStore<T extends Bounded<T>> implements EntityStore<T>
 	@Override
 	public void addContained(Rectangle2D rect, Collection<T> list)
 	{
-		for(T obj : this.list)
+		for (T obj : this.list)
 		{
 			double x = obj.getCenter().getX();
 			double y = obj.getCenter().getY();
 			double r = obj.getRadius();
-			if(rect.contains(x - r, y - r, r * 2, r * 2))
+			if (rect.contains(x - r, y - r, r * 2, r * 2))
 				list.add(obj);
 		}
 	}
@@ -65,12 +64,12 @@ public class BruteStore<T extends Bounded<T>> implements EntityStore<T>
 	@Override
 	public void addIntersecting(Rectangle2D rect, Collection<T> list)
 	{
-		for(T obj : this.list)
+		for (T obj : this.list)
 		{
 			double x = obj.getCenter().getX();
 			double y = obj.getCenter().getY();
 			double r = obj.getRadius();
-			if(rect.intersects(x - r, y - r, r * 2, r * 2))
+			if (rect.intersects(x - r, y - r, r * 2, r * 2))
 				list.add(obj);
 		}
 	}
@@ -78,9 +77,10 @@ public class BruteStore<T extends Bounded<T>> implements EntityStore<T>
 	@Override
 	public T getClosest(T obj, ValidPair<T> func)
 	{
-		T closest = list.get(0);
-		for(T other : list)
-			if(func.check(obj, other) && obj.getCenter().distanceSq(other.getCenter()) <= obj.getCenter().distanceSq(closest.getCenter()))
+		T closest = null;
+		for (T other : list)
+			if (func.check(obj, other) && (closest == null || obj.getCenter().distanceSq(other.getCenter()) <= obj
+					.getCenter().distanceSq(closest.getCenter())))
 				closest = other;
 		return closest;
 	}
@@ -88,8 +88,8 @@ public class BruteStore<T extends Bounded<T>> implements EntityStore<T>
 	@Override
 	public T getAtPoint(Point2D pointer)
 	{
-		for(T obj : list) 
-			if(obj.getCenter().distanceSq(pointer) <= obj.getRadius() * obj.getRadius())
+		for (T obj : list)
+			if (obj.getCenter().distanceSq(pointer) <= obj.getRadius() * obj.getRadius())
 				return obj;
 		return null;
 	}
@@ -115,7 +115,7 @@ public class BruteStore<T extends Bounded<T>> implements EntityStore<T>
 		list.addAll(buffer);
 		buffer.clear();
 	}
-	
+
 	private boolean objectsOverlap(T o1, T o2)
 	{
 		double radSum = o1.getRadius() + o2.getRadius();
@@ -125,14 +125,14 @@ public class BruteStore<T extends Bounded<T>> implements EntityStore<T>
 	@Override
 	public boolean areaFree(double x, double y, double radius)
 	{
-		tmp1.setBounds((int)(x - radius), (int)(y - radius), (int)(radius * 2), (int)(radius * 2));
-		for(T obj : list)
+		tmp1.setBounds((int) (x - radius), (int) (y - radius), (int) (radius * 2), (int) (radius * 2));
+		for (T obj : list)
 		{
-			int ox = (int)obj.getCenter().getX();
-			int oy = (int)obj.getCenter().getY();
-			int r = (int)obj.getRadius();
+			int ox = (int) obj.getCenter().getX();
+			int oy = (int) obj.getCenter().getY();
+			int r = (int) obj.getRadius();
 			tmp2.setBounds(ox - r, oy - r, r * 2, r * 2);
-			if(tmp1.intersects(tmp2))
+			if (tmp1.intersects(tmp2))
 				return false;
 		}
 		return true;
@@ -147,13 +147,14 @@ public class BruteStore<T extends Bounded<T>> implements EntityStore<T>
 	@Override
 	public void filter(Predicate<T> func, Consumer<T> action)
 	{
-		for(Iterator<T> iter = list.iterator(); iter.hasNext(); )
+		for (int i = 0; i < list.size(); i++)
 		{
-			T obj = iter.next();
-			if(!func.test(obj))
+			T obj = list.get(i);
+			if (!func.test(obj))
 			{
 				action.accept(obj);
-				iter.remove();
+				list.remove(i);
+				i--;
 			}
 		}
 	}

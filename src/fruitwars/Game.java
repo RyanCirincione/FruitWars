@@ -87,19 +87,11 @@ public class Game extends Scene
 		entities.tickAll(milli);
 		entities.filter(entity -> entity.getHealth() > 0, entity -> selectedUnits.remove(entity));
 		camera.setRect(camera.getX() + camera_xspeed * 60.0 / 1000, camera.getY() + camera_yspeed * 60.0 / 1000, g.getCanvas().getWidth(), g.getCanvas().getHeight());
-		for(int i = 0; i < selectedUnits.size(); i++)
-		{
-			if(selectedUnits.get(i).getHealth() <= 0)
-			{
-				selectedUnits.remove(i);
-				i = Math.max(i - 1, 0);
-			}
-		}
 	}
 
 	public void draw(long milli)
 	{
-		g.clearRect(0, 0, FruitWars.WINDOW_WIDTH, FruitWars.WINDOW_HEIGHT);
+		g.clearRect(0, 0, g.getCanvas().getWidth(), g.getCanvas().getHeight());
 		g.translate(-camera.getX(), -camera.getY());
 		g.scale(g.getCanvas().getWidth() / camera.getWidth(), g.getCanvas().getHeight() / camera.getHeight());
 		entities.forEach(e -> e.draw(g, milli));
