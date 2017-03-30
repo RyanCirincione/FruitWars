@@ -209,7 +209,8 @@ public class Game extends Scene
 				selecting = false;
 			} else
 			{
-				Entity clicked = entities.getAtPoint(mousePosition);
+				Point2D mapLocation = new Point2D.Double(mousePosition.getX() + camera.getX(), mousePosition.getY() + camera.getY());
+				Entity clicked = entities.getAtPoint(mapLocation);
 				if (clicked != null)
 				{
 					selectedUnits.forEach(u -> u.target(clicked));
@@ -217,7 +218,7 @@ public class Game extends Scene
 				}
 				if (!handled)
 				{
-					Point2D destination = new Point2D.Double(e.getX(), e.getY());
+					Point2D destination = mapLocation;
 					selectedUnits.forEach(unit -> unit.setDestination(destination));
 					selecting = false;
 				}
