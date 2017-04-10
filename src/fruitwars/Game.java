@@ -54,14 +54,6 @@ public class Game extends Scene
 	{
 		super(root);
 		g = ctx;
-		entities = new BruteStore<>();
-		selectedUnits = new FastList<>(1000009);
-
-		selecting = false;
-		aDown = false;
-		selectionCorner = new Point2D.Double(0, 0);
-		mousePosition = new Point2D.Double();
-
 		gui = new FastList<>();
 		gui.add(new UnitSelectionBar(selectedUnits));
 		cBar = new ConstructionBar(entities);
@@ -72,27 +64,7 @@ public class Game extends Scene
 		addEventHandler(MouseEvent.MOUSE_RELEASED, this::mouseReleased);
 		addEventHandler(KeyEvent.KEY_PRESSED, this::keyPressed);
 		addEventHandler(KeyEvent.KEY_RELEASED, this::keyReleased);
-
-		StrawberryBush s = new StrawberryBush(entities, new Point2D.Double(100, 100), true, 150);
-		s.setRally(new Point2D.Double(600, 300));
-		entities.add(s);
-		s = new StrawberryBush(entities, new Point2D.Double(600, 100), false, 150);
-		s.setRally(new Point2D.Double(600, 300));
-		entities.add(s);
-		BlueberryBush b = new BlueberryBush(entities, new Point2D.Double(100, 500), true, 150);
-		b.setRally(new Point2D.Double(100, 300));
-		entities.add(b);
-		b = new BlueberryBush(entities, new Point2D.Double(600, 500), false, 150);
-		b.setRally(new Point2D.Double(100, 300));
-		entities.add(b);
-		GrapeVine g = new GrapeVine(entities, new Point2D.Double(100, 300), true, 150);
-		g.setRally(new Point2D.Double(600, 300));
-		entities.add(g);
-		g = new GrapeVine(entities, new Point2D.Double(600, 300), false, 150);
-		g.setRally(new Point2D.Double(100, 300));
-		entities.add(g);
-		
-		camera = new Rectangle2D.Double(0, 0, 800, 600);
+		init();
 	}
 
 	public void tick(long milli)
@@ -261,5 +233,42 @@ public class Game extends Scene
 		double width = Math.max(selectionCorner.getX(), mousePosition.getX() + camera.getX()) - x;
 		double height = Math.max(selectionCorner.getY(), mousePosition.getY() + camera.getY()) - y;
 		return new Rectangle2D.Double(x, y, width, height);
+	}
+	
+	public void init()
+	{
+		entities = new BruteStore<>();
+		selectedUnits = new FastList<>(1000009);
+
+		selecting = false;
+		aDown = false;
+		selectionCorner = new Point2D.Double(0, 0);
+		mousePosition = new Point2D.Double();
+
+		StrawberryBush s = new StrawberryBush(entities, new Point2D.Double(100, 100), true, 150);
+		s.setRally(new Point2D.Double(600, 300));
+		entities.add(s);
+		s = new StrawberryBush(entities, new Point2D.Double(600, 100), false, 150);
+		s.setRally(new Point2D.Double(600, 300));
+		entities.add(s);
+		BlueberryBush b = new BlueberryBush(entities, new Point2D.Double(100, 500), true, 150);
+		b.setRally(new Point2D.Double(100, 300));
+		entities.add(b);
+		b = new BlueberryBush(entities, new Point2D.Double(600, 500), false, 150);
+		b.setRally(new Point2D.Double(100, 300));
+		entities.add(b);
+		GrapeVine g = new GrapeVine(entities, new Point2D.Double(100, 300), true, 150);
+		g.setRally(new Point2D.Double(600, 300));
+		entities.add(g);
+		g = new GrapeVine(entities, new Point2D.Double(600, 300), false, 150);
+		g.setRally(new Point2D.Double(100, 300));
+		entities.add(g);
+		
+		camera = new Rectangle2D.Double(0, 0, 800, 600);
+	}
+	
+	public void addEntity(Entity e) 
+	{
+		entities.add(e);
 	}
 }
