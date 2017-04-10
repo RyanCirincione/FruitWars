@@ -3,7 +3,6 @@ package fruitwars;
 import java.io.File;
 
 import javafx.animation.AnimationTimer;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
