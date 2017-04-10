@@ -14,8 +14,10 @@ import javafx.scene.paint.Color;
 public abstract class Unit extends Entity
 {
 	private boolean selected;
+	protected boolean attackMove;
 	private double speed;
-	private Point2D destination, longTermDestination;
+	protected Point2D destination;
+	private Point2D longTermDestination;
 	private final static String[] RANKS = { "Pvt.", "Cpl.", "Sgt." };
 	private int kills = 0;
 	private static ArrayList<String> names = loadNames();
@@ -28,6 +30,7 @@ public abstract class Unit extends Entity
 		this.speed = speed;
 		this.health = health;
 		type = "unit";
+		attackMove = true;
 	}
 
 	public void moveToward(long millis)
@@ -108,11 +111,12 @@ public abstract class Unit extends Entity
 		return names.get((int) (Math.random() * names.size()));
 	}
 
-	public void setDestination(Point2D destination)
+	public void setDestination(Point2D destination, boolean attackMove)
 	{
 		this.destination = destination;
+		this.attackMove = attackMove;
 	}
-
+	
 	public void setSelected(boolean select)
 	{
 		selected = select;

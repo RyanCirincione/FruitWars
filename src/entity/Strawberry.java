@@ -53,7 +53,7 @@ public class Strawberry extends Unit
 	{
 		coolDown -= millis;
 		boolean attackingNow = false;
-		if (coolDown <= 0)
+		if (coolDown <= 0 && (attackMove || this.getCenter() == destination))
 		{
 			Entity e = root.getClosest(this, (e1, e2) -> {
 				return e1.isFriendly() != e2.isFriendly() && !(e2 instanceof Projectile);
@@ -119,7 +119,7 @@ public class Strawberry extends Unit
 			root.add(new Projectile(root, (Point2D) getCenter().clone(), destination, this,
 					P_RADIUS, P_SPEED, DAMAGE, RANGE));
 		}
-		super.setDestination(getCenter());
+		super.setDestination(getCenter(), true);
 	}
 
 	@Override
@@ -132,7 +132,7 @@ public class Strawberry extends Unit
 			if (getCenter().distanceSq(enemy.getCenter()) <= radiusSum * radiusSum && !(enemy instanceof Projectile))
 				attack(enemy);
 			else
-				super.setDestination(enemy.getCenter());
+				super.setDestination(enemy.getCenter(), true);
 		}
 	}
 }

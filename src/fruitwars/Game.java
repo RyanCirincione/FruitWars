@@ -32,7 +32,7 @@ public class Game extends Scene
 	private List<Unit> selectedUnits;
 	private List<UIComponent> gui;
 	private ConstructionBar cBar;
-	private boolean selecting;
+	private boolean selecting, aDown;
 	private Color selectionBlue = new Color(102.0 / 255, 153.0 / 255, 1, 64 / 255.0);
 	private Point2D selectionCorner, mousePosition;
 	private Rectangle2D camera;
@@ -58,6 +58,7 @@ public class Game extends Scene
 		selectedUnits = new FastList<>(1000009);
 
 		selecting = false;
+		aDown = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		mousePosition = new Point2D.Double();
 
@@ -139,6 +140,13 @@ public class Game extends Scene
 			camera_xspeed = CAMERA_SPEED;
 		if(e.getCode() == KeyCode.LEFT)
 			camera_xspeed = -CAMERA_SPEED;
+		switch (e.getCode())
+		{
+		case A:
+			aDown = true;
+		default:
+			break;
+		}
 	}
 
 	public void keyReleased(KeyEvent e)
@@ -157,11 +165,13 @@ public class Game extends Scene
 			clearSelected(); // Unselect units
 			break;
 		case C:
-			selectedUnits.forEach(unit -> unit.setDestination(unit.getCenter())); // Stop
+			selectedUnits.forEach(unit -> unit.setDestination(unit.getCenter(), true)); // Stop
 			// moving
 			break;
 		case B:
 			cBar.setActive(!cBar.getActive());
+		case A:
+			aDown = false;
 		default:
 			break;
 		}
@@ -221,7 +231,8 @@ public class Game extends Scene
 				selecting = false;
 			} else
 			{
-				Entity clicked = entities.getAtPoint(mousePosition);
+				Point2D mapLocation = new Point2D.Double(mousePosition.getX() + camera.getX(), mousePosition.getY() + camera.getY());
+				Entity clicked = entities.getAtPoint(mapLocation);
 				if (clicked != null)
 				{
 					selectedUnits.forEach(u -> u.target(clicked));
@@ -229,8 +240,8 @@ public class Game extends Scene
 				}
 				if (!handled)
 				{
-					Point2D destination = new Point2D.Double(e.getX(), e.getY());
-					selectedUnits.forEach(unit -> unit.setDestination(destination));
+					Point2D destination = mapLocation;
+					selectedUnits.forEach(unit -> unit.setDestination(destination, aDown));
 					selecting = false;
 				}
 			}
