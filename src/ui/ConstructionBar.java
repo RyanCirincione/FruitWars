@@ -14,6 +14,7 @@ import entity.GrapeVine;
 import entity.Potato;
 import entity.StrawberryBush;
 import entity.Structure;
+import entity.StructureBuilder;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
@@ -29,11 +30,6 @@ public class ConstructionBar extends UIComponent
 	private int placingIndex;
 	private boolean active, placing, handlingClickDown;
 	private EntityStore<Entity> root;
-
-	private interface StructureBuilder
-	{
-		public Structure build(EntityStore<Entity> root, Point2D location, boolean friendly, double health);
-	}
 
 	public ConstructionBar(EntityStore<Entity> root)
 	{
