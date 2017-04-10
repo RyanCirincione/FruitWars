@@ -28,7 +28,7 @@ import ui.UnitSelectionBar;
 public class Game extends Scene
 {
 	public GraphicsContext g;
-	private EntityStore<Entity> entities;
+	public EntityStore<Entity> entities;
 	private List<Unit> selectedUnits;
 	private List<UIComponent> gui;
 	private ConstructionBar cBar;
