@@ -2,11 +2,12 @@ package entity;
 
 import java.awt.geom.Point2D;
 
-import data.QuadNode;
+import data.Bounded;
+import data.EntityStore;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
-public abstract class Entity implements QuadNode.Bounded<Entity>
+public abstract class Entity implements Bounded<Entity>
 {
 	private Image[][] sprite; // a 2d array of [animation][frame]
 	protected String type;
@@ -36,13 +37,13 @@ public abstract class Entity implements QuadNode.Bounded<Entity>
 	/**
 	 * The QuadNode this entity is stored in
 	 */
-	private QuadNode<Entity> currentNode;
+	private EntityStore<Entity> currentNode;
 	/**
 	 * The root of the quadtree
 	 */
-	protected QuadNode<Entity> root;
+	protected EntityStore<Entity> root;
 
-	public Entity(QuadNode<Entity> root, Image[][] sprite, Point2D location, double radius, boolean friendly,
+	public Entity(EntityStore<Entity> root, Image[][] sprite, Point2D location, double radius, boolean friendly,
 			double health)
 	{
 		this.root = root;
@@ -162,13 +163,13 @@ public abstract class Entity implements QuadNode.Bounded<Entity>
 	}
 
 	@Override
-	public QuadNode<Entity> getCurrentNode()
+	public EntityStore<Entity> getCurrentNode()
 	{
 		return currentNode;
 	}
 
 	@Override
-	public void setCurrentNode(QuadNode<Entity> node)
+	public void setCurrentNode(EntityStore<Entity> node)
 	{
 		currentNode = node;
 	}

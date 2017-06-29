@@ -257,8 +257,7 @@ public class FastList<T> implements List<T>
 		@Override
 		public void remove()
 		{
-			backed.remove(index);
-			index--;
+			throw new NotImplementedException();
 		}
 
 		@Override

@@ -7,13 +7,13 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.image.Image;
 
 public class Strawberry extends Unit
 {
 	private static final double RADIUS = 16, RANGE = 150;
-	private static final double P_RADIUS = 1, P_SPEED = 4, DAMAGE = 2.0;
+	private static final double P_RADIUS = 1, P_SPEED = 4, DAMAGE = 5.0;
 	private static final long MAXCOOLDOWN = 2000;
 	private long coolDown;
 	public final static double MAX_HEALTH = 30, SPEED = 1.5;
@@ -23,7 +23,7 @@ public class Strawberry extends Unit
 	private boolean attacking;
 	
 
-	public Strawberry(QuadNode<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
+	public Strawberry(EntityStore<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
 	{
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
@@ -53,7 +53,7 @@ public class Strawberry extends Unit
 	{
 		coolDown -= millis;
 		boolean attackingNow = false;
-		if (coolDown <= 0)
+		if (coolDown <= 0 && (attackMove || this.getCenter() == destination))
 		{
 			Entity e = root.getClosest(this, (e1, e2) -> {
 				return e1.isFriendly() != e2.isFriendly() && !(e2 instanceof Projectile);
@@ -109,15 +109,17 @@ public class Strawberry extends Unit
 	{
 		coolDown = MAXCOOLDOWN;
 		int projectiles = 8;
+		double enemyAngle = Math.atan((enemy.getCenter().getY() - getCenter().getY()) / (enemy.getCenter().getX() - getCenter().getX()));
 		for(int i = 0; i < projectiles; i++)
 		{
-			double angle = (Math.PI * i) / (projectiles/2);
+			
+			double angle = (Math.PI * i) / (projectiles/2) + enemyAngle;
 			double dist = getCenter().distance(enemy.getCenter());
 			Point2D.Double destination = new Point2D.Double(getCenter().getX() + (Math.cos(angle) * dist), getCenter().getY() + (Math.sin(angle) * dist));
 			root.add(new Projectile(root, (Point2D) getCenter().clone(), destination, this,
 					P_RADIUS, P_SPEED, DAMAGE, RANGE));
 		}
-		super.setDestination(getCenter());
+		super.setDestination(getCenter(), true);
 	}
 
 	@Override
@@ -130,7 +132,7 @@ public class Strawberry extends Unit
 			if (getCenter().distanceSq(enemy.getCenter()) <= radiusSum * radiusSum && !(enemy instanceof Projectile))
 				attack(enemy);
 			else
-				super.setDestination(enemy.getCenter());
+				super.setDestination(enemy.getCenter(), true);
 		}
 	}
 }

@@ -1,12 +1,12 @@
 package fruitwars;
 
-import java.awt.Rectangle;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.util.List;
 
+import data.BruteStore;
+import data.EntityStore;
 import data.FastList;
-import data.QuadNode;
 import entity.BlueberryBush;
 import entity.Entity;
 import entity.GrapeVine;
@@ -14,7 +14,9 @@ import entity.StrawberryBush;
 import entity.Unit;
 import javafx.scene.Group;
 import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -25,25 +27,38 @@ import ui.UnitSelectionBar;
 
 public class Game extends Scene
 {
-	private GraphicsContext g;
-	private QuadNode<Entity> entities;
+	public GraphicsContext g;
+	private EntityStore<Entity> entities;
 	private List<Unit> selectedUnits;
 	private List<UIComponent> gui;
 	private ConstructionBar cBar;
-	private boolean selecting;
+	private boolean selecting, aDown;
 	private Color selectionBlue = new Color(102.0 / 255, 153.0 / 255, 1, 64 / 255.0);
 	private Point2D selectionCorner, mousePosition;
-	private Rectangle camera;
+	private Rectangle2D camera;
+	private float camera_xspeed, camera_yspeed;
+	private final float CAMERA_SPEED = 100;
 
-	public Game(Group root, GraphicsContext ctx)
+	public static Game construct(int width, int height) 
+	{
+		Canvas canvas = new Canvas(width, height);
+		Group root = new Group();
+
+		root.getChildren().add(canvas);
+		GraphicsContext g = canvas.getGraphicsContext2D();
+		
+		return new Game(root, g);
+	}
+	
+	private Game(Group root, GraphicsContext ctx)
 	{
 		super(root);
 		g = ctx;
-		Rectangle gameBounds = new Rectangle(0, 0, (int) ctx.getCanvas().getWidth(), (int) ctx.getCanvas().getHeight());
-		entities = new QuadNode<>(gameBounds, 128, 128);
+		entities = new BruteStore<>();
 		selectedUnits = new FastList<>(1000009);
 
 		selecting = false;
+		aDown = false;
 		selectionCorner = new Point2D.Double(0, 0);
 		mousePosition = new Point2D.Double();
 
@@ -77,31 +92,22 @@ public class Game extends Scene
 		g.setRally(new Point2D.Double(100, 300));
 		entities.add(g);
 		
-		camera = new Rectangle(0, 0, 800, 600);
+		camera = new Rectangle2D.Double(0, 0, 800, 600);
 	}
 
 	public void tick(long milli)
 	{
 		entities.tickAll(milli);
-		entities.filter(entity -> entity.getHealth() > 0);
-		for(int i = 0; i < selectedUnits.size(); i++)
-		{
-			if(selectedUnits.get(i).getHealth() <= 0)
-			{
-				selectedUnits.remove(i);
-				i = Math.max(i - 1, 0);
-			}
-		}
+		entities.filter(entity -> entity.getHealth() > 0, entity -> selectedUnits.remove(entity));
+		camera.setRect(camera.getX() + camera_xspeed * 60.0 / 1000, camera.getY() + camera_yspeed * 60.0 / 1000, g.getCanvas().getWidth(), g.getCanvas().getHeight());
 	}
 
 	public void draw(long milli)
 	{
-		g.translate(-camera.x, -camera.y);
-		g.scale(g.getCanvas().getWidth() / camera.width, g.getCanvas().getHeight() / camera.height);
-		g.clearRect(0, 0, FruitWars.WINDOW_WIDTH, FruitWars.WINDOW_HEIGHT);
+		g.clearRect(0, 0, g.getCanvas().getWidth(), g.getCanvas().getHeight());
+		g.translate(-camera.getX(), -camera.getY());
+		g.scale(g.getCanvas().getWidth() / camera.getWidth(), g.getCanvas().getHeight() / camera.getHeight());
 		entities.forEach(e -> e.draw(g, milli));
-		for (UIComponent u : gui)
-			u.draw(g, milli, mousePosition);
 		if (selecting && !mousePosition.equals(selectionCorner))
 		{
 			g.setStroke(Color.BLUE);
@@ -113,8 +119,10 @@ public class Game extends Scene
 			g.fillRect(selectionRect.getX(), selectionRect.getY(), selectionRect.getWidth(), selectionRect.getHeight());
 			g.fill();
 		}
-		g.translate(camera.x, camera.y);
-		g.scale(camera.width / g.getCanvas().getWidth(), camera.height / g.getCanvas().getHeight());
+		g.translate(camera.getX(), camera.getY());
+		for (UIComponent u : gui)
+			u.draw(g, milli, mousePosition);
+		g.scale(camera.getWidth() / g.getCanvas().getWidth(), camera.getHeight() / g.getCanvas().getHeight());
 	}
 
 	public void mouseMove(MouseEvent e)
@@ -124,22 +132,46 @@ public class Game extends Scene
 
 	public void keyPressed(KeyEvent e)
 	{
-
+		if(e.getCode() == KeyCode.UP)
+			camera_yspeed = -CAMERA_SPEED;
+		if(e.getCode() == KeyCode.DOWN)
+			camera_yspeed = CAMERA_SPEED;
+		if(e.getCode() == KeyCode.RIGHT)
+			camera_xspeed = CAMERA_SPEED;
+		if(e.getCode() == KeyCode.LEFT)
+			camera_xspeed = -CAMERA_SPEED;
+		switch (e.getCode())
+		{
+		case A:
+			aDown = true;
+		default:
+			break;
+		}
 	}
 
 	public void keyReleased(KeyEvent e)
 	{
+		if(e.getCode() == KeyCode.UP)
+			camera_yspeed = 0;
+		if(e.getCode() == KeyCode.DOWN)
+			camera_yspeed = 0;
+		if(e.getCode() == KeyCode.RIGHT)
+			camera_xspeed = 0;
+		if(e.getCode() == KeyCode.LEFT)
+			camera_xspeed = 0;
 		switch (e.getCode())
 		{
 		case SPACE:
 			clearSelected(); // Unselect units
 			break;
 		case C:
-			selectedUnits.forEach(unit -> unit.setDestination(unit.getCenter())); // Stop
+			selectedUnits.forEach(unit -> unit.setDestination(unit.getCenter(), true)); // Stop
 			// moving
 			break;
 		case B:
 			cBar.setActive(!cBar.getActive());
+		case A:
+			aDown = false;
 		default:
 			break;
 		}
@@ -159,7 +191,7 @@ public class Game extends Scene
 			if (e.getButton() == MouseButton.PRIMARY)
 			{
 				selecting = true;
-				selectionCorner.setLocation(mousePosition);
+				selectionCorner.setLocation(mousePosition.getX() + camera.getX(), mousePosition.getY() + camera.getY());
 			}
 		}
 	}
@@ -186,8 +218,7 @@ public class Game extends Scene
 				selectionBuffer.clear();
 				if (!e.isControlDown())
 					clearSelected();
-				entities.addContained((int) selectionRect.getX(), (int) selectionRect.getY(),
-						(int) selectionRect.getWidth(), (int) selectionRect.getHeight(), selectionBuffer);
+				entities.addContained(selectionRect, selectionBuffer);
 				for (Entity ent : selectionBuffer)
 				{
 					if (ent instanceof Unit && ent.isFriendly() && !selectedUnits.contains(ent))
@@ -200,7 +231,8 @@ public class Game extends Scene
 				selecting = false;
 			} else
 			{
-				Entity clicked = entities.getAtPoint(mousePosition);
+				Point2D mapLocation = new Point2D.Double(mousePosition.getX() + camera.getX(), mousePosition.getY() + camera.getY());
+				Entity clicked = entities.getAtPoint(mapLocation);
 				if (clicked != null)
 				{
 					selectedUnits.forEach(u -> u.target(clicked));
@@ -208,8 +240,8 @@ public class Game extends Scene
 				}
 				if (!handled)
 				{
-					Point2D destination = new Point2D.Double(e.getX(), e.getY());
-					selectedUnits.forEach(unit -> unit.setDestination(destination));
+					Point2D destination = mapLocation;
+					selectedUnits.forEach(unit -> unit.setDestination(destination, aDown));
 					selecting = false;
 				}
 			}
@@ -224,10 +256,10 @@ public class Game extends Scene
 
 	private Rectangle2D getSelectionRect()
 	{
-		double x = Math.min(selectionCorner.getX(), mousePosition.getX());
-		double y = Math.min(selectionCorner.getY(), mousePosition.getY());
-		double width = Math.max(selectionCorner.getX(), mousePosition.getX()) - x;
-		double height = Math.max(selectionCorner.getY(), mousePosition.getY()) - y;
+		double x = Math.min(selectionCorner.getX(), mousePosition.getX() + camera.getX());
+		double y = Math.min(selectionCorner.getY(), mousePosition.getY() + camera.getY());
+		double width = Math.max(selectionCorner.getX(), mousePosition.getX() + camera.getX()) - x;
+		double height = Math.max(selectionCorner.getY(), mousePosition.getY() + camera.getY()) - y;
 		return new Rectangle2D.Double(x, y, width, height);
 	}
 }

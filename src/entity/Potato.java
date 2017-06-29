@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.image.Image;
 
 public class Potato extends Structure
@@ -12,7 +12,7 @@ public class Potato extends Structure
 	private static final double RADIUS = 28;
 	public static Image[][] sprite = loadSprite();
 	
-	public Potato(QuadNode<Entity> root, Point2D location, boolean friendly, double health)
+	public Potato(EntityStore<Entity> root, Point2D location, boolean friendly, double health)
 	{
 		super(root, sprite, location, RADIUS, friendly, health);
 		techRequired.add(Cauliflower.class);

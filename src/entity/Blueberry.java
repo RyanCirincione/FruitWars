@@ -7,13 +7,13 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.image.Image;
 
 public class Blueberry extends Unit
 {
 	private static final double RADIUS = 8, RANGE = 150;
-	private static final double P_RADIUS = 1, P_SPEED = 4, DAMAGE = 2.0;
+	private static final double P_RADIUS = 1, P_SPEED = 4, DAMAGE = 6.0;
 	private static final long MAXCOOLDOWN = 500;
 	private long coolDown;
 	public final static double MAX_HEALTH = 25, SPEED = 2;
@@ -23,7 +23,7 @@ public class Blueberry extends Unit
 	private boolean attacking;
 	
 
-	public Blueberry(QuadNode<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
+	public Blueberry(EntityStore<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
 	{
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
@@ -53,7 +53,7 @@ public class Blueberry extends Unit
 	{
 		coolDown -= millis;
 		boolean attackingNow = false;
-		if (coolDown <= 0)
+		if (coolDown <= 0 && (attackMove || this.getCenter() == destination))
 		{
 			Entity e = root.getClosest(this, (e1, e2) -> {
 				return e1.isFriendly() != e2.isFriendly() && !(e2 instanceof Projectile);
@@ -110,7 +110,7 @@ public class Blueberry extends Unit
 		coolDown = MAXCOOLDOWN;
 		root.add(new Projectile(root, (Point2D) getCenter().clone(), (Point2D) enemy.getCenter().clone(), this,
 				P_RADIUS, P_SPEED, DAMAGE, RANGE));
-		super.setDestination(getCenter());
+		super.setDestination(getCenter(), true);
 	}
 
 	@Override
@@ -123,7 +123,7 @@ public class Blueberry extends Unit
 			if (getCenter().distanceSq(enemy.getCenter()) <= radiusSum * radiusSum && !(enemy instanceof Projectile))
 				attack(enemy);
 			else
-				super.setDestination(enemy.getCenter());
+				super.setDestination(enemy.getCenter(), true);
 		}
 	}
 }

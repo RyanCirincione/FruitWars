@@ -7,7 +7,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.image.Image;
 
 public class Grape extends Unit
@@ -19,10 +19,10 @@ public class Grape extends Unit
 	public static ArrayList<String> grapeLastNames = loadGrapeVarieties();
 	private String name;
 	public static Image[][] sprite = loadSprite();
-	private double damage = 5.0;
+	private double damage = 10.0;
 	private boolean attacking;
 	
-	public Grape(QuadNode<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
+	public Grape(EntityStore<Entity> root, Point2D location, Point2D rallyPoint, boolean friendly)
 	{
 		super(root, sprite, location, rallyPoint, RADIUS, SPEED, MAX_HEALTH, friendly);
 		mass = 0.1f;
@@ -52,7 +52,7 @@ public class Grape extends Unit
 	{
 		coolDown -= millis;
 		boolean attackingNow = false;
-		if (coolDown <= 0)
+		if (coolDown <= 0 && (attackMove || this.getCenter() == destination))
 		{
 			Entity e = root.getClosest(this, (e1, e2) -> {
 				return e1.isFriendly() != e2.isFriendly() && !(e2 instanceof Projectile);
@@ -109,7 +109,7 @@ public class Grape extends Unit
 		if(enemy.getHealth() <= damage)
 			addKill();
 		enemy.setHealth(enemy.getHealth() - damage);
-		super.setDestination(getCenter());
+		super.setDestination(getCenter(), true);
 		coolDown = MAXCOOLDOWN;
 	}
 
@@ -123,7 +123,7 @@ public class Grape extends Unit
 			if (getCenter().distanceSq(enemy.getCenter()) <= radiusSum * radiusSum && !(enemy instanceof Projectile))
 				attack(enemy);
 			else
-				super.setDestination(enemy.getCenter());
+				super.setDestination(enemy.getCenter(), true);
 		}
 	}
 }

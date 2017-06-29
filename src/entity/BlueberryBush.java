@@ -4,7 +4,7 @@ import java.awt.geom.Point2D;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 
-import data.QuadNode;
+import data.EntityStore;
 import javafx.scene.image.Image;
 
 public class BlueberryBush extends Structure
@@ -15,7 +15,7 @@ public class BlueberryBush extends Structure
 	public static Image[][] sprite = loadSprite();
 	private double timeToSpawn;
 
-	public BlueberryBush(QuadNode<Entity> root, Point2D location, boolean friendly, double health)
+	public BlueberryBush(EntityStore<Entity> root, Point2D location, boolean friendly, double health)
 	{
 		super(root, sprite, location, RADIUS, friendly, health);
 		this.rally = new Point2D.Double();
@@ -48,7 +48,7 @@ public class BlueberryBush extends Structure
 		if (timeToSpawn <= 0)
 		{
 			timeToSpawn += SPAWN_TIME + (2 * Math.random() * SPAWN_TIME_ERROR) - SPAWN_TIME_ERROR;
-			int count = 3 + (int) (Math.random() * 2);
+			int count = 2 + (int) (Math.random() * 2);
 			for (int i = 0; i < count; i++)
 			{
 				Point2D point = new Point2D.Double(getCenter().getX() + Math.random() * radius * 2 - radius,
