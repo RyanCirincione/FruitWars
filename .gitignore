@@ -4,3 +4,7 @@ bin/
 
 # IDEA
 .idea/**/workspace.xml
+out/
+
+# MacOS
+.DS_Store
