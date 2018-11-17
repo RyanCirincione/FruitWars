@@ -1,2 +1,6 @@
+# Java
 *.class
-/bin/
+bin/
+
+# IDEA
+.idea/**/workspace.xml
