@@ -13,8 +13,8 @@ import javafx.stage.Stage;
 public class Menu extends Scene
 {
 	final static int WINDOW_WIDTH = 800, WINDOW_HEIGHT = 600;
-	
-	public static Menu construct(Stage stage) 
+
+	public static Menu construct(Stage stage)
 	{
 		VBox root = new VBox();
 		Button play = new Button();
@@ -22,7 +22,7 @@ public class Menu extends Scene
 		play.setOnMouseClicked(evt -> {
 			Game game = Game.construct(WINDOW_WIDTH, WINDOW_HEIGHT);
 			stage.setScene(game);
-			
+
 			stage.widthProperty().addListener((obs, oldVal, newVal) -> {
 				game.g.getCanvas().setWidth(newVal.doubleValue());
 			});
@@ -53,14 +53,12 @@ public class Menu extends Scene
 		exit.setPrefWidth(400);
 		exit.setPrefHeight(100);
 		exit.setOnMouseClicked(evt -> {
-			System.exit(0);
+			System.exit(0); //TODO Consider changing to Platform.exit()
 		});
 		root.getChildren().add(exit);
 		root.setSpacing(50);
 		root.setAlignment(Pos.CENTER);
 
-		
-		
 		return new Menu(root);
 	}
 
